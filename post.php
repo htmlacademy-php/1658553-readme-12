@@ -216,7 +216,7 @@ GROUP BY post.id
  * @param int $postId Номер поста
  * @return int ID автора поста
  */
-function findAuthorId(mysqli $mysql, int $postId):int
+function findAuthorId(mysqli $mysql, ?int $postId):?int
 {
     $data[] = $postId;
     $query = "
