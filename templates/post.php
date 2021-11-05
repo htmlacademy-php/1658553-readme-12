@@ -1,5 +1,5 @@
 <?php
-/* @var array $main_content */
+/* @var array $post_content */
 /* @var array $author_info */
 /* @var array $like_count */
 /* @var array $comments_views_count */
@@ -8,15 +8,14 @@
 /* @var array $comment_list */
 /* @var array $comment_count */
 /* @var array $comment_all_list */
+foreach ($post_content
 
-foreach ($main_content
-
-as $key => $val):
+as  $val):
 ?>
 
 
 <div class="container">
-    <h1 class="page__title page__title--publication"><?= $val['header']; ?></h1>
+    <h1 class="page__title page__title--publication"><?= $post_content['header']; ?></h1>
     <section class="post-details">
         <h2 class="visually-hidden">Публикация</h2>
         <div class="post-details__wrapper post-photo">
