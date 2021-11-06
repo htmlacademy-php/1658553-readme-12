@@ -43,7 +43,6 @@ function cutText(string $text, int $limit = 300, string $url = '#'): string
     return '<p>'.implode(' ', $result).'</p>'.$link;
 }
 
-;
 /**
  * отображение даты на странице
  *
@@ -60,9 +59,6 @@ function cutdate($date)
     return $cutDate;
 }
 
-;
-
-
 /**
  * отображение даты на странице
  *
@@ -78,9 +74,6 @@ function fullDate($date)
 
     return $fullDate;
 }
-
-;
-
 
 /**
  * отображение даты на странице
@@ -118,4 +111,52 @@ function smallDate($date)
     return $smallDate;
 }
 
-;
+/**
+ * @param string $date дата регистрации пользователя из бд
+ * @return string Дата в формате был * назад
+ * @throws Exception преобразование строки в дататайм
+ */
+function smallUSerDate($date)
+{
+    $postDate = new DateTimeImmutable($date);
+//вычисляем разницу между серверным временем и датой поста
+    $nowDate = new DateTimeImmutable();
+    $difference = $nowDate->diff($postDate);
+
+    if ($difference->m > 0) {
+        $resultForPost = get_noun_plural_form($difference->m, 'месяц', 'месяца', 'месяцев');
+        $smallDate = "$difference->m $resultForPost на сайте";
+    } elseif (intdiv($difference->d, 7) > 0) {
+        $weeks = intdiv($difference->d, 7);
+        $resultForPost = get_noun_plural_form($weeks, 'неделя', 'недели', 'недель');
+        $smallDate = "$weeks $resultForPost на сайте";
+    } elseif ($difference->d > 0) {
+        $resultForPost = get_noun_plural_form($difference->d, 'день', 'дня', 'дней');
+        $smallDate = "$difference->d $resultForPost на сайте";
+    } elseif ($difference->h > 0) {
+        $resultForPost = get_noun_plural_form($difference->h, 'час', 'часа', 'часов');
+        $smallDate = "$difference->h $resultForPost на сайте";
+    } else {
+        $resultForPost = get_noun_plural_form($difference->i, 'минута', 'минуты', 'минут');
+        $smallDate = "$difference->i $resultForPost на сайте";
+    }
+
+    return $smallDate;
+}
+
+/**
+ * Функция для удобного и красивого include по названию ключа массива
+ * @param array $pieceArr Массив из sql запроса
+ * @param array $unionArr Массив, в который мы объедениям
+ * @param string $arrName Название ключа массива
+ * @return array Массив с данными в ключе, который мы указали
+ */
+
+function getInfo(array $pieceArr, array $unionArr, string $arrName)
+{
+    foreach ($pieceArr as $key => $val) {
+        $unionArr["$arrName"][$key] = $val;
+    }
+
+    return $unionArr;
+}

@@ -74,8 +74,9 @@ function db_get_prepare_stmt($link, $sql, $data = [])
             $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: '.mysqli_error($link);
             die($errorMsg);
         }
-    }
 
+    }
+    mysqli_stmt_execute($stmt);
     return $stmt;
 }
 

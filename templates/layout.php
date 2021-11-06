@@ -141,7 +141,6 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
                     <ul class="header__user-nav">
                         <li class="header__profile">
                             <a class="header__profile-link" href="#">
@@ -200,7 +199,10 @@
     </div>
 </header>
 <section class="page__main page__main--popular">
-    <?= $content ?>
+
+<?= $content ?>
+
+
 </section>
 
 <footer class="footer">

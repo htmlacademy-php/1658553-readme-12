@@ -6,7 +6,7 @@ INSERT INTO `content_type` (type_name, icon_name) VALUES ('text', 'post-text'), 
 /*
  Пара пользователей
  */
-INSERT INTO `user` (reg_date, email, login, password, name , avatar) VALUES ('2015.05.05', 'firstemail@mail.ru', 'Вася', 'qwerty', 'Вася', 'somelink.ru'), ('2015.05.06', 'secondemail@mail.ru', 'Петр', 'somehardpass', 'Петр', 'somelink.ru'), ('2015.05.05', 'larisa@mail.ru', 'Лариса', 'qwerty', 'Лариса', 'img/userpic-larisa-small.jpg'), ('2015.05.05', 'Vladikemail@mail.ru', 'Владик', 'qwerty', 'Владик', 'img/userpic.jpg'), ('2015.05.05', 'Victoremail@mail.ru', 'Виктор', 'qwerty', 'Виктор', 'img/userpic-mark.jpg');
+INSERT INTO `user` (reg_date, email, login, password, name , avatar) VALUES ('2015.05.05', 'firstemail@mail.ru', 'Вася', 'qwerty', 'Вася', 'img/some-man.jpg'), ('2015.05.06', 'secondemail@mail.ru', 'Петр', 'somehardpass', 'Петр', 'img/some-old-man.jpg'), ('2015.05.05', 'larisa@mail.ru', 'Лариса', 'qwerty', 'Лариса', 'img/userpic-larisa-small.jpg'), ('2015.05.05', 'Vladikemail@mail.ru', 'Владик', 'qwerty', 'Владик', 'img/userpic.jpg'), ('2015.05.05', 'Victoremail@mail.ru', 'Виктор', 'qwerty', 'Виктор', 'img/userpic-mark.jpg');
 /*
  Все посты
  */
@@ -35,5 +35,15 @@ INSERT INTO `like_count`  (user_id, post_id) VALUES ('1', '2');
  подписаться на пользователя
  */
 INSERT INTO `subscribe` (user_subscribe_id, user_author_id) VALUES ('1', '3');
+/*
+ Добавлю пару хештегов
+ */
+INSERT INTO `hashtag` (hashtag_name) VALUES ('#Первый'), ('#Красиво'), ('#Лучший'), ('#php'), ('#Пыха'), ('#photo');
+INSERT INTO `hashtag_post` (hashtag, post) VALUES ('1','5'), ('4','5'), ('5','5'), ('2','3'),('6','3'), ('1','1');
+INSERT INTO `comment` (create_date, content, user_id, post_id) VALUES ('2020.08.24', 'второй!', '5', '2'), ('2020.08.25', 'третий!', '2', '1'),('2020.08.26', 'четвертый!!', '3', '2'), ('2020.08.25', 'пятый!!', '4', '2');
+INSERT INTO `comment` (create_date, content, user_id, post_id) VALUES ('2020.08.24', 'еще один!', '5', '2');
+INSERT INTO `like_count`  (user_id, post_id) VALUES ('2', '2'), ('3', '3'), ('4', '3'), ('2','1');
 
-SELECT `type_name`, `icon_name` FROM `content_type`;
+
+
+
