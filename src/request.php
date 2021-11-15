@@ -25,7 +25,7 @@ function request_retriveGetString(string $param, ?string $default): ?string
  * @param int|null $default Значение по умолчанию
  * @return int Cтрого возвращает число
  */
-function request_retriveGetInt(string $param, ?int $default): ?int
+function retriveGetInt(string $param, ?int $default): ?int
 {
     $result = ($_GET[$param] ?? $default);
     if (is_numeric($result)) {

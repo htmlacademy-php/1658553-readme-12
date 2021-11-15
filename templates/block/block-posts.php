@@ -1,67 +1,51 @@
 <?php
+/* @var array $postListRows */
 
 foreach (
     $postListRows
 
-    as $key => $val
+    as $post
 ): ?>
 
-    <article class="popular__post post <?= $val['icon_name'] ?>">
+    <article class="popular__post post <?= $post['icon_name'] ?>">
         <header class="post__header">
             <h2>
-                <a href="post.php?post-id=<?= $val['post_num'] ?>">
-                    <?= htmlspecialchars($val['header']) ?>
-
+                <a href="post.php?post-id=<?= $post['post_num'] ?>">
+                    <?= htmlspecialchars($post['header']) ?>
                 </a>
             </h2>
         </header>
-
         <div class="post__main">
             <?php
-            if ($val['icon_name'] == "post-quote"): ?>
-
-                <div class="post-link__wrapper">
-                    <a class="post-link__external" href="http://" title="Перейти по ссылке">
-                        <div class="post-link__info-wrapper">
-                            <div class="post-link__icon-wrapper">
-                                <img src="https://www.google.com/s2/favicons?domain=vitadental.ru"
-                                     alt="Иконка">
-                            </div>
-                            <div class="post-link__info">
-                                <h3>
-                                    <?= htmlspecialchars($val['header']) ?>
-
-                                </h3>
-                            </div>
-                        </div>
-                        <span>
-                                <?= htmlspecialchars($val['text_content']) ?>
-
-                            </span>
-                    </a>
-                </div>
+            if ($post['icon_name'] === "post-quote"): ?>
+                <blockquote>
+                    <p>
+                        <?= htmlspecialchars($post['text_content']) ?>
+                    </p>
+                    <cite>Неизвестный Автор</cite>
+                </blockquote>
             <?php
-            elseif ($val['icon_name'] == "post-text"): ?>
+            elseif ($post['icon_name'] === "post-text"): ?>
 
                 <p>
-                    <?= cutText(htmlspecialchars($val['text_content'])) ?>
+                    <?= cutText(htmlspecialchars($post['text_content'])) ?>
 
                 </p>
 
 
             <?php
-            elseif ($val['icon_name'] == "post-photo"): ?>
+            elseif ($post['icon_name'] === "post-photo"): ?>
 
                 <div class="post-photo__image-wrapper">
-                    <img src="<?= htmlspecialchars($val['media']) ?>" alt="Фото от пользователя" width="360"
+                    <img src="<?= $post['media'] ?>" alt="Фото от пользователя" width="360"
                          height="240">
                 </div>
 
             <?php
-            elseif ($val['icon_name'] == "post-link"): ?>
+            elseif ($post['icon_name'] === "post-link"): ?>
 
                 <div class="post-link__wrapper">
-                    <a class="post-link__external" href="http://" title="Перейти по ссылке">
+                    <a class="post-link__external" href=" <?= $post['media'] ?>" title="Перейти по ссылке">
                         <div class="post-link__info-wrapper">
                             <div class="post-link__icon-wrapper">
                                 <img src="https://www.google.com/s2/favicons?domain=vitadental.ru"
@@ -69,24 +53,25 @@ foreach (
                             </div>
                             <div class="post-link__info">
                                 <h3>
-                                    <?= htmlspecialchars($val['header']) ?>
+                                    <?= htmlspecialchars($post['header']) ?>
 
                                 </h3>
                             </div>
                         </div>
                         <span>
-                                        <?= htmlspecialchars($val['text_content']) ?>
+                                        <?= $post['text_content'] ?>
 
                             </span>
                     </a>
                 </div>
+
             <?php
-            elseif ($val['icon_name'] == "post-video"): ?>
+            elseif ($post['icon_name'] === "post-video"): ?>
                 <div class="post-video__block">
                     <div class="post-video__preview">
-                        <?= embed_youtube_cover($val['media']); ?>
+                        <?= embed_youtube_cover($post['media']); ?>
                     </div>
-                    <a href="http://localhost/1658553-readme-12/post.php?post-id=<?= $val['post_num'] ?>"
+                    <a href="http://localhost/1658553-readme-12/post.php?post-id=<?= $post['post_num'] ?>"
                        class="post-video__play-big button">
                         <svg class="post-video__play-big-icon" width="14" height="14">
                             <use xlink:href="#icon-video-play-big"></use>
@@ -94,25 +79,25 @@ foreach (
                         <span class="visually-hidden">Запустить проигрыватель</span>
                     </a>
                 </div>
-        <?php
-        endif ?>
+            <?php
+            endif ?>
 
         </div>
         <footer class="post__footer">
             <div class="post__author">
                 <a class="post__author-link" href="#" title="Автор">
                     <div class="post__avatar-wrapper">
-                        <img class="post__author-avatar" src="<?= htmlspecialchars($val['avatar']) ?>"
+                        <img class="post__author-avatar" src="<?= htmlspecialchars($post['avatar']) ?>"
                              alt="Аватар пользователя">
                     </div>
                     <div class="post__info">
                         <b class="post__author-name">
-                            <?= htmlspecialchars($val['name']) ?>
+                            <?= htmlspecialchars($post['name']) ?>
 
                         </b>
-                        <time title="<?= cutdate($val['create_date']) ?>" class="post__time"
-                              datetime="<?= fullDate($val['create_date']) ?>"><?= smallDate(
-                                $val['create_date']
+                        <time title="<?= cutdate($post['create_date']) ?>" class="post__time"
+                              datetime="<?= fullDate($post['create_date']) ?>"><?= smallDate(
+                                $post['create_date']
                             ) ?></time>
                     </div>
                 </a>
@@ -127,7 +112,7 @@ foreach (
                              height="17">
                             <use xlink:href="#icon-heart-active"></use>
                         </svg>
-                        <span><?= $val['count_likes'] ?></span>
+                        <span><?= $post['count_likes'] ?></span>
 
                         <span class="visually-hidden">количество лайков</span>
                     </a>
@@ -137,7 +122,7 @@ foreach (
                             <use xlink:href="#icon-comment"></use>
                         </svg>
 
-                        <span><?= $val['count_comments'] ?></span>
+                        <span><?= $post['count_comments'] ?></span>
                         <span class="visually-hidden">количество комментариев</span>
 
                     </a>
