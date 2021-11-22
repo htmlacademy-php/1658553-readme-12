@@ -6,7 +6,7 @@
  * @param mysqli $mysql Соединение с бд
  * @return int id поста
  */
-function addPostPhoto(array $arr, mysqli $mysql):int
+function addPostPhoto(array $arr, mysqli $mysql): int
 {
     $date = date('Y-m-d H:i:s');
     $header = validate_input($arr['photo']['photo-heading']);
@@ -31,6 +31,7 @@ function addPostPhoto(array $arr, mysqli $mysql):int
     $lastHashtagID = mysqli_insert_id($mysql);
     $hashtagPost = "INSERT INTO hashtag_post (hashtag,post) VALUES ('$lastHashtagID','$lastPostId')";
     mysqli_query($mysql, $hashtagPost);
+
     return $lastPostId;
 }
 
@@ -40,7 +41,7 @@ function addPostPhoto(array $arr, mysqli $mysql):int
  * @param mysqli $mysql Соединение с бд
  * @return int id поста
  */
-function addPostVideo(array $arr, mysqli $mysql):int
+function addPostVideo(array $arr, mysqli $mysql): int
 {
     $date = date('Y-m-d H:i:s');
     $header = validate_input($arr['video']['video-heading']);
@@ -55,6 +56,7 @@ function addPostVideo(array $arr, mysqli $mysql):int
     $lastHashtagID = mysqli_insert_id($mysql);
     $hashtagPost = "INSERT INTO hashtag_post (hashtag,post) VALUES ('$lastHashtagID','$lastPostId')";
     $successHashtagPost = mysqli_query($mysql, $hashtagPost);
+
     return $lastPostId;
 }
 
@@ -64,7 +66,7 @@ function addPostVideo(array $arr, mysqli $mysql):int
  * @param mysqli $mysql Соединение с бд
  * @return int id поста
  */
-function addPostText(array $arr, mysqli $mysql):int
+function addPostText(array $arr, mysqli $mysql): int
 {
     $date = date('Y-m-d H:i:s');
     $header = validate_input($arr['text']['text-heading']);
@@ -82,13 +84,14 @@ function addPostText(array $arr, mysqli $mysql):int
 
     return $lastPostId;
 }
+
 /**
  *  Добавление в бд публикации типа 'Цитата'
  * @param array $arr Массив из $_POST
  * @param mysqli $mysql Соединение с бд
  * @return int id поста
  */
-function addPostQuote(array $arr, mysqli $mysql):int
+function addPostQuote(array $arr, mysqli $mysql): int
 {
     $date = date('Y-m-d H:i:s');
     $header = validate_input($arr['quote']['quote-heading']);
@@ -107,13 +110,14 @@ function addPostQuote(array $arr, mysqli $mysql):int
 
     return $lastPostId;
 }
+
 /**
  *  Добавление в бд публикации типа 'Ссылка'
  * @param array $arr Массив из $_POST
  * @param mysqli $mysql Соединение с бд
  * @return int id поста
  */
-function addPostLink(array $arr, mysqli $mysql):int
+function addPostLink(array $arr, mysqli $mysql): int
 {
     $date = date('Y-m-d H:i:s');
     $header = validate_input($arr['link']['link-heading']);
@@ -128,8 +132,46 @@ function addPostLink(array $arr, mysqli $mysql):int
     $lastHashtagID = mysqli_insert_id($mysql);
     $hashtagPost = "INSERT INTO hashtag_post (hashtag,post) VALUES ('$lastHashtagID','$lastPostId')";
     $successHashtagPost = mysqli_query($mysql, $hashtagPost);
+
     return $lastPostId;
 }
+
+/**
+ * Функция добавления контента в бд
+ * @param array $errors Массив с ошибками
+ * @param array $content Контент
+ * @param object $mysql Соединение с бд
+ * @param string $contentType Тип контента для добавления
+ */
+function addPost( array $errors, array $content, object $mysql, string $contentType)
+{
+    if (empty($errors)) {
+        switch ($contentType) {
+            case 'text':
+                $lastPostId = addPosttext($content, $mysql);
+                header("Location: post.php?post-id=$lastPostId");
+                break;
+            case 'quote':
+                $lastPostId = addPostQuote($content, $mysql);
+                header("Location: post.php?post-id=$lastPostId");
+                break;
+            case 'photo':
+                $lastPostId = addPostPhoto($content, $mysql);
+                header("Location: post.php?post-id=$lastPostId");
+                break;
+            case 'video':
+                $lastPostId = addPostVideo($content, $mysql);
+                header("Location: post.php?post-id=$lastPostId");
+                break;
+            case 'link':
+                $lastPostId = addPostLink($content, $mysql);
+                header("Location: post.php?post-id=$lastPostId");
+                break;
+        }
+    }
+}
+
+
 /**
  * В дальнейшем будет регистрация
  */

@@ -11,9 +11,8 @@ require_once('src/function.php');
 require_once('src/validate.php');
 require_once('src/request.php');
 require_once('src/db.php');
-require_once('src/addQuery.php');
+require_once('src/add-query.php');
 require_once('model/models.php');
-
 
 
 /* @var mysqli $mysql */
@@ -27,46 +26,30 @@ $content = stretchOutContent($content);
 $errors = [];
 
 
-
-
 if ($isPost) {
-    if (array_key_first($content) === 'photo') {
-        $errors = validatePhoto($content);
-        if (empty($errors)) {
-            $lastPostId = addPostPhoto($content, $mysql);
-            header("Location: post.php?post-id=$lastPostId");
-        }
-    } elseif (array_key_first($content) === 'video') {
-        $errors = validateVideo($content);
-        if (empty($errors)) {
-            $lastPostId = addPostVideo($content, $mysql);
-            header("Location: post.php?post-id=$lastPostId");
-
-        }
-    } elseif (array_key_first($content) === 'text') {
-        $errors = validateText($content);
-        if (empty($errors)) {
-            $lastPostId = addPosttext($content, $mysql);
-            header("Location: post.php?post-id=$lastPostId");
-
-        }
-    } elseif (array_key_first($content) === 'quote') {
-        $errors = validateQuote($content);
-        if (empty($errors)) {
-            $lastPostId = addPostQuote($content, $mysql);
-            header("Location: post.php?post-id=$lastPostId");
-
-        }
-    } elseif (array_key_first($content) === 'link') {
-        $errors = validateLink($content);
-        if (empty($errors)) {
-            $lastPostId = addPostLink($content, $mysql);
-            header("Location: post.php?post-id=$lastPostId");
-
-        }
+    switch (array_key_first($content)) {
+        case  TYPE_PHOTO:
+            $errors = validatePhoto($content);
+            addPost($errors,$content,$mysql,TYPE_PHOTO);
+            break;
+        case TYPE_VIDEO :
+            $errors = validateVideo($content);
+            addPost($errors,$content,$mysql,TYPE_VIDEO);
+            break;
+        case TYPE_TEXT :
+            $errors = validateText($content);
+            addPost($errors,$content,$mysql,TYPE_TEXT);
+            break;
+        case TYPE_QUOTE :
+            $errors = validateQuote($content);
+            addPost($errors,$content,$mysql,TYPE_QUOTE);
+            break;
+        case TYPE_LINK :
+            $errors = validateLink($content);
+            addPost($errors,$content,$mysql,TYPE_LINK);
+            break;
     }
 }
-
 
 
 $blockLink = includeTemplate(
@@ -136,7 +119,7 @@ print $layout_content;
  */
 
 
-function stretchOutContent(array &$array): array
+function stretchOutContent(array $array): array
 {
     foreach ($_POST as $key => $val) {
         if ($key === 'photo-heading') {

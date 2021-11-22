@@ -16,18 +16,18 @@ $postId = retriveGetInt('post-id', 0);
 $IsPostIdExist = isPostExist($mysql, $postId);
 
 
-
-$postMainContent = GetPost($mysql, $postId);
-$authorPostsCount = authorPostsCount($mysql, $postMainContent['user_id']);
-$commentList = commentList($mysql, $postId,0,2);
-$commentAllList = commentList($mysql, $postId,0,200);
-
-
-/**
- * Отображение данных
- */
-
 if ($IsPostIdExist) {
+    $postMainContent = GetPost($mysql, $postId);
+    $authorPostsCount = authorPostsCount($mysql, $postMainContent['user_id']);
+    $commentList = commentList($mysql, $postId, 0, 2);
+    $commentAllList = commentList($mysql, $postId, 0, 200);
+
+
+    /**
+     * Отображение данных
+     */
+
+
     $postContents = includeTemplate(
         'post.php',
         [
@@ -51,7 +51,6 @@ if ($IsPostIdExist) {
 
 
     print ($layoutContent);
-
 } else {
     header("Location: error.php");
 }
