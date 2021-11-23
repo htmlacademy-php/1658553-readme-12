@@ -13,7 +13,7 @@
  * @param int $limit По какой пост показывать
  * @return array массив данных из бд
  */
-function findPosts(mysqli $mysql, string $sortId, ?int $typeId, int $offset = 0, int $limit = 9): array
+function GetPosts(mysqli $mysql, string $sortId, ?int $typeId, int $offset = 0, int $limit = 9): array
 {
     $where = '';
     $data = [];
@@ -133,154 +133,67 @@ WHERE
     }
 }
 
+
 /**
- * Подключаем бд для страницы поста, главный контент
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return array Массив с данными из бд
+ * Запрос на вывод основной части контента
+ * @param mysqli $mysql
+ * @param int $postId
+ * @return array
  */
-function postContent(mysqli $mysql, int $postId): array
+function GetPost(mysqli $mysql, int $postId): array
 {
     $data[] = $postId;
 
     $query = "
 SELECT
-    post.id AS `post_num`, post.text_content as `text`,post.header AS `header`,post.media AS `media`,
-       post.author_copy_right AS `author_copy_right`, content_type.icon_name AS `icon_name`
-
-
-FROM
-    post
-        LEFT JOIN
-        user ON user.id = post.user_id
-        LEFT JOIN
-        content_type ON content_type.id = post.content_type_id
-WHERE  post.id = ?
-    ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
-    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
-
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
-}
-
-
-/**
- * Запрос на информацию об авторе
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return array Массив с данными из бд
- */
-function authorInfo(mysqli $mysql, int $postId): array
-{
-    $data[] = $postId;
-    $query = "
-SELECT
-     user.reg_date AS `reg_date`, user.name AS `name`, user.avatar AS `avatar`, count(subscribe.user_subscribe_id) AS `subscribe-count`,
-       count(like_count.post_id) AS `like-count`
-
-FROM
-    post
-        LEFT JOIN
-        user ON user.id = post.user_id
-        LEFT JOIN
-        content_type ON content_type.id = post.content_type_id
-        LEFT JOIN
-        subscribe ON user_author_id = post.user_id
-        LEFT JOIN
-          like_count ON like_count.post_id = post.id
-WHERE  post.id = ?
-GROUP BY post.id
-    ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
-    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
-
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
-}
-
-
-/**
- * Запрос на кол-во лайков
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return array Массив с данными из бд
- */
-function likeCount(mysqli $mysql, int $postId): array
-{
-    $data[] = $postId;
-    $query = "
-SELECT
-   count(like_count.post_id) AS `like-count`
+    post.id AS `post_num`,post.user_id, post.text_content AS `text`,post.header AS `header`,post.author_copy_right AS `author_copy_right`,
+    post.create_date AS `create_date`, post.media AS `media`, post.views_number AS `views`,user.avatar AS `avatar`,user.name AS `name`,
+    user.reg_date AS `reg_date`, content_type.icon_name AS `icon_name`, count_comments, count_likes,`subscribe_count`,
+    hashtag.hashtag_name AS `hs-name`
 
 FROM
   post
+    LEFT JOIN
+  user ON user.id = post.user_id
+    LEFT JOIN
+  content_type ON content_type.id = post.content_type_id
+    LEFT JOIN (
+    SELECT
+      post_id, count(post_id) AS count_comments
+    FROM
+      comment
+    GROUP BY post_id
+  ) AS c ON c.post_id = post.id
+    LEFT JOIN (
+    SELECT
+      post_id, count(post_id) AS count_likes
+    FROM
+      like_count
+    GROUP BY post_id
+  ) AS l ON l.post_id = post.id
+    LEFT JOIN (
+    SELECT
+      user_author_id, count(user_subscribe_id) AS `subscribe_count`
+    FROM
+      subscribe
+      GROUP BY user_author_id
+  ) AS subscribe ON subscribe.user_author_id = post.user_id
 
     LEFT JOIN
-  like_count ON like_count.post_id = post.id
-
+  hashtag_post ON hashtag_post.post = post.id
+    LEFT JOIN
+  hashtag ON hashtag.id = hashtag_post.hashtag
 WHERE  post.id = ?
+
     ";
     $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
     $postPrepareRes = mysqli_stmt_get_result($postPrepare);
 
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
+    return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }
 
 
-/**
- * Запрос на кол-во комментариев и просмотров
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return array Массив с данными из бд
- */
-function commentsViewsCount(mysqli $mysql, int $postId): array
-{
-    $data[] = $postId;
-    $query = "
-SELECT
-    count(comment.id) AS `comment-count`, post.views_number AS `views`
 
-FROM
-  post
-LEFT JOIN
-      comment ON comment.post_id = post.id
-
-WHERE  post.id = ?
-GROUP BY post.id
-    ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
-    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
-
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
-}
-
-
-/**
- *
- */
-/**
- * Узнаем id автора для проверки кол-ва постов
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return int ID автора поста
- */
-function findAuthorId(mysqli $mysql, ?int $postId): ?int
-{
-    $data[] = $postId;
-    $query = "
-SELECT
-     post.user_id
-FROM
-    post
-
-WHERE  post.id = ?
-    ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
-    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
-    $postPrepareResRows = mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
-    $authorArray = array_pop($postPrepareResRows);
-
-    return array_pop($authorArray);
-}
 
 
 /**
@@ -304,36 +217,11 @@ WHERE user_id = ?
     $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
     $postPrepareRes = mysqli_stmt_get_result($postPrepare);
 
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
+    return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }
 
 
-/**
- * Запрос на хештеги
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return array Массив с данными из бд
- */
-function findHashtags(mysqli $mysql, int $postId): array
-{
-    $data[] = $postId;
-    $query = "
-    SELECT
-     post.id AS `post_num`, hashtag.hashtag_name AS `hs-name`
 
-FROM
-    post
-LEFT JOIN
-        hashtag_post ON hashtag_post.post = post.id
-LEFT JOIN
-        hashtag ON hashtag.id = hashtag_post.hashtag
-WHERE  post.id = ?
-    ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
-    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
-
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
-}
 
 /**
  * запрос на список комментариев
@@ -345,7 +233,7 @@ WHERE  post.id = ?
  * @param int $limit По какой показывать
  * @return array Массив с данными из бд
  */
-function commentList(mysqli $mysql, int $postId, int $offset = 0, int $limit = 2): array
+function commentList(mysqli $mysql, int $postId, int $offset, int $limit): array
 {
     $data[] = $postId;
     $query = "
@@ -371,64 +259,3 @@ LIMIT $offset, $limit
     return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
 }
 
-/**
- * Число комментариев под списком комментариев
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return array Массив с данными из бд
- */
-function commentCount(mysqli $mysql, int $postId): array
-{
-    $data[] = $postId;
-    $query = "
-SELECT
-  post.id AS `post_num`, count(comment.id) AS `comment-count`
-
-FROM
-  post
-
-    LEFT JOIN
-  comment ON comment.post_id = post.id
-
-    LEFT JOIN
-  user ON user.id = comment.user_id
-
-WHERE  post.id = ?
-GROUP BY post.id
-    ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
-    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
-
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
-}
-
-/**
- * Список комментариев после второго
- * @param mysqli $mysql Соединение с бд
- * @param int $postId Номер поста
- * @return array Массив с данными из бд
- */
-function commentAllList(mysqli $mysql, int $postId): array
-{
-    $data[] = $postId;
-    $query = "
-SELECT
-     post.id AS `post_num`, comment.create_date AS `date`, comment.content AS `comment`, user.name AS `name`, user.avatar AS `avatar`
-
-FROM
-    post
-
-LEFT JOIN
-        comment ON comment.post_id = post.id
-
-LEFT JOIN
-        user ON user.id = comment.user_id
-
-WHERE  post.id = ?
-ORDER BY comment.create_date ASC
-    ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
-    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
-
-    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
-}

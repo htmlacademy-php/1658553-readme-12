@@ -1,3 +1,10 @@
+<?php
+/* @var string $title */
+/* @var int $isAuth */
+/* @var string $userName */
+/* @var array $content */
+
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -122,7 +129,7 @@
         </form>
         <div class="header__nav-wrapper">
             <?php
-            if ($is_auth == 1): ?>
+            if ($isAuth === 1): ?>
                 <nav class="header__nav">
                     <ul class="header__my-nav">
                         <li class="header__my-page header__my-page--popular">
@@ -150,7 +157,7 @@
                                 </div>
                                 <div class="header__profile-name">
                                 <span>
-                                    <?= $user_name ?>
+                                    <?= $userName ?>
 
                                 </span>
                                     <svg class="header__link-arrow" width="10" height="6">
@@ -189,7 +196,7 @@
                             </div>
                         </li>
                         <li>
-                            <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
+                            <a class="header__post-button button button--transparent" href="add.php">Пост</a>
                         </li>
                     </ul>
                 </nav>
@@ -263,7 +270,7 @@
 
 </footer>
 <script src="libs/dropzone.js"></script>
-<script src="js/dropzone-settings.js"></script>
-<script src="js/main.js"></script>
+<!--<script src="js/dropzone-settings.js"></script>
+<script src="js/main.js"></script>-->
 </body>
 </html>

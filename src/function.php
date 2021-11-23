@@ -160,3 +160,19 @@ function getInfo(array $pieceArr, array $unionArr, string $arrName)
 
     return $unionArr;
 }
+
+/**
+ * Из-за джойнов селектов, теперь там где в бд 0 возвращается null из-за чего летит верстка.
+ * Этой функцией мы фиксим подобное поведение
+ * @param string|null $string значение где может быть null
+ * @return int возвращаем строго число, если null то возвращается 0
+ */
+function zeroForPostInfo(?string $string): int
+{
+    if (is_null($string)) {
+        $string = 0;
+    }
+    return $string;
+
+
+}

@@ -21,48 +21,50 @@ require_once('model/models.php');
 /**
  * Входящие данные
  */
-$is_auth = rand(0, 1);
-$user_name = 'Владик';
+$isAuth = rand(0, 1);
+$userName = 'Владик';
 /**
  * Контроллер
  */
-$content_type = request_retriveGetInt('content_type', null);
-$sort_id = getSortId();
-$postsContent = findPosts($mysql, $sort_id, $content_type);
-$content_types = getContentTypes($mysql, 'type_name');
+$contentType = retriveGetInt('content_type', null);
+
+$sortId = getSortId();
+$postsContent = GetPosts($mysql, $sortId, $contentType);
+$contentTypes = getContentTypes($mysql, 'type_name');
+
 
 /**
  * Отображение данных
  */
 
-$post_content = include_template(
-    'block/block_post.php',
+$postContent = includeTemplate(
+    'block/block-posts.php',
     [
         'postListRows' => $postsContent
     ]
 );
 
-$page_content = include_template(
+$pageContent = includeTemplate(
     'main.php',
     [
-        'sort' => $sort_id,
-        'current_type' => $content_type,
-        'post_content' => $post_content,
-        'content_types' => $content_types
+        'sort' => $sortId,
+        'currentType' => $contentType,
+        'postContent' => $postContent,
+        'contentTypes' => $contentTypes
     ]
 );
 
-$layout_content = include_template(
+$layoutContent = includeTemplate(
     'layout.php',
     [
-        'content' => $page_content,
-        'is_auth' => $is_auth,
-        'user_name' => $user_name,
+        'content' => $pageContent,
+        'isAuth' => $isAuth,
+        'userName' => $userName,
         'title' => 'readme: популярное',
     ]
 );
 
-print($layout_content);
+print($layoutContent);
 
 
 
