@@ -14,7 +14,7 @@
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date): bool
+function isDateValid(string $date): bool
 {
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
@@ -31,7 +31,7 @@ function is_date_valid(string $date): bool
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = [])
+function dbGetPrepareStmt($link, $sql, $data = [])
 {
     $stmt = mysqli_prepare($link, $sql);
 
@@ -102,7 +102,7 @@ function db_get_prepare_stmt($link, $sql, $data = [])
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form(int $number, string $one, string $two, string $many): string
+function getNounPluralForm(int $number, string $one, string $two, string $many): string
 {
     $number = (int)$number;
     $mod10 = $number % 10;
@@ -156,9 +156,9 @@ function includeTemplate($name, array $data = [])
  *
  * @return string Ошибку если валидация не прошла
  */
-function check_youtube_url($url)
+function checkYoutubeUrl($url)
 {
-    $id = extract_youtube_id($url);
+    $id = extractYoutubeId($url);
 
     set_error_handler(function () {
     }, E_WARNING);
@@ -183,10 +183,10 @@ function check_youtube_url($url)
  * @param string $youtube_url Ссылка на youtube видео
  * @return string
  */
-function embed_youtube_video($youtube_url)
+function embedYoutubeVideo($youtube_url)
 {
     $res = "";
-    $id = extract_youtube_id($youtube_url);
+    $id = extractYoutubeId($youtube_url);
 
     if ($id) {
         $src = "https://www.youtube.com/embed/".$id;
@@ -201,10 +201,10 @@ function embed_youtube_video($youtube_url)
  * @param string $youtube_url Ссылка на youtube видео
  * @return string
  */
-function embed_youtube_cover($youtube_url)
+function embedYoutubeCover($youtube_url)
 {
     $res = "";
-    $id = extract_youtube_id($youtube_url);
+    $id = extractYoutubeId($youtube_url);
 
     if ($id) {
         $src = sprintf("https://img.youtube.com/vi/%s/mqdefault.jpg", $id);
@@ -219,7 +219,7 @@ function embed_youtube_cover($youtube_url)
  * @param string $youtube_url Ссылка на youtube видео
  * @return array
  */
-function extract_youtube_id($youtube_url)
+function extractYoutubeId($youtube_url)
 {
     $id = false;
 
@@ -243,7 +243,7 @@ function extract_youtube_id($youtube_url)
  * @param $index
  * @return false|string
  */
-function generate_random_date($index)
+function generateRandomDate($index)
 {
     $deltas = [['minutes' => 59], ['hours' => 23], ['days' => 6], ['weeks' => 4], ['months' => 11]];
     $dcnt = count($deltas);

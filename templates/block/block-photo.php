@@ -12,17 +12,17 @@
                 <label class="adding-post__label form__label" for="photo-heading">Заголовок
                     <span class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost  && !empty($errors['photo-heading'])): print 'form__input-section--error';
+                if ($isPost  && !is_bool($errors['heading'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="photo-heading" type="text"
-                           name="photo-heading" placeholder="Введите заголовок"
-                           value="<?= getPostVal('photo-heading'); ?>">
+                           name="heading" placeholder="Введите заголовок"
+                           value="<?= getPostVal('heading'); ?>">
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['photo-heading'] ?></p>
+                            print $errors['heading'] ?></p>
                     </div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                 <label class="adding-post__label form__label" for="photo-url">Ссылка из
                     интернета</label>
                 <div class="form__input-section <?php
-                if ($isPost && !empty($errors['photo-url'])): print 'form__input-section--error';
+                if ($isPost && !is_bool($errors['photo-url'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="photo-url" type="text"
                            name="photo-url" placeholder="Введите ссылку"
@@ -45,53 +45,46 @@
                 </div>
             </div>
             <div class="adding-post__input-wrapper form__input-wrapper">
-                <label class="adding-post__label form__label" for="photo-tags">Теги</label>
+                <label class="adding-post__label form__label" for="tags">Теги</label>
                 <div class="form__input-section <?php
-                if ($isPost && !empty($errors['photo-tags'])): print 'form__input-section--error';
+                if ($isPost && !is_bool($errors['tags'])): print 'form__input-section--error';
                 endif; ?>">
-                    <input class="adding-post__input form__input" id="photo-tags" type="text"
-                           name="photo-tags" placeholder="Введите теги"
-                           value="<?= getPostVal('photo-tags'); ?>">
+                    <input class="adding-post__input form__input" id="tags" type="text"
+                           name="tags" placeholder="Введите теги"
+                           value="<?= getPostVal('tags'); ?>">
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['photo-tags'] ?></p>
+                            print $errors['tags'] ?></p>
                     </div>
                 </div>
             </div>
         </div>
         <?php
-        if ($isPost && count($errors) > 0): ?>
+        if ($isPost && findErrors($errors)): ?>
             <div class="form__invalid-block">
                 <b class="form__invalid-slogan">Пожалуйста, исправьте следующие ошибки:</b>
                 <ul class="form__invalid-list">
                     <?php
-                    if (!empty($errors['photo-heading'])): ?>
+                    if (!is_bool($errors['heading'])): ?>
                         <li class="form__invalid-item">Заголовок. <?php
-                            print ($errors['photo-heading']) ?>
+                            print ($errors['heading']) ?>
                         </li>
                     <?php
                     endif; ?>
                     <?php
-                    if (!empty($errors['photo-url'])): ?>
+                    if (!is_bool($errors['photo-url'])): ?>
                         <li class="form__invalid-item">Ссылка из интернета. <?php
                             print ($errors['photo-url']) ?> Или прикрепите файл изображения
                         </li>
                     <?php
                     endif; ?>
                     <?php
-                    if (!empty($errors['photo-tags'])): ?>
+                    if (!is_bool($errors['tags'])): ?>
                         <li class="form__invalid-item">Теги. <?php
-                            print ($errors['photo-tags']) ?>
-                        </li>
-                    <?php
-                    endif; ?>
-                    <?php
-                    if (!empty($errors['Server_error'])): ?>
-                        <li class="form__invalid-item">Ошибка. <?php
-                            print ($errors['Server_error']) ?>
+                            print ($errors['tags']) ?>
                         </li>
                     <?php
                     endif; ?>
