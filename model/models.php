@@ -13,7 +13,7 @@
  * @param int $limit По какой пост показывать
  * @return array массив данных из бд
  */
-function GetPosts(mysqli $mysql, string $sortId, ?int $typeId, int $offset = 0, int $limit = 9): array
+function getPosts(mysqli $mysql, string $sortId, ?int $typeId, int $offset = 0, int $limit = 9): array
 {
     $where = '';
     $data = [];
@@ -52,7 +52,7 @@ ORDER BY $sortId DESC
 LIMIT $offset, $limit
 ";
 
-    $postListPrepare = db_get_prepare_stmt(
+    $postListPrepare = dbGetPrepareStmt(
         $mysql,
         $postList,
         $data
@@ -73,7 +73,7 @@ LIMIT $offset, $limit
 function getContentTypes(mysqli $mysql, string $index = null): array
 {
     $query = 'SELECT id, type_name, icon_name FROM content_type';
-    $postListPrepare = db_get_prepare_stmt($mysql, $query);
+    $postListPrepare = dbGetPrepareStmt($mysql, $query);
 
     $rows = mysqli_stmt_get_result($postListPrepare);
     $result = [];
@@ -94,7 +94,7 @@ function getContentTypes(mysqli $mysql, string $index = null): array
  */
 function getSortId(): string
 {
-    $sort_id = request_retriveGetString('sort', SORT_VIEWS);
+    $sort_id = retriveGetString('sort', SORT_VIEWS);
 
     if (!in_array($sort_id, [SORT_VIEWS, SORT_DATE])) {
         $sort_id = SORT_LIKES;
@@ -140,7 +140,7 @@ WHERE
  * @param int $postId
  * @return array
  */
-function GetPost(mysqli $mysql, int $postId): array
+function getPost(mysqli $mysql, int $postId): array
 {
     $data[] = $postId;
 
@@ -186,7 +186,7 @@ FROM
 WHERE  post.id = ?
 
     ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
     $postPrepareRes = mysqli_stmt_get_result($postPrepare);
 
     return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
@@ -214,7 +214,7 @@ FROM
   user ON user.id = post.user_id
 WHERE user_id = ?
     ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
     $postPrepareRes = mysqli_stmt_get_result($postPrepare);
 
     return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
@@ -253,7 +253,7 @@ WHERE  post.id = ?
 ORDER BY comment.create_date ASC
 LIMIT $offset, $limit
     ";
-    $postPrepare = db_get_prepare_stmt($mysql, $query, $data);
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
     $postPrepareRes = mysqli_stmt_get_result($postPrepare);
 
     return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);

@@ -1,12 +1,13 @@
 <?php
-/* @var array $content_types */
-/* @var null|int $content_type */
+/* @var array $contentTypes */
+/* @var null|int $contentType */
 
-/* @var string $block_photo */
-/* @var string $block_video */
-/* @var string $block_text */
-/* @var string $block_quote */
-/* @var string $block_link */
+/* @var string $blockPhoto */
+/* @var string $blockVideo */
+/* @var string $blockText */
+/* @var string $blockQuote */
+/* @var string $blockLink */
+
 
 
 
@@ -22,9 +23,9 @@
                     <ul class="adding-post__tabs-list filters__list tabs__list">
                         <li class="adding-post__tabs-item filters__item">
                             <a class="adding-post__tabs-link filters__button filters__button--photo <?php
-                            if ($content_type === $content_types[TYPE_PHOTO]['id'] or is_null($content_type)) {
+                            if ($contentType === $contentTypes[TYPE_PHOTO]['id'] or is_null($contentType)) {
                                 print "filters__button--active";
-                            } ?>  tabs__item tabs__item--active button" href="?content-type=<?= $content_types[TYPE_PHOTO]['id'] ?>">
+                            } ?>  tabs__item tabs__item--active button" href="?content-type=<?= $contentTypes[TYPE_PHOTO]['id'] ?>">
                                 <svg class="filters__icon" width="22" height="18">
                                     <use xlink:href="#icon-filter-photo"></use>
                                 </svg>
@@ -33,9 +34,9 @@
                         </li>
                         <li class="adding-post__tabs-item filters__item">
                             <a class="adding-post__tabs-link filters__button filters__button--video tabs__item button <?php
-                            if ($content_type === $content_types[TYPE_VIDEO]['id']) {
+                            if ($contentType === $contentTypes[TYPE_VIDEO]['id']) {
                                 print "filters__button--active";
-                            } ?>" href="?content-type=<?= $content_types[TYPE_VIDEO]['id'] ?>">
+                            } ?>" href="?content-type=<?= $contentTypes[TYPE_VIDEO]['id'] ?>">
                                 <svg class="filters__icon" width="24" height="16">
                                     <use xlink:href="#icon-filter-video"></use>
                                 </svg>
@@ -44,9 +45,9 @@
                         </li>
                         <li class="adding-post__tabs-item filters__item">
                             <a class="adding-post__tabs-link filters__button filters__button--text tabs__item button <?php
-                            if ($content_type === $content_types[TYPE_TEXT]['id']) {
+                            if ($contentType === $contentTypes[TYPE_TEXT]['id']) {
                                 print "filters__button--active";
-                            } ?>" href="?content-type=<?= $content_types[TYPE_TEXT]['id'] ?>">
+                            } ?>" href="?content-type=<?= $contentTypes[TYPE_TEXT]['id'] ?>">
                                 <svg class="filters__icon" width="20" height="21">
                                     <use xlink:href="#icon-filter-text"></use>
                                 </svg>
@@ -55,9 +56,9 @@
                         </li>
                         <li class="adding-post__tabs-item filters__item">
                             <a class="adding-post__tabs-link filters__button filters__button--quote tabs__item button <?php
-                            if ($content_type === $content_types[TYPE_QUOTE]['id']) {
+                            if ($contentType === $contentTypes[TYPE_QUOTE]['id']) {
                                 print "filters__button--active";
-                            } ?>" href="?content-type=<?= $content_types[TYPE_QUOTE]['id'] ?>">
+                            } ?>" href="?content-type=<?= $contentTypes[TYPE_QUOTE]['id'] ?>">
                                 <svg class="filters__icon" width="21" height="20">
                                     <use xlink:href="#icon-filter-quote"></use>
                                 </svg>
@@ -66,9 +67,9 @@
                         </li>
                         <li class="adding-post__tabs-item filters__item">
                             <a class="adding-post__tabs-link filters__button filters__button--link tabs__item button <?php
-                            if ($content_type === $content_types[TYPE_LINK]['id']) {
+                            if ($contentType === $contentTypes[TYPE_LINK]['id']) {
                                 print "filters__button--active";
-                            } ?>" href="?content-type=<?= $content_types[TYPE_LINK]['id'] ?>">
+                            } ?>" href="?content-type=<?= $contentTypes[TYPE_LINK]['id'] ?>">
                                 <svg class="filters__icon" width="21" height="18">
                                     <use xlink:href="#icon-filter-link"></use>
                                 </svg>
@@ -79,38 +80,38 @@
                 </div>
                 <div class="adding-post__tab-content">
                     <section class="adding-post__photo tabs__content <?php
-                    if ($content_type === $content_types[TYPE_PHOTO]['id'] or is_null($content_type)) {
+                    if ($contentType === $contentTypes[TYPE_PHOTO]['id'] or is_null($contentType)) {
                         print "tabs__content--active";
                     } ?>">
-                        <?= $block_photo ?>
+                        <?= $blockPhoto ?>
                     </section>
 
                     <section class="adding-post__video tabs__content <?php
-                    if ($content_type === $content_types[TYPE_VIDEO]['id']) {
+                    if ($contentType === $contentTypes[TYPE_VIDEO]['id']) {
                         print "tabs__content--active";
                     } ?>">
-                        <?= $block_video ?>
+                        <?= $blockVideo ?>
                     </section>
 
                     <section class="adding-post__text tabs__content <?php
-                    if ($content_type === $content_types[TYPE_TEXT]['id']) {
+                    if ($contentType === $contentTypes[TYPE_TEXT]['id']) {
                         print "tabs__content--active";
                     } ?>">
-                        <?= $block_text ?>
+                        <?= $blockText ?>
                     </section>
 
                     <section class="adding-post__quote tabs__content <?php
-                    if ($content_type === $content_types[TYPE_QUOTE]['id']) {
+                    if ($contentType === $contentTypes[TYPE_QUOTE]['id']) {
                         print "tabs__content--active";
                     } ?>">
-                        <?= $block_quote ?>
+                        <?= $blockQuote ?>
                     </section>
 
                     <section class="adding-post__link tabs__content <?php
-                    if ($content_type === $content_types[TYPE_LINK]['id']) {
+                    if ($contentType === $contentTypes[TYPE_LINK]['id']) {
                         print "tabs__content--active";
                     } ?>">
-                        <?= $block_link ?>
+                        <?= $blockLink ?>
                     </section>
                 </div>
             </div>

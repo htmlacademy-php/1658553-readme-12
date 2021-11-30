@@ -7,7 +7,7 @@
  * @param string|null $default Значение по умолчанию
  * @return string|null Возвращает параметр запроса в формате строки
  */
-function request_retriveGetString(string $param, ?string $default): ?string
+function retriveGetString(string $param, ?string $default): ?string
 {
     {
         $result = ($_GET[$param] ?? $default);

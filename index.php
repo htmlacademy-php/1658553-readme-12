@@ -29,14 +29,20 @@ $userName = 'Владик';
 $contentType = retriveGetInt('content_type', null);
 
 $sortId = getSortId();
-$postsContent = GetPosts($mysql, $sortId, $contentType);
+$postsContent = getPosts($mysql, $sortId, $contentType);
 $contentTypes = getContentTypes($mysql, 'type_name');
 
 
 /**
  * Отображение данных
  */
-
+$header = includeTemplate(
+    'block/header.php',
+    [
+        'isAuth' => $isAuth,
+        'userName' => $userName,
+    ]
+);
 $postContent = includeTemplate(
     'block/block-posts.php',
     [
@@ -57,9 +63,8 @@ $pageContent = includeTemplate(
 $layoutContent = includeTemplate(
     'layout.php',
     [
+        'header' => $header,
         'content' => $pageContent,
-        'isAuth' => $isAuth,
-        'userName' => $userName,
         'title' => 'readme: популярное',
     ]
 );

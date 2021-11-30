@@ -17,7 +17,7 @@ $IsPostIdExist = isPostExist($mysql, $postId);
 
 
 if ($IsPostIdExist) {
-    $postMainContent = GetPost($mysql, $postId);
+    $postMainContent = getPost($mysql, $postId);
     $authorPostsCount = authorPostsCount($mysql, $postMainContent['user_id']);
     $commentList = commentList($mysql, $postId, 0, 2);
     $commentAllList = commentList($mysql, $postId, 0, 200);
@@ -28,6 +28,13 @@ if ($IsPostIdExist) {
      */
 
 
+    $header = includeTemplate(
+        'block/header.php',
+        [
+            'isAuth' => $isAuth,
+            'userName' => $userName,
+        ]
+    );
     $postContents = includeTemplate(
         'post.php',
         [
@@ -40,10 +47,8 @@ if ($IsPostIdExist) {
     $layoutContent = includeTemplate(
         'layout.php',
         [
-
+            'header' => $header,
             'content' => $postContents,
-            'isAuth' => $isAuth,
-            'userName' => $userName,
             'title' => 'readme: публикация',
 
         ]

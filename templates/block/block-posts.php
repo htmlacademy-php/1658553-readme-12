@@ -68,7 +68,7 @@ foreach (
             elseif ($post['icon_name'] === "post-video"): ?>
                 <div class="post-video__block">
                     <div class="post-video__preview">
-                        <?= embed_youtube_cover($post['media']); ?>
+                        <?= embedYoutubeCover($post['media']); ?>
                     </div>
                     <a href="http://localhost/1658553-readme-12/post.php?post-id=<?= $post['post_num'] ?>"
                        class="post-video__play-big button">
@@ -94,7 +94,7 @@ foreach (
                             <?= htmlspecialchars($post['name']) ?>
 
                         </b>
-                        <time title="<?= cutdate($post['create_date']) ?>" class="post__time"
+                        <time title="<?= cutDate($post['create_date']) ?>" class="post__time"
                               datetime="<?= fullDate($post['create_date']) ?>"><?= smallDate(
                                 $post['create_date']
                             ) ?></time>

@@ -51,7 +51,7 @@ function cutText(string $text, int $limit = 300, string $url = '#'): string
  * @throws Exception преобразование строки в дататайм
  *
  */
-function cutdate($date)
+function cutDate($date)
 {
     $postDate = new DateTimeImmutable($date);
     $cutDate = $postDate->format('d-m-Y H:i');
@@ -91,20 +91,20 @@ function smallDate($date)
     $difference = $nowDate->diff($postDate);
 
     if ($difference->m > 0) {
-        $resultForPost = get_noun_plural_form($difference->m, 'месяц', 'месяца', 'месяцев');
+        $resultForPost = getNounPluralForm($difference->m, 'месяц', 'месяца', 'месяцев');
         $smallDate = "$difference->m $resultForPost назад";
     } elseif (intdiv($difference->d, 7) > 0) {
         $weeks = intdiv($difference->d, 7);
-        $resultForPost = get_noun_plural_form($weeks, 'неделя', 'недели', 'недель');
+        $resultForPost = getNounPluralForm($weeks, 'неделя', 'недели', 'недель');
         $smallDate = "$weeks $resultForPost назад";
     } elseif ($difference->d > 0) {
-        $resultForPost = get_noun_plural_form($difference->d, 'день', 'дня', 'дней');
+        $resultForPost = getNounPluralForm($difference->d, 'день', 'дня', 'дней');
         $smallDate = "$difference->d $resultForPost назад";
     } elseif ($difference->h > 0) {
-        $resultForPost = get_noun_plural_form($difference->h, 'час', 'часа', 'часов');
+        $resultForPost = getNounPluralForm($difference->h, 'час', 'часа', 'часов');
         $smallDate = "$difference->h $resultForPost назад";
     } else {
-        $resultForPost = get_noun_plural_form($difference->i, 'минута', 'минуты', 'минут');
+        $resultForPost = getNounPluralForm($difference->i, 'минута', 'минуты', 'минут');
         $smallDate = "$difference->i $resultForPost назад";
     }
 
@@ -124,42 +124,27 @@ function smallUSerDate($date)
     $difference = $nowDate->diff($postDate);
 
     if ($difference->m > 0) {
-        $resultForPost = get_noun_plural_form($difference->m, 'месяц', 'месяца', 'месяцев');
+        $resultForPost = getNounPluralForm($difference->m, 'месяц', 'месяца', 'месяцев');
         $smallDate = "$difference->m $resultForPost на сайте";
     } elseif (intdiv($difference->d, 7) > 0) {
         $weeks = intdiv($difference->d, 7);
-        $resultForPost = get_noun_plural_form($weeks, 'неделя', 'недели', 'недель');
+        $resultForPost = getNounPluralForm($weeks, 'неделя', 'недели', 'недель');
         $smallDate = "$weeks $resultForPost на сайте";
     } elseif ($difference->d > 0) {
-        $resultForPost = get_noun_plural_form($difference->d, 'день', 'дня', 'дней');
+        $resultForPost = getNounPluralForm($difference->d, 'день', 'дня', 'дней');
         $smallDate = "$difference->d $resultForPost на сайте";
     } elseif ($difference->h > 0) {
-        $resultForPost = get_noun_plural_form($difference->h, 'час', 'часа', 'часов');
+        $resultForPost = getNounPluralForm($difference->h, 'час', 'часа', 'часов');
         $smallDate = "$difference->h $resultForPost на сайте";
     } else {
-        $resultForPost = get_noun_plural_form($difference->i, 'минута', 'минуты', 'минут');
+        $resultForPost = getNounPluralForm($difference->i, 'минута', 'минуты', 'минут');
         $smallDate = "$difference->i $resultForPost на сайте";
     }
 
     return $smallDate;
 }
 
-/**
- * Функция для удобного и красивого include по названию ключа массива
- * @param array $pieceArr Массив из sql запроса
- * @param array $unionArr Массив, в который мы объедениям
- * @param string $arrName Название ключа массива
- * @return array Массив с данными в ключе, который мы указали
- */
 
-function getInfo(array $pieceArr, array $unionArr, string $arrName)
-{
-    foreach ($pieceArr as $key => $val) {
-        $unionArr["$arrName"][$key] = $val;
-    }
-
-    return $unionArr;
-}
 
 /**
  * Из-за джойнов селектов, теперь там где в бд 0 возвращается null из-за чего летит верстка.
@@ -172,7 +157,73 @@ function zeroForPostInfo(?string $string): int
     if (is_null($string)) {
         $string = 0;
     }
+
     return $string;
+}
 
+/**
+ * Функция для поиска ошибок в массиве $errors
+ * @param array $errors Массив который мы валидируем
+ * @return bool Возвращает true если ошибки есть и false если нет
+ */
+function findErrors(array $errors):bool
+{
+    foreach ($errors as $key => $val){
+        if (is_bool($val)){
+            $answer = false;
 
+        } else{
+            $answer = true;
+            break;
+        }
+    }
+ return $answer;
+};
+/**
+ * Поиск дубликата почты в бд
+ * @param mysqli $mysql соединение с бд
+ * @param string $email почта
+ * @return array Массив с даннымы, если такого mail нет в базе, то будет пустой массив
+ */
+function searchDuplicate(mysqli $mysql, string $email)
+{
+    $data[]=$email;
+    $query = "
+SELECT * FROM user
+WHERE email = ?
+";
+    $postListPrepare = dbGetPrepareStmt(
+        $mysql,
+        $query,
+        $data
+    );
+    $postListPrepareRes = mysqli_stmt_get_result($postListPrepare);
+    return mysqli_fetch_all($postListPrepareRes, MYSQLI_ASSOC);
+
+}
+
+/**
+ * функция  вывода ошибки валидации для пароля (может быть массив/строка)
+ * @param $arr Массив из $errors
+ */
+function outputArrOrString($arr){
+    if (is_string($arr)){
+        print $arr;
+    } else {
+        foreach ($arr as $key){
+            print $key;
+        }
+    }
+}
+
+/**
+ * Проверяем отправлял ли пользователь файл через форму
+ * @param $input string Ключ из массива $_FILES в инпут форме
+ * @return bool Возвращаем true если отправлял и false если нет
+ */
+function existAddFiles($input): bool
+{
+    if (!empty($_FILES[$input]['name']) or $_FILES[$input]['size'] > 0) {
+        return true;
+    } return false;
 }

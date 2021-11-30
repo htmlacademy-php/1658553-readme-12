@@ -26,7 +26,7 @@
                     </a>
                 </li>
                 <li class="sorting__item">
-                    <a class="sorting__link <?
+                    <a class="sorting__link <?php
                     if ($sort === SORT_LIKES) {
                         print "sorting__link--active";
                     } ?>" href="?sort=<?= SORT_LIKES ?>&content_type=<?= $currentType ?>">
@@ -73,7 +73,7 @@
                     </a>
                 </li>
                 <li class="popular__filters-item filters__item">
-                    <a class="filters__button filters__button--video button <?
+                    <a class="filters__button filters__button--video button <?php
                     if ($currentType === $contentTypes[TYPE_VIDEO]['id']) {
                         print "filters__button--active";
                     } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_VIDEO]['id'] ?>">
@@ -84,7 +84,7 @@
                     </a>
                 </li>
                 <li class="popular__filters-item filters__item">
-                    <a class="filters__button filters__button--text button <?
+                    <a class="filters__button filters__button--text button <?php
                     if ($currentType === $contentTypes[TYPE_TEXT]['id']) {
                         print "filters__button--active";
                     } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_TEXT]['id'] ?>">
@@ -95,7 +95,7 @@
                     </a>
                 </li>
                 <li class="popular__filters-item filters__item">
-                    <a class="filters__button filters__button--quote button <?
+                    <a class="filters__button filters__button--quote button <?php
                     if ($currentType === $contentTypes[TYPE_QUOTE]['id']) {
                         print "filters__button--active";
                     } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_QUOTE]['id'] ?>">
@@ -106,7 +106,7 @@
                     </a>
                 </li>
                 <li class="popular__filters-item filters__item">
-                    <a class="filters__button filters__button--link button <?
+                    <a class="filters__button filters__button--link button <?php
                     if ($currentType === $contentTypes[TYPE_LINK]['id']) {
                         print "filters__button--active";
                     } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_LINK]['id'] ?>">
