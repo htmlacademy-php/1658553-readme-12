@@ -25,13 +25,13 @@
                 </div>
             </div>
             <div class="registration__input-wrapper form__input-wrapper">
-                <label class="registration__label form__label" for="registration-login">Логин <span
+                <label class="registration__label form__label" for="registration-login">Укажите ваше имя <span
                         class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
                 if ($isPost && !is_bool($errors['login'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="registration__input form__input" id="registration-login" type="text" name="login"
-                           placeholder="Укажите логин"
+                           placeholder="Ваше имя"
                            value="<?= getPostVal('login'); ?>">
                     <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span>
                     </button>

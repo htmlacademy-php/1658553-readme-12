@@ -48,12 +48,15 @@ function addSharp(mysqli $mysql, int $lastPostId): int
  */
 function addPhotoUrl(mysqli $mysql, int $lastPostId): int
 {
+    $date = date('YmdHis');
     $contentType = 3;
     if (existAddFiles('userpic-file-photo')) {
-        $uploads_dir = 'content';
+        mkdir('valid');
+        $uploads_dir = 'valid';
         if ($_FILES['userpic-file-photo']['error'] == 0) {
             $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
             $name = basename($_FILES['userpic-file-photo']['name']);
+            $name  = $date . $name;
             move_uploaded_file($tmp_name, "$uploads_dir/$name");
             $media = validateInput('content/'.$name);
         }
@@ -202,14 +205,22 @@ function addUserPass(mysqli $mysql, int $lastUserId): int
  */
 function addUserAvatar(mysqli $mysql, int $lastUserId):int
 {
-    $uploads_dir = 'img';
-    if ($_FILES['userpic-file']['error'] == 0) {
+    mkdir('valid');
+    $date = date('YmdHis');
+    $uploads_dir = 'valid';
+    $name = basename($_FILES['userpic-file']['name']);
+    $name  = $date . $name;
+    if ($_FILES['userpic-file']['error'] === 0) {
         $tmp_name = $_FILES['userpic-file']['tmp_name'];
-        $name = basename($_FILES['userpic-file']['name']);
         move_uploaded_file($tmp_name, "$uploads_dir/$name");
         $avatar = validateInput('content/'.$name);
         $queryPost = "UPDATE user SET avatar = '$avatar' WHERE id = '$lastUserId'";
         mysqli_query($mysql, $queryPost);
+
+    } else {
+        $queryPost = "UPDATE user SET avatar = 'img/Anon.jpg' WHERE id = '$lastUserId'";
+        mysqli_query($mysql, $queryPost);
+
     }
 
 

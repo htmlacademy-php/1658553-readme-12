@@ -145,7 +145,6 @@ function smallUSerDate($date)
 }
 
 
-
 /**
  * Из-за джойнов селектов, теперь там где в бд 0 возвращается null из-за чего летит верстка.
  * Этой функцией мы фиксим подобное поведение
@@ -166,19 +165,21 @@ function zeroForPostInfo(?string $string): int
  * @param array $errors Массив который мы валидируем
  * @return bool Возвращает true если ошибки есть и false если нет
  */
-function findErrors(array $errors):bool
+function findErrors(array $errors): bool
 {
-    foreach ($errors as $key => $val){
-        if (is_bool($val)){
+    foreach ($errors as $key => $val) {
+        if (is_bool($val)) {
             $answer = false;
-
-        } else{
+        } else {
             $answer = true;
             break;
         }
     }
- return $answer;
-};
+
+    return $answer;
+}
+
+;
 /**
  * Поиск дубликата почты в бд
  * @param mysqli $mysql соединение с бд
@@ -187,7 +188,7 @@ function findErrors(array $errors):bool
  */
 function searchDuplicate(mysqli $mysql, string $email)
 {
-    $data[]=$email;
+    $data[] = $email;
     $query = "
 SELECT * FROM user
 WHERE email = ?
@@ -198,19 +199,20 @@ WHERE email = ?
         $data
     );
     $postListPrepareRes = mysqli_stmt_get_result($postListPrepare);
-    return mysqli_fetch_all($postListPrepareRes, MYSQLI_ASSOC);
 
+    return mysqli_fetch_all($postListPrepareRes, MYSQLI_ASSOC);
 }
 
 /**
  * функция  вывода ошибки валидации для пароля (может быть массив/строка)
  * @param $arr Массив из $errors
  */
-function outputArrOrString($arr){
-    if (is_string($arr)){
+function outputArrOrString($arr)
+{
+    if (is_string($arr)) {
         print $arr;
     } else {
-        foreach ($arr as $key){
+        foreach ($arr as $key) {
             print $key;
         }
     }
@@ -225,5 +227,49 @@ function existAddFiles($input): bool
 {
     if (!empty($_FILES[$input]['name']) or $_FILES[$input]['size'] > 0) {
         return true;
-    } return false;
+    }
+
+    return false;
+}
+
+function layoutContentDefine()
+{
+    $content = $_SERVER['PHP_SELF'];
+    if ($content === '/1658553-readme-12/popular.php') {
+        return 'page__main--popular';
+    } else {
+        return 'page__main--feed';
+    }
+}
+
+/**
+ * Перемещает из созданной по скрипту папки файл в папку контент, если валидация успешана и удаляет папку
+ */
+function rebaseImg()
+{
+    $oldfolder = 'valid';
+    $newfolder = 'content';
+
+    $files = glob($oldfolder.'/*');
+
+    foreach ($files as $file) {
+        $filename = basename($file);
+        copy($file, $newfolder.'/'.$filename);
+        unlink($file);
+    }
+    rmdir($oldfolder);
+}
+
+/**
+ * Удаляет файл и папку созданные по скрипту если валидация провалилась
+ */
+function deleteImg()
+{
+    $oldfolder = 'valid';
+    $files = glob($oldfolder.'/*');
+    foreach ($files as $file) {
+        unlink($file);
+    }
+    rmdir($oldfolder);
+
 }

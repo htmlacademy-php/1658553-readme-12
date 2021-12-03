@@ -58,10 +58,8 @@ $fields = [
 
 if ($isPost) {
     mysqli_begin_transaction($mysql);
-    if (existAddFiles('userpic-file')) {
-        $avatar['avatar'] = '';
-        $_POST += $avatar;
-    }
+    $avatar['avatar'] = '';
+    $_POST += $avatar;
     foreach ($_POST as $key => $value) {
         $ruleValid = $fields[$key]['validation'];
         $errors[$key] = $ruleValid($key, $mysql);
@@ -70,11 +68,14 @@ if ($isPost) {
     }
     if (!findErrors($errors)) {
         mysqli_commit($mysql);
+        rebaseImg();
         header("Location: index.php");
     } else {
         mysqli_rollback($mysql);
+        deleteImg();
     }
 }
+
 
 
 $header = includeTemplate(

@@ -1,0 +1,83 @@
+<?php
+
+session_start();
+const SORT_VIEWS = 'views_number';
+const SORT_DATE = 'create_date';
+const SORT_LIKES = 'count_likes';
+
+const TYPE_TEXT = 'text';
+const TYPE_QUOTE = 'quote';
+const TYPE_PHOTO = 'photo';
+const TYPE_VIDEO = 'video';
+const TYPE_LINK = 'link';
+
+const PAGE_POPULAR = '/1658553-readme-12/popular.php';
+
+
+if (empty($_SESSION)) {
+    header('location: index.php');
+} else {
+    require_once('src/helpers.php');
+    require_once('src/function.php');
+    require_once('src/request.php');
+    require_once('src/db.php');
+    require_once('model/models.php');
+
+
+    /* @var mysqli $mysql */
+    /**
+     * Входящие данные
+     */
+    $isAuth = rand(0, 1);
+    $userName = 'Владик';
+    /**
+     * Контроллер
+     */
+    $contentType = retriveGetInt('content_type', null);
+
+    $sortId = getSortId();
+    $postsContent = getPosts($mysql, $sortId, $contentType);
+    $contentTypes = getContentTypes($mysql, 'type_name');
+
+
+    /**
+     * Отображение данных
+     */
+    $header = includeTemplate(
+        'block/header.php',
+        [
+            'avatar' => $_SESSION['user']['avatar'],
+            'userName' => $_SESSION['user']['login'],
+        ]
+    );
+    $postContent = includeTemplate(
+        'block/block-posts.php',
+        [
+            'postListRows' => $postsContent,
+        ]
+    );
+
+    $pageContent = includeTemplate(
+        'popular.php',
+        [
+            'sort' => $sortId,
+            'currentType' => $contentType,
+            'postContent' => $postContent,
+            'contentTypes' => $contentTypes,
+        ]
+    );
+
+    $layoutContent = includeTemplate(
+        'layout.php',
+        [
+            'header' => $header,
+            'content' => $pageContent,
+            'title' => 'readme: популярное',
+        ]
+    );
+
+    print($layoutContent);
+}
+
+
+

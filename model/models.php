@@ -26,7 +26,7 @@ function getPosts(mysqli $mysql, string $sortId, ?int $typeId, int $offset = 0, 
     $postList = "
 SELECT
   post.id AS `post_num`, post.text_content AS `text_content`,post.header AS `header`, post.create_date AS `create_date`,
-  post.media AS `media`,user.avatar AS `avatar`,user.name AS `name`, content_type.icon_name AS `icon_name`, count_comments, count_likes
+  post.media AS `media`,user.avatar AS `avatar`,user.login AS `name`, content_type.icon_name AS `icon_name`, count_comments, count_likes
 FROM
   post
 LEFT JOIN
@@ -147,7 +147,7 @@ function getPost(mysqli $mysql, int $postId): array
     $query = "
 SELECT
     post.id AS `post_num`,post.user_id, post.text_content AS `text`,post.header AS `header`,post.author_copy_right AS `author_copy_right`,
-    post.create_date AS `create_date`, post.media AS `media`, post.views_number AS `views`,user.avatar AS `avatar`,user.name AS `name`,
+    post.create_date AS `create_date`, post.media AS `media`, post.views_number AS `views`,user.avatar AS `avatar`,user.login AS `name`,
     user.reg_date AS `reg_date`, content_type.icon_name AS `icon_name`, count_comments, count_likes,`subscribe_count`,
     hashtag.hashtag_name AS `hs-name`
 
@@ -238,7 +238,7 @@ function commentList(mysqli $mysql, int $postId, int $offset, int $limit): array
     $data[] = $postId;
     $query = "
 SELECT
-     post.id AS `post_num`, comment.create_date AS `date`, comment.content AS `comment`, user.name AS `name`, user.avatar AS `avatar`
+     post.id AS `post_num`, comment.create_date AS `date`, comment.content AS `comment`, user.login AS `name`, user.avatar AS `avatar`
 
 FROM
     post

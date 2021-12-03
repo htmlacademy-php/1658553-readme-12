@@ -311,11 +311,15 @@ function validPass(string $key)
  */
 function validateAvatarFromUser()
 {
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $fileName = $_FILES['userpic-file']['tmp_name'];
-    $fileType = finfo_file($finfo, $fileName);
-    if ($fileType !== 'image/png' && $fileType !== 'image/jpeg') {
-        return 'Загрузите картинку в формате png, jpeg';
+    if (empty($_FILES)) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $fileName = $_FILES['userpic-file']['tmp_name'];
+        $fileType = finfo_file($finfo, $fileName);
+        if ($fileType !== 'image/png' && $fileType !== 'image/jpeg') {
+            return 'Загрузите картинку в формате png, jpeg';
+        }
+    } else {
+        return true;
     }
 
     return true;
@@ -368,4 +372,26 @@ function validatePasswordRepeat(string $key)
     }
 
     return $error;
+}
+
+function singUpEmail(string $email, mysqli $mysql)
+{
+    $userInfo = searchDuplicate($mysql, $email);
+    if (empty($userInfo)) {
+        return 'Неверный email';
+    }
+
+    return true;
+}
+
+function singUpPassword(string $password, mysqli $mysql)
+{
+    $userEmail = $_POST['email'];
+    $userInfo = searchDuplicate($mysql, $userEmail);
+    $hashPassword = password_verify($password, $userInfo[0]['password']);
+    if (!$hashPassword) {
+        return 'Не верный пароль';
+    }
+
+    return true;
 }
