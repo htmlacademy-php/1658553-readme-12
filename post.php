@@ -1,30 +1,38 @@
 <?php
 
-session_start();
 
-if (empty($_SESSION)) {
+require_once('config/config.php');
+require_once('src/helpers.php');
+require_once('src/function.php');
+require_once('src/request.php');
+require_once('model/models.php');
+require_once('src/add-query.php');
+
+
+/* @var mysqli $mysql */
+/* @var bool $isAuth */
+
+if ($isAuth) {
     header('location: index.php');
 } else {
-    require_once('src/helpers.php');
-    require_once('src/function.php');
-    require_once('src/request.php');
-    require_once('src/db.php');
-    require_once('model/models.php');
-    /* @var mysqli $mysql */
-
-
     /**
      * Входящие данные
      */
     $postId = retriveGetInt('post-id', 0);
+
     $isPostIdExist = isPostExist($mysql, $postId);
+
 
 
     if ($isPostIdExist) {
         $postMainContent = getPost($mysql, $postId);
         $authorPostsCount = authorPostsCount($mysql, $postMainContent['user_id']);
-        $commentList = commentList($mysql, $postId, 0, 2);
-        $commentAllList = commentList($mysql, $postId, 0, 200);
+        $commentList = getCommentsForPost($mysql, $postId, 0, 2);
+        $commentAllList = getCommentsForPost($mysql, $postId, 0, 200);
+        addView($mysql,$postId,$postMainContent['views']);
+
+
+
 
         /**
          * Отображение данных

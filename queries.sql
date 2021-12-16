@@ -10,7 +10,7 @@ INSERT INTO `user` (reg_date, email, login, password,  avatar) VALUES ('2015.05.
 /*
  Все посты
  */
-INSERT INTO `post` (create_date, header, text_content, author_copy_right, media, views_number, user_id, content_type_id) VALUES ('2020.08.23', 'Цитата', 'Мы в жизни любим только раз, а после ищем лишь похожих','Сергей Есенин','somelink.com', '5','3', '2'), ('2020.07.23', 'Игра престолов', 'Не могу дождаться начала финального сезона своего любимого сериала!', '', '', '10', '4', '1'), ('2020.07.28', 'Наконец, обработал фотки!', '','','img/rock-medium.jpg', '15','5','3'), ('2020.08.20', 'Моя мечта', '','','img/coast-medium.jpg', '25','3','3'), ('2020.08.23', 'Лучшие курсы', 'Лучшие курсы','','www.htmlacademy.ru','25','3','2');
+INSERT INTO `post` (create_date, header, text_content, author_copy_right, media, views_number, user_id, content_type_id) VALUES ('2020.08.23', 'Цитата', 'Мы в жизни любим только раз, а после ищем лишь похожих','Сергей Есенин','somelink.com', '5','3', '2'), ('2020.07.23', 'Игра престолов', 'Не могу дождаться начала финального сезона своего любимого сериала!', '', '', '10', '4', '1'), ('2020.07.28', 'Наконец, обработал фотки!', '','','img/rock-medium.jpg', '15','5','3'), ('2020.08.20', 'Моя мечта', '','','img/coast-medium.jpg', '25','3','3'), ('2020.08.23', 'Лучшие курсы', 'Лучшие курсы','','https://htmlacademy.ru','25','3','5');
 /*
  Пара комментариев
  */
@@ -43,6 +43,11 @@ INSERT INTO `hashtag_post` (hashtag, post) VALUES ('1','5'), ('4','5'), ('5','5'
 INSERT INTO `comment` (create_date, content, user_id, post_id) VALUES ('2020.08.24', 'второй!', '5', '2'), ('2020.08.25', 'третий!', '2', '1'),('2020.08.26', 'четвертый!!', '3', '2'), ('2020.08.25', 'пятый!!', '4', '2');
 INSERT INTO `comment` (create_date, content, user_id, post_id) VALUES ('2020.08.24', 'еще один!', '5', '2');
 INSERT INTO `like_count`  (user_id, post_id) VALUES ('2', '2'), ('3', '3'), ('4', '3'), ('2','1');
+
+
+
+
+
 
 
 

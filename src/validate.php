@@ -35,7 +35,7 @@ function validateFilled(string $key)
         return 'Это поле должно быть заполнено.';
     }
 
-    return true;
+    return false;
 }
 
 
@@ -50,7 +50,7 @@ function validateURL(string $val)
         return 'Введите корректный url адрес';
     }
 
-    return true;
+    return false;
 }
 
 ;
@@ -65,7 +65,7 @@ function validateUpload(string $key)
         return 'Не удалось загрузить изображение';
     }
 
-    return true;
+    return false;
 }
 
 
@@ -84,11 +84,11 @@ function validateSharp(string $key)
                 return 'Хештег должен начинаться с символа # !';
             }
 
-            return true;
+            return false;
         }
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -105,7 +105,7 @@ function validateImgFromUser(string $key)
         return 'Загрузите картинку в формате png, jpeg, gif.';
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -120,7 +120,7 @@ function validateYouTubeLink(string $key)
         return $result;
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -137,7 +137,7 @@ function validateQuoteLength(string $val)
         return $error;
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -226,7 +226,7 @@ function isEmail(string $key)
         return 'Введите корректную электронную почту';
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -235,14 +235,14 @@ function isEmail(string $key)
  * @param mysqli $mysql Соединение с бд
  * @return bool|string Возвращает текст ошибки либо true если валидация успешна
  */
-function validateDuplicate(string $key, mysqli $mysql)
+function validateDuplicate(mysqli $mysql,string $key)
 {
     $answer = searchDuplicate($mysql, $_POST[$key]);
     if (!empty($answer)) {
         return 'эта почта уже используется';
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -256,7 +256,7 @@ function passIsEqual(string $key)
         return 'Введенные пароли не совпадают';
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -302,7 +302,7 @@ function validPass(string $key)
         return $errors;
     }
 
-    return true;
+    return false;
 }
 
 /**
@@ -319,25 +319,25 @@ function validateAvatarFromUser()
             return 'Загрузите картинку в формате png, jpeg';
         }
     } else {
-        return true;
+        return false;
     }
 
-    return true;
+    return false;
 }
 
 /**
  * Функция валидации почты
- * @param string $key Ключ из массива $_POST
  * @param mysqli $mysql Соединение с бд
+ * @param string $key Ключ из массива $_POST
  * @return bool|string Возвращает массив с ошибками
  */
-function validateEmail(string $key, mysqli $mysql)
+function validateEmail(mysqli $mysql, string $key)
 {
     $error = validateFilled($key);
     if (is_bool($error)) {
         $error = isEmail($key);
         if (is_bool($error)) {
-            $error = validateDuplicate($key, $mysql);
+            $error = validateDuplicate($mysql, $key);
         }
     }
 
@@ -374,24 +374,35 @@ function validatePasswordRepeat(string $key)
     return $error;
 }
 
-function singUpEmail(string $email, mysqli $mysql)
+/**
+ * Валидация на вход почты
+ * @param mysqli $mysql соединение с бд
+ * @param string $email Почта из $_POST
+ * @return false|string строка если такой почты нет либо false если есть
+ */
+function singUpEmail( mysqli $mysql, string $email)
 {
     $userInfo = searchDuplicate($mysql, $email);
     if (empty($userInfo)) {
         return 'Неверный email';
     }
 
-    return true;
+    return false;
 }
 
-function singUpPassword(string $password, mysqli $mysql)
+/**
+ * Валидация на вход пароля
+   * @param mysqli $mysql Соединение с бд
+ * @param string $password Пароль из $_POST
+ * @return false|string строка если пароль не верен либо false если есть
+ */
+function singUpPassword(mysqli $mysql,string $password, string $email)
 {
-    $userEmail = $_POST['email'];
-    $userInfo = searchDuplicate($mysql, $userEmail);
-    $hashPassword = password_verify($password, $userInfo[0]['password']);
+    $userInfo = searchDuplicate($mysql, $email);
+    $hashPassword = password_verify($password, $userInfo['password']);
     if (!$hashPassword) {
         return 'Не верный пароль';
     }
 
-    return true;
+    return false;
 }

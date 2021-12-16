@@ -1,40 +1,36 @@
 <?php
 
-session_start();
 const TYPE_TEXT = 'text';
 const TYPE_QUOTE = 'quote';
 const TYPE_PHOTO = 'photo';
 const TYPE_VIDEO = 'video';
 const TYPE_LINK = 'link';
 
-if (empty($_SESSION)) {
+require_once('config/config.php');
+require_once('src/helpers.php');
+require_once('src/function.php');
+require_once('src/validate.php');
+require_once('src/request.php');
+require_once('src/add-query.php');
+require_once('model/models.php');
+
+
+/* @var mysqli $mysql */
+/* @var bool $isAuth */
+
+
+if ($isAuth) {
     header('location: index.php');
 } else {
-
-    require_once('src/helpers.php');
-    require_once('src/function.php');
-    require_once('src/validate.php');
-    require_once('src/request.php');
-    require_once('src/db.php');
-    require_once('src/add-query.php');
-    require_once('model/models.php');
-
-
-    /* @var mysqli $mysql */
-
-    $isAuth = rand(0, 1);
-    $userName = 'Владик';
-
     $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
     $errors = [];
-
     $fields = [
         'heading' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addHeading($mysql, $lastPostId);
+            'add' => function ($mysql, $lastPostId, $authorId) {
+                return addHeading($mysql, $lastPostId, $authorId);
             },
         ],
         'tags' => [
@@ -96,13 +92,12 @@ if (empty($_SESSION)) {
     ];
 
     if ($isPost) {
-
         mysqli_begin_transaction($mysql);
         foreach ($_POST as $key => $value) {
             $ruleValid = $fields[$key]['validation'];
             $errors[$key] = $ruleValid($key);
             $ruleAdd = $fields[$key]['add'];
-            $lastPostId = $ruleAdd($mysql, $lastPostId);
+            $lastPostId = $ruleAdd($mysql, $lastPostId, $_SESSION['user']['id']);
         }
         if (!findErrors($errors)) {
             mysqli_commit($mysql);
@@ -113,41 +108,20 @@ if (empty($_SESSION)) {
             deleteImg();
         }
     }
-    $blockLink = includeTemplate(
-        'block/block-link.php',
+
+
+    $contentType = retriveGetInt('content-type', null);
+    $blockName = getBlockName($contentType);
+    $className = getClassNameAddForm($contentType);
+
+    $blockContent = includeTemplate(
+        "block/$blockName",
         [
             'isPost' => $isPost,
             'errors' => $errors,
         ]
     );
-    $blockPhoto = includeTemplate(
-        'block/block-photo.php',
-        [
-            'isPost' => $isPost,
-            'errors' => $errors,
-        ]
-    );
-    $blockQuote = includeTemplate(
-        'block/block-quote.php',
-        [
-            'isPost' => $isPost,
-            'errors' => $errors,
-        ]
-    );
-    $blockText = includeTemplate(
-        'block/block-text.php',
-        [
-            'isPost' => $isPost,
-            'errors' => $errors,
-        ]
-    );
-    $blockVideo = includeTemplate(
-        'block/block-video.php',
-        [
-            'isPost' => $isPost,
-            'errors' => $errors,
-        ]
-    );
+
     $header = includeTemplate(
         'block/header.php',
         [
@@ -158,13 +132,10 @@ if (empty($_SESSION)) {
     $postAdd = includeTemplate(
         'post-add.php',
         [
-            'blockLink' => $blockLink,
-            'blockPhoto' => $blockPhoto,
-            'blockQuote' => $blockQuote,
-            'blockText' => $blockText,
-            'blockVideo' => $blockVideo,
+            'blockContent' => $blockContent,
+            'className' => $className,
             'contentTypes' => getContentTypes($mysql, 'type_name'),
-            'contentType' => retriveGetInt('content-type', null),
+            'contentType' => $contentType,
         ]
     );
     $layout_content = includeTemplate(

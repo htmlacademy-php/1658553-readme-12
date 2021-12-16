@@ -1,8 +1,4 @@
 <?php
-/**
- * для страницы с постами
- */
-
 
 /**
  * Получаем массив данных исходя из критериев запроса
@@ -13,7 +9,7 @@
  * @param int $limit По какой пост показывать
  * @return array массив данных из бд
  */
-function getPosts(mysqli $mysql, string $sortId, ?int $typeId, int $offset = 0, int $limit = 9): array
+function getPosts(mysqli $mysql, string $sortId, ?int $typeId, int $offset, int $limit): array
 {
     $where = '';
     $data = [];
@@ -85,6 +81,7 @@ function getContentTypes(mysqli $mysql, string $index = null): array
     } else {
         $result = $rows;
     }
+
     return $result;
 }
 
@@ -148,8 +145,8 @@ function getPost(mysqli $mysql, int $postId): array
 SELECT
     post.id AS `post_num`,post.user_id, post.text_content AS `text`,post.header AS `header`,post.author_copy_right AS `author_copy_right`,
     post.create_date AS `create_date`, post.media AS `media`, post.views_number AS `views`,user.avatar AS `avatar`,user.login AS `name`,
-    user.reg_date AS `reg_date`, content_type.icon_name AS `icon_name`, count_comments, count_likes,`subscribe_count`,
-    hashtag.hashtag_name AS `hs-name`
+    user.reg_date AS `reg_date`, content_type.icon_name AS `icon_name`, count_comments, count_likes,`subscribe_count`
+    ,post.content_type_id AS `icon-name`
 
 FROM
   post
@@ -178,11 +175,6 @@ FROM
       subscribe
       GROUP BY user_author_id
   ) AS subscribe ON subscribe.user_author_id = post.user_id
-
-    LEFT JOIN
-  hashtag_post ON hashtag_post.post = post.id
-    LEFT JOIN
-  hashtag ON hashtag.id = hashtag_post.hashtag
 WHERE  post.id = ?
 
     ";
@@ -191,9 +183,6 @@ WHERE  post.id = ?
 
     return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }
-
-
-
 
 
 /**
@@ -212,6 +201,7 @@ FROM
   post
     LEFT JOIN
   user ON user.id = post.user_id
+
 WHERE user_id = ?
     ";
     $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
@@ -219,8 +209,6 @@ WHERE user_id = ?
 
     return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }
-
-
 
 
 /**
@@ -233,13 +221,13 @@ WHERE user_id = ?
  * @param int $limit По какой показывать
  * @return array Массив с данными из бд
  */
-function commentList(mysqli $mysql, int $postId, int $offset, int $limit): array
+function getCommentsForPost(mysqli $mysql, int $postId, int $offset, int $limit): array
 {
     $data[] = $postId;
     $query = "
 SELECT
      post.id AS `post_num`, comment.create_date AS `date`, comment.content AS `comment`, user.login AS `name`, user.avatar AS `avatar`
-
+,hashtag.hashtag_name AS `hs-name`
 FROM
     post
 
@@ -248,6 +236,10 @@ LEFT JOIN
 
 LEFT JOIN
         user ON user.id = comment.user_id
+LEFT JOIN
+  hashtag_post ON hashtag_post.post = post.id
+    LEFT JOIN
+  hashtag ON hashtag.id = hashtag_post.hashtag
 
 WHERE  post.id = ?
 ORDER BY comment.create_date ASC
@@ -259,3 +251,101 @@ LIMIT $offset, $limit
     return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
 }
 
+/**
+ * Пагинация для стр популярное
+ * @param mysqli $mysql соединение с бд
+ * @param int|null $typeId тип контента
+ * @return int число постов
+ */
+function getCountedPages(mysqli $mysql, ?int $typeId)
+{
+    $where = '';
+    $data = [];
+    if (!is_null($typeId)) {
+        $where = "WHERE post.content_type_id = ?";
+        $data[] = $typeId;
+    }
+
+    $result = "SELECT COUNT(*) as cnt FROM post $where";
+
+    $postListPrepare = dbGetPrepareStmt(
+        $mysql,
+        $result,
+        $data
+    );
+
+    $postListPrepareRes = mysqli_stmt_get_result($postListPrepare);
+
+    return mysqli_fetch_assoc($postListPrepareRes)['cnt'];
+}
+
+function getSearchContent(mysqli $mysql, $search): array
+{
+    $where = '';
+    $data = [];
+    // Считаем сколько знаков ? Необходимо для sql запроса
+    if (!is_null($search)) {
+        if ($search[0] === '#') {
+            $where = "LEFT JOIN
+            hashtag_post ON hashtag_post.post = post.id
+            LEFT JOIN
+            hashtag ON hashtag.id = hashtag_post.hashtag
+            WHERE MATCH( hashtag.hashtag_name) AGAINST(?)";
+        } else {
+            $where = "WHERE MATCH(header, text_content) AGAINST(?)";
+        }
+        $data[] = $search;
+    }
+    // подключили таблицу постов из бд
+    $postList = "
+SELECT
+  post.id AS `post_num`, post.text_content AS `text_content`,post.header AS `header`, post.create_date AS `create_date`,
+  post.media AS `media`,user.avatar AS `avatar`,user.login AS `name`, content_type.icon_name AS `icon_name`,
+       count_comments, count_likes,post.content_type_id AS `icon-name`
+FROM
+  post
+LEFT JOIN
+  user ON user.id = post.user_id
+LEFT JOIN
+  content_type ON content_type.id = post.content_type_id
+LEFT JOIN (
+    SELECT
+      post_id, count(post_id) AS count_comments
+    FROM
+      comment
+    GROUP BY post_id
+    ) AS c ON c.post_id = post.id
+    LEFT JOIN (
+    SELECT
+      post_id, count(post_id) AS count_likes
+    FROM
+      like_count
+    GROUP BY post_id
+  ) AS l ON l.post_id = post.id
+
+$where
+
+";
+
+    $postListPrepare = dbGetPrepareStmt(
+        $mysql,
+        $postList,
+        $data
+    );
+
+    $postListPrepareRes = mysqli_stmt_get_result($postListPrepare);
+
+    return mysqli_fetch_all($postListPrepareRes, MYSQLI_ASSOC);
+}
+
+function checkUserLike(mysqli $mysql, string $thisPostId, string $userId){
+    $data = [$userId, $thisPostId];
+    $postList = "SELECT * FROM like_count WHERE user_id = ? AND post_id = ?";
+    $postListPrepare = dbGetPrepareStmt(
+        $mysql,
+        $postList,
+        $data
+    );
+    $postListPrepareRes = mysqli_stmt_get_result($postListPrepare);
+    return mysqli_fetch_array($postListPrepareRes, MYSQLI_ASSOC);
+}

@@ -3,6 +3,8 @@
 /* @var null|string $currentType */
 /* @var array $contentTypes */
 /* @var string $postContent */
+/* @var string $pagination */
+
 
 ?>
 
@@ -125,4 +127,5 @@
         <?= $postContent ?>
 
     </div>
+    <?= $pagination ?>
 </div>

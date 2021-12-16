@@ -1,7 +1,6 @@
 <?php
-
-session_start();
 /* @var string $userName */
+
 /* @var string $avatar */
 
 ?>
@@ -14,11 +13,11 @@ session_start();
             micro blogging
         </p>
     </div>
-    <form class="header__search-form form" action="#" method="get">
+    <form class="header__search-form form"  action="search.php" method="get">
         <div class="header__search">
             <label class="visually-hidden">Поиск</label>
-            <input class="header__search-input form__input" type="search">
-            <button class="header__search-button button" type="submit">
+            <input class="header__search-input form__input" name="q" type="search">
+            <button class="header__search-button button"  type="submit">
                 <svg class="header__search-icon" width="18" height="18">
                     <use xlink:href="#icon-search"></use>
                 </svg>
@@ -31,7 +30,7 @@ session_start();
             <ul class="header__my-nav">
                 <li class="header__my-page header__my-page--popular">
                     <a class="header__page-link <?php
-                    if ($_SERVER['PHP_SELF'] === PAGE_POPULAR) {
+                    if (strrchr($_SERVER['PHP_SELF'], '/') === PAGE_POPULAR) {
                         print  "header__page-link--active";
                     } ?>"
                        href="popular.php" title="Популярный контент">
@@ -40,7 +39,7 @@ session_start();
                 </li>
                 <li class="header__my-page header__my-page--feed">
                     <a class="header__page-link <?php
-                    if ($_SERVER['PHP_SELF'] === PAGE_FEED) {
+                    if (strrchr($_SERVER['PHP_SELF'], '/') === PAGE_FEED) {
                         print  "header__page-link--active";
                     } ?>" href="feed.php" title="Моя лента">
                         <span class="visually-hidden">Моя лента</span>

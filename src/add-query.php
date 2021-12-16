@@ -6,12 +6,11 @@
  * @param int $lastPostId В данной функции не используется
  * @return int|string Возвращаем последний ID записи, куда добавили заголовок
  */
-function addHeading(mysqli $mysql, $lastPostId): int
+function addHeading(mysqli $mysql, $lastPostId, $authorId): int
 {
     $date = date('Y-m-d H:i:s');
     $header = validateInput($_POST['heading']);
-    $authorID = '1';
-    $queryPost = "INSERT INTO post  (create_date,header,user_id) VALUES ('$date', '$header','$authorID')";
+    $queryPost = "INSERT INTO post  (create_date,header,user_id) VALUES ('$date', '$header','$authorId')";
     mysqli_query($mysql, $queryPost);
     $lastPostId = mysqli_insert_id($mysql);
 
@@ -50,18 +49,18 @@ function addPhotoUrl(mysqli $mysql, int $lastPostId): int
 {
     $date = date('YmdHis');
     $contentType = 3;
+    mkdir('valid');
     if (existAddFiles('userpic-file-photo')) {
-        mkdir('valid');
         $uploads_dir = 'valid';
         if ($_FILES['userpic-file-photo']['error'] == 0) {
             $tmp_name = $_FILES['userpic-file-photo']['tmp_name'];
             $name = basename($_FILES['userpic-file-photo']['name']);
-            $name  = $date . $name;
+            $name = $date.$name;
             move_uploaded_file($tmp_name, "$uploads_dir/$name");
             $media = validateInput('content/'.$name);
         }
     } else {
-        $media = validateInput(validateInput($_POST['photo-url']));
+        $media = validateInput($_POST['photo-url']);
     }
     $queryPost = "UPDATE post SET media = '$media', content_type_id = '$contentType' WHERE id = '$lastPostId'";
     mysqli_query($mysql, $queryPost);
@@ -155,7 +154,7 @@ function addLink(mysqli $mysql, int $lastPostId): int
  * @param $lastUserId id Записи регистрации(не используется тут)
  * @return int Возвращаем id записи при регистрации
  */
-function addUserEmail(mysqli $mysql, $lastUserId):int
+function addUserEmail(mysqli $mysql, $lastUserId): int
 {
     $regDate = date('Y-m-d H:i:s');
     $email = validateInput($_POST['email']);
@@ -203,29 +202,55 @@ function addUserPass(mysqli $mysql, int $lastUserId): int
  * @param int $lastUserId Id записи регистрации
  * @return int Возвращаем Id записи при регистрации
  */
-function addUserAvatar(mysqli $mysql, int $lastUserId):int
+function addUserAvatar(mysqli $mysql, int $lastUserId): int
 {
     mkdir('valid');
     $date = date('YmdHis');
     $uploads_dir = 'valid';
     $name = basename($_FILES['userpic-file']['name']);
-    $name  = $date . $name;
+    $name = $date.$name;
     if ($_FILES['userpic-file']['error'] === 0) {
         $tmp_name = $_FILES['userpic-file']['tmp_name'];
         move_uploaded_file($tmp_name, "$uploads_dir/$name");
         $avatar = validateInput('content/'.$name);
         $queryPost = "UPDATE user SET avatar = '$avatar' WHERE id = '$lastUserId'";
         mysqli_query($mysql, $queryPost);
-
     } else {
         $queryPost = "UPDATE user SET avatar = 'img/Anon.jpg' WHERE id = '$lastUserId'";
         mysqli_query($mysql, $queryPost);
-
     }
-
 
 
     return $lastUserId;
 }
 
+/**
+ * добавляет кол-во просмотров при посещении страницы поста
+ * @param mysqli $mysql соединение с бд
+ * @param string $thisPostId посещаемый пост
+ * @param string $views кол-во просмотров до посещения
+ */
+function addView(mysqli $mysql, string $thisPostId, string $views)
+{
+    $queryPost = "UPDATE post SET views_number = $views+1 WHERE id = '$thisPostId'";
+    mysqli_query($mysql, $queryPost);
+}
 
+
+/**
+ * добавляет лайк к посту
+ * @param mysqli $mysql соединение с бд
+ * @param string $thisPostId лайкаемый пост
+ * @param string $userId пользователь который лайкнул
+ */
+function addLike(mysqli $mysql, string $thisPostId, string $userId)
+{
+    $queryPost = "INSERT INTO like_count (user_id, post_id) VALUES ('$userId','$thisPostId')";
+    mysqli_query($mysql, $queryPost);
+}
+
+function removeLike(mysqli $mysql, string $thisPostId, string $userId)
+{
+    $queryPost = "DELETE FROM like_count WHERE user_id = $userId AND post_id = $thisPostId";
+    mysqli_query($mysql, $queryPost);
+}

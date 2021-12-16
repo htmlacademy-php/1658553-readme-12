@@ -1,7 +1,10 @@
 <?php
-session_start();
 
-if (empty($_SESSION)) {
+require_once('config/config.php');
+
+/* @var bool $isAuth */
+
+if ($isAuth) {
     header('location: main.php');
 } else {
     header('location: feed.php');

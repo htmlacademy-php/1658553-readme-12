@@ -96,6 +96,8 @@ CREATE INDEX create_date ON post(create_date);
 CREATE INDEX header ON post(header);
 CREATE INDEX create_date ON massage(create_date);
 CREATE INDEX hashtag_name ON hashtag(hashtag_name);
+CREATE FULLTEXT INDEX post_ft_search ON post(header, text_content);
+CREATE FULLTEXT INDEX post_ft_search ON hashtag(hashtag_name);
 
 
 

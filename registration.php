@@ -1,12 +1,14 @@
 <?php
 
+require_once('config/config.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
 require_once('src/validate.php');
 require_once('src/request.php');
-require_once('src/db.php');
 require_once('src/add-query.php');
 require_once('model/models.php');
+
+
 /* @var mysqli $mysql */
 
 $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
@@ -15,15 +17,15 @@ $errors = [];
 
 $fields = [
     'email' => [
-        'validation' => function ($key, $mysql) {
-            return validateEmail($key, $mysql);
+        'validation' => function ($mysql, $key) {
+            return validateEmail($mysql, $key);
         },
         'add' => function ($mysql, $lastUserId) {
             return addUserEmail($mysql, $lastUserId);
         },
     ],
     'login' => [
-        'validation' => function ($key) {
+        'validation' => function ($mysql,$key) {
             return validateFilled($key);
         },
         'add' => function ($mysql, $lastUserId) {
@@ -31,7 +33,7 @@ $fields = [
         },
     ],
     'password' => [
-        'validation' => function ($key) {
+        'validation' => function ($mysql, $key) {
             return validatePassword($key);
         },
         'add' => function ($mysql, $lastUserId) {
@@ -39,7 +41,7 @@ $fields = [
         },
     ],
     'password-repeat' => [
-        'validation' => function ($key) {
+        'validation' => function ($mysql, $key) {
             return validatePasswordRepeat($key);
         },
         'add' => function ($mysql, $lastUserId) {
@@ -62,7 +64,7 @@ if ($isPost) {
     $_POST += $avatar;
     foreach ($_POST as $key => $value) {
         $ruleValid = $fields[$key]['validation'];
-        $errors[$key] = $ruleValid($key, $mysql);
+        $errors[$key] = $ruleValid($mysql,$key);
         $ruleAdd = $fields[$key]['add'];
         $lastUserId = $ruleAdd($mysql, $lastUserId);
     }

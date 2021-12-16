@@ -9,8 +9,9 @@
  *
  * @return string возвращаем текст с кол-вом символов не больше лимита
  */
-function cutText(string $text, int $limit = 300, string $url = '#'): string
+function cutText(string $text,  string $url, int $limit = 300): string
 {
+
 // превращаем исходный текст в массив слов
     $words = explode(' ', $text);
 // результат работы выводим в новый массив
@@ -34,7 +35,7 @@ function cutText(string $text, int $limit = 300, string $url = '#'): string
         $ellipsis = ('...');
         $result[] = $ellipsis;
 //добавляем ссылку
-        $link = '<a class="post-text__more-link" href="#">Читать далее</a>';
+        $link = '<a class="post-text__more-link"  href="post.php?post-id='.$url.'">Читать далее</a>';
 //если слов меньше лимита
     } else {
         $result = $words;
@@ -200,7 +201,7 @@ WHERE email = ?
     );
     $postListPrepareRes = mysqli_stmt_get_result($postListPrepare);
 
-    return mysqli_fetch_all($postListPrepareRes, MYSQLI_ASSOC);
+    return mysqli_fetch_array($postListPrepareRes, MYSQLI_ASSOC);
 }
 
 /**
@@ -232,15 +233,26 @@ function existAddFiles($input): bool
     return false;
 }
 
+/**
+ * Определяем класс html отображения основного контента (feed or popular) для разметки лейаута
+ * @return string Класс для html разметки
+ */
 function layoutContentDefine()
 {
-    $content = $_SERVER['PHP_SELF'];
-    if ($content === '/1658553-readme-12/popular.php') {
+    $content = strrchr($_SERVER['PHP_SELF'], '/');
+    if ($content === '/popular.php') {
         return 'page__main--popular';
-    } else {
+    } elseif ($content === '/feed.php') {
         return 'page__main--feed';
+    } elseif ($content === '/search.php' ){
+        return 'page__main--search-results';
+    } elseif ($content === '/post.php'){
+        return 'page__main--publication';
+    } elseif ($content === '/add.php'){
+        return 'page__main--adding-post';
     }
 }
+
 
 /**
  * Перемещает из созданной по скрипту папки файл в папку контент, если валидация успешана и удаляет папку
@@ -271,5 +283,57 @@ function deleteImg()
         unlink($file);
     }
     rmdir($oldfolder);
-
 }
+
+/**
+ * Определяем название блока для подключения исходя из номера типа контента
+ * @param $type null|int тип контента
+ * @return string Название контента
+ */
+function getBlockName($type)
+{
+    switch ($type) {
+        case 3:
+        case null:
+            return 'block-photo.php';
+
+        case 1:
+            return 'block-text.php';
+        case 2:
+            return 'block-quote.php';
+
+        case 4:
+            return 'block-video.php';
+
+        case 5:
+            return 'block-link.php';
+    }
+}
+
+/**
+ * Определяем название класса для верстки исходя из типа контента
+ * @param $type null|int Тип контента
+ * @return string Имя класса для верстки
+ */
+function getClassNameAddForm($type)
+{
+    switch ($type) {
+        case 3:
+        case null:
+            return 'adding-post__photo tabs__content--active';
+
+        case 1:
+            return 'adding-post__text tabs__content--active';
+        case 2:
+            return 'adding-post__quote tabs__content--active';
+
+        case 4:
+            return 'adding-post__video tabs__content--active';
+
+        case 5:
+            return 'adding-post__link tabs__content--active';
+    }
+}
+
+
+

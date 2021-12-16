@@ -155,7 +155,7 @@
             <h2 class="visually-hidden">Авторизация</h2>
             <form class="authorization__form form" action="main.php" method="post">
                 <div class="authorization__input-wrapper form__input-wrapper <?php
-                if ($isPost && !is_bool($errors['email'])): print 'form__input-section--error';
+                if ($isPost && ($errors['email'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="authorization__input authorization__input--login form__input" type="text" name="email"
                            placeholder="Email" value="<?= getPostVal('email'); ?>">
@@ -164,11 +164,11 @@
                     </svg>
                     <label class="visually-hidden">Логин</label>
                 </div>
-                <?php if ($isPost && !is_bool($errors['email'])): ?>
+                <?php if ($isPost && ($errors['email'])): ?>
                     <span class="form__error-label form__error-label--login"><?= $errors['email'] ?></span>
                 <?php endif; ?>
                 <div class="authorization__input-wrapper form__input-wrapper <?php
-                if ($isPost && !is_bool($errors['password'])): print 'form__input-section--error';
+                if ($isPost && ($errors['password'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="authorization__input authorization__input--password form__input" type="password"
                            name="password" placeholder="Пароль">
@@ -177,7 +177,7 @@
                     </svg>
                     <label class="visually-hidden">Пароль</label>
                 </div>
-                <?php if ($isPost && !is_bool($errors['password'])): ?>
+                <?php if ($isPost && ($errors['password'])): ?>
                     <span class="form__error-label form__error-label--login"><?= $errors['password'] ?></span>
                 <?php endif; ?>
                 <a class="authorization__recovery" href="#">Восстановить пароль</a>

@@ -1,10 +1,9 @@
 <?php
 /* @var array $postMainContent */
+
 /* @var array $authorPostsCount */
 /* @var array $commentList */
 /* @var array $commentAllList */
-require_once('src/function.php');
-
 
 ?>
 
@@ -13,7 +12,7 @@ require_once('src/function.php');
     <h1 class="page__title page__title--publication"><?= $postMainContent['header'] ?></h1>
     <section class="post-details">
         <h2 class="visually-hidden">Публикация</h2>
-        <div class="post-details__wrapper post-photo">
+        <div class="post-details__wrapper <?= $postMainContent['icon_name'] ?>">
             <div class="post-details__main-block post post--details">
 
 
@@ -21,13 +20,13 @@ require_once('src/function.php');
                 if ($postMainContent['icon_name'] === "post-photo"): ?>
 
                     <div class="post-details__image-wrapper post-photo__image-wrapper">
-                        <img src="<?= $postMainContent['media']; ?>" alt="Фото от пользователя" width="760" height="507">
+                        <img src="<?= $postMainContent['media']; ?>" alt="Фото от пользователя" width="760"
+                             height="507">
                     </div>
 
 
                 <?php
                 elseif ($postMainContent['icon_name'] === "post-quote"): ?>
-
 
 
                     <div class="post-details__image-wrapper post-quote">
@@ -66,7 +65,7 @@ require_once('src/function.php');
                                 <div class="post-link__info-wrapper">
                                     <div class="post-link__icon-wrapper">
                                         <img
-                                            src="https://www.google.com/s2/favicons?domain=vitadental.ru"
+                                            src="https://www.google.com/s2/favicons?domain=<?= $postMainContent['media'] ?>"
                                             alt="Иконка">
                                     </div>
                                     <div class="post-link__info">
@@ -92,7 +91,7 @@ require_once('src/function.php');
                 <div class="post__indicators">
                     <div class="post__buttons">
 
-                        <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                        <a class="post__indicator post__indicator--likes button" href="like.php?id=<?=$postMainContent['post_num']?>" title="Лайк">
                             <svg class="post__indicator-icon" width="20" height="17">
                                 <use xlink:href="#icon-heart"></use>
                             </svg>
@@ -127,9 +126,11 @@ require_once('src/function.php');
                 </div>
 
                 <ul class="post__tags">
-
-                    <li><a href="#"><?= $postMainContent['hs-name'] ?></a></li>
-
+                    <?php
+                    foreach ($commentAllList as $key => $hashtags): ?>
+                        <li><a href="#"><?= $hashtags['hs-name'] ?></a></li>
+                    <?php
+                    endforeach; ?>
                 </ul>
                 <div class="comments">
                     <form class="comments__form form" action="#" method="post">
@@ -209,7 +210,8 @@ require_once('src/function.php');
                                             <a class="comments__user-name" href="#">
                                                 <span><?= $firstTwoComments['name'] ?></span>
                                             </a>
-                                            <time class="comments__time" datetime="<?= $firstTwoComments['date'] ?>"><?= smallDate(
+                                            <time class="comments__time"
+                                                  datetime="<?= $firstTwoComments['date'] ?>"><?= smallDate(
                                                     $firstTwoComments['date']
                                                 ) ?></time>
                                         </div>
@@ -224,15 +226,16 @@ require_once('src/function.php');
                                 </li>
                             </ul>
 
-                                <?php
-                                if (($postMainContent['count_comments'] - 2) > 2): ?>
+                            <?php
+                            if (($postMainContent['count_comments'] - 2) > 2): ?>
 
-                                    <a class="comments__more-link" href="?post-id=<?= $postMainContent['post_num'] ?>&comment=all">
-                                        <span>Показать все комментарии</span>
-                                        <sup class="comments__amount"><?= $postMainContent['count_comments'] - 2 ?></sup>
-                                    </a>
-                                <?php
-                                endif ?>
+                                <a class="comments__more-link"
+                                   href="?post-id=<?= $postMainContent['post_num'] ?>&comment=all">
+                                    <span>Показать все комментарии</span>
+                                    <sup class="comments__amount"><?= $postMainContent['count_comments'] - 2 ?></sup>
+                                </a>
+                            <?php
+                            endif ?>
 
                         </div>
                     <?php
@@ -265,10 +268,11 @@ require_once('src/function.php');
                 <div class="post-details__rating user__rating">
                     <p class="post-details__rating-item user__rating-item user__rating-item--subscribers">
                         <span
-                            class="post-details__rating-amount user__rating-amount"> <?= zeroForPostInfo($postMainContent['subscribe_count']) ?> </span>
+                            class="post-details__rating-amount user__rating-amount"> <?= zeroForPostInfo(
+                                $postMainContent['subscribe_count']
+                            ) ?> </span>
                         <span class="post-details__rating-text user__rating-text">подписчиков</span>
                     </p>
-
 
 
                     <p class="post-details__rating-item user__rating-item user__rating-item--publications">
@@ -279,10 +283,10 @@ require_once('src/function.php');
                 </div>
 
 
-
                 <div class="post-details__user-buttons user__buttons">
                     <button class="user__button user__button--subscription button button--main" type="button">
                         Подписаться
+                        button--quartz
                     </button>
                     <a class="user__button user__button--writing button button--green" href="#">Сообщение</a>
                 </div>
