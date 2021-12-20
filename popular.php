@@ -18,14 +18,15 @@ require_once('src/function.php');
 require_once('src/request.php');
 require_once('model/models.php');
 
-/* @var mysqli $mysql */
 /* @var bool $isAuth */
+/* @var mysqli $mysql */
 
 if ($isAuth) {
     header('location: index.php');
 } else {
     $curPage = $_GET['page'] ?? 1;
     $pageItems = 9;
+
     $contentType = retriveGetInt('content_type', null);
     $itemsCount = getCountedPages($mysql, $contentType);
     $pagesCount = ceil($itemsCount / $pageItems);

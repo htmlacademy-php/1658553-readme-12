@@ -9,9 +9,8 @@
  *
  * @return string возвращаем текст с кол-вом символов не больше лимита
  */
-function cutText(string $text,  string $url, int $limit = 300): string
+function cutText(string $text, string $url, int $limit = 300): string
 {
-
 // превращаем исходный текст в массив слов
     $words = explode(' ', $text);
 // результат работы выводим в новый массив
@@ -244,11 +243,11 @@ function layoutContentDefine()
         return 'page__main--popular';
     } elseif ($content === '/feed.php') {
         return 'page__main--feed';
-    } elseif ($content === '/search.php' ){
+    } elseif ($content === '/search.php') {
         return 'page__main--search-results';
-    } elseif ($content === '/post.php'){
+    } elseif ($content === '/post.php') {
         return 'page__main--publication';
-    } elseif ($content === '/add.php'){
+    } elseif ($content === '/add.php') {
         return 'page__main--adding-post';
     }
 }
@@ -263,13 +262,14 @@ function rebaseImg()
     $newfolder = 'content';
 
     $files = glob($oldfolder.'/*');
-
-    foreach ($files as $file) {
-        $filename = basename($file);
-        copy($file, $newfolder.'/'.$filename);
-        unlink($file);
+    if ($_FILES) {
+        foreach ($files as $file) {
+            $filename = basename($file);
+            copy($file, $newfolder.'/'.$filename);
+            unlink($file);
+        }
+        rmdir($oldfolder);
     }
-    rmdir($oldfolder);
 }
 
 /**
@@ -279,10 +279,12 @@ function deleteImg()
 {
     $oldfolder = 'valid';
     $files = glob($oldfolder.'/*');
-    foreach ($files as $file) {
-        unlink($file);
+    if ($_FILES) {
+        foreach ($files as $file) {
+            unlink($file);
+        }
+        rmdir($oldfolder);
     }
-    rmdir($oldfolder);
 }
 
 /**

@@ -30,6 +30,13 @@ if ($isAuth) {
         $commentList = getCommentsForPost($mysql, $postId, 0, 2);
         $commentAllList = getCommentsForPost($mysql, $postId, 0, 200);
         addView($mysql,$postId,$postMainContent['views']);
+        $isUserSubscribe = isUserSubscribe($mysql, $postMainContent['user_id'], $_SESSION['user']['id'] );
+        if ($_SESSION['errors']){
+            $errors = [];
+            $errors = $_SESSION['errors'];
+            unset($_SESSION['errors']);
+
+        }
 
 
 
@@ -53,6 +60,9 @@ if ($isAuth) {
                 'authorPostsCount' => $authorPostsCount,
                 'commentList' => $commentList,
                 'commentAllList' => $commentAllList,
+                'isUserSubscribe'=>$isUserSubscribe,
+                'userAvatar' =>$_SESSION['user']['avatar'],
+                'errors'=> $errors,
             ]
         );
         $layoutContent = includeTemplate(

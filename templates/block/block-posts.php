@@ -69,7 +69,7 @@ foreach (
                     <div class="post-video__preview">
                         <?= embedYoutubeCover($post['media']); ?>
                     </div>
-                    <a href="http://localhost/1658553-readme-12/post.php?post-id=<?= $post['post_num'] ?>"
+                    <a href="post.php?post-id=<?= $post['post_num'] ?>"
                        class="post-video__play-big button">
                         <svg class="post-video__play-big-icon" width="14" height="14">
                             <use xlink:href="#icon-video-play-big"></use>

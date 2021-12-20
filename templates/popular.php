@@ -1,5 +1,6 @@
 <?php
 /* @var string $sort */
+
 /* @var null|string $currentType */
 /* @var array $contentTypes */
 /* @var string $postContent */
@@ -39,7 +40,8 @@
                     </a>
                 </li>
                 <li class="sorting__item">
-                    <a class="sorting__link <?= $sort === SORT_DATE ? "sorting__link--active" : '' ?>" href="?sort=<?= SORT_DATE ?>&content_type=<?= $currentType ?>">
+                    <a class="sorting__link <?= $sort === SORT_DATE ? "sorting__link--active" : '' ?>"
+                       href="?sort=<?= SORT_DATE ?>&content_type=<?= $currentType ?>">
                         <span>Дата</span>
                         <svg class="sorting__icon" width="10" height="12">
                             <use xlink:href="#icon-sort"></use>

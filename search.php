@@ -8,19 +8,35 @@ require_once('src/request.php');
 require_once('src/add-query.php');
 require_once('model/models.php');
 
-/* @var mysqli $mysql */
+
 /* @var bool $isAuth */
+/* @var mysqli $mysql */
+
 
 if ($isAuth) {
     header('location: index.php');
 } else {
     $search = $_GET['q'] ?? '';
-    if ($search){
+    $searchContent = null;
+    if ($search) {
         $searchContent = getSearchContent($mysql, $search);
-
     }
 
-
+    if ($searchContent) {
+        $searchBLock = includeTemplate(
+            'block/search-block.php',
+            [
+                'searchContent' => $searchContent,
+            ]
+        );
+    } else {
+        $searchBLock = includeTemplate(
+            'block/no-results.php',
+            [
+                'searchContent' => $searchContent,
+            ]
+        );
+    }
 
     $header = includeTemplate(
         'block/header.php',
@@ -30,18 +46,12 @@ if ($isAuth) {
         ]
     );
 
-    $searchBLock = includeTemplate(
-        'block/search-block.php',
-        [
 
-            'searchContent' => $searchContent,
-        ]
-    );
     $searchPage = includeTemplate(
         'search.php',
         [
-            'search' =>$search,
-            'block'=>$searchBLock,
+            'search' => $search,
+            'block' => $searchBLock,
         ]
     );
 

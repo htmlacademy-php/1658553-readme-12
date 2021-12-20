@@ -29,64 +29,64 @@ if ($isAuth) {
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql, $lastPostId, $authorId) {
-                return addHeading($mysql, $lastPostId, $authorId);
+            'add' => function ($mysql,$key, $lastPostId, $authorId) {
+                return addHeading($mysql,$key, $lastPostId, $authorId);
             },
         ],
         'tags' => [
             'validation' => function ($key) {
                 return validateSharp($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addSharp($mysql, $lastPostId);
+            'add' => function ($mysql,$key, $lastPostId) {
+                return addSharp($mysql,$key, $lastPostId);
             },
         ],
         'photo-url' => [
             'validation' => function ($key) {
                 return validateImg($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addPhotoUrl($mysql, $lastPostId);
+            'add' => function ($mysql,$key, $lastPostId) {
+                return addPhotoUrl($mysql,$key, $lastPostId);
             },
         ],
         'video-url' => [
             'validation' => function ($key) {
                 return validateVideoUrl($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addVideoUrl($mysql, $lastPostId);
+            'add' => function ($mysql,$key, $lastPostId) {
+                return addVideoUrl($mysql,$key, $lastPostId);
             },
         ],
         'text-content' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addText($mysql, $lastPostId);
+            'add' => function ($mysql,$key, $lastPostId) {
+                return addText($mysql,$key, $lastPostId);
             },
         ],
         'cite-text' => [
             'validation' => function ($key) {
                 return validateCite($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addCite($mysql, $lastPostId);
+            'add' => function ($mysql,$key, $lastPostId) {
+                return addCite($mysql,$key, $lastPostId);
             },
         ],
         'quote-author' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addQuoteAuthor($mysql, $lastPostId);
+            'add' => function ($mysql,$key, $lastPostId) {
+                return addQuoteAuthor($mysql,$key, $lastPostId);
             },
         ],
         'link-ref' => [
             'validation' => function ($key) {
                 return validateLink($key);
             },
-            'add' => function ($mysql, $lastPostId) {
-                return addLink($mysql, $lastPostId);
+            'add' => function ($mysql,$key, $lastPostId) {
+                return addLink($mysql,$key, $lastPostId);
             },
         ],
     ];
@@ -97,7 +97,7 @@ if ($isAuth) {
             $ruleValid = $fields[$key]['validation'];
             $errors[$key] = $ruleValid($key);
             $ruleAdd = $fields[$key]['add'];
-            $lastPostId = $ruleAdd($mysql, $lastPostId, $_SESSION['user']['id']);
+            $lastPostId = $ruleAdd($mysql,$key, $lastPostId, $_SESSION['user']['id']);
         }
         if (!findErrors($errors)) {
             mysqli_commit($mysql);

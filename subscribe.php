@@ -8,24 +8,21 @@ require_once('src/request.php');
 require_once('src/add-query.php');
 require_once('model/models.php');
 
-
 /* @var mysqli $mysql */
 /* @var bool $isAuth */
 
 if ($isAuth) {
     header('location: index.php');
 } else {
+    $authorId = $_GET['authorId'];
     $userId = $_SESSION['user']['id'];
-    $postId = $_GET['id'];
-
-    $isPostIdExist = isPostExist($mysql, $postId);
-
-    if ($isPostIdExist) {
-        if (isUserLike($mysql, $postId, $userId)) {
-            addLike($mysql, $postId, $userId);
-        } else {
-            removeLike($mysql, $postId, $userId);
-        }
-        header('location:  '.$_SERVER['HTTP_REFERER'].' ');
+    $isUserSubscribe = isUserSubscribe($mysql, $authorId, $userId );
+    if ($isUserSubscribe){
+        addSubscribe($mysql, $authorId, $userId);
+    } else{
+        removeSubscribe($mysql, $authorId, $userId);
     }
+    header('location:  '.$_SERVER['HTTP_REFERER'].' ');
+var_dump($isUserSubscribe);
+
 }

@@ -128,11 +128,27 @@ function validateYouTubeLink(string $key)
  * @param string $val Цитата из массива $_POST
  * @return bool|string Возвращает true если валидация успешна либо текст ошибки.
  */
-function validateQuoteLength(string $val)
+function validateLessLength(string $val,int $long)
 {
     $length = iconv_strlen($_POST[$val]);
-    if ($length > 70) {
-        $error = 'Он не должна превышать 70 знаков.';
+    if ($length > $long) {
+        $error = 'Длина не должна превышать '. $long .' знаков.';
+
+        return $error;
+    }
+
+    return false;
+}
+/**
+ * Валидация на длину вводимой пользователем цитаты
+ * @param string $val Цитата из массива $_POST
+ * @return bool|string Возвращает true если валидация успешна либо текст ошибки.
+ */
+function validateMoreLength(string $val,int $long)
+{
+    $length = iconv_strlen($_POST[$val]);
+    if ($length < $long) {
+        $error = 'Длина должна превышать '. $long .' знаков.';
 
         return $error;
     }
@@ -151,9 +167,9 @@ function validateImg(string $key)
         $error = validateImgFromUser('userpic-file-photo');
     } else {
         $error = validateFilled($key);
-        if (is_bool($error)) {
+        if (!$error) {
             $error = validateURL($key);
-            if (is_bool($error)) {
+            if (!$error) {
                 $error = validateUpload($key);
             }
         }
@@ -170,9 +186,9 @@ function validateImg(string $key)
 function validateVideoUrl(string $key)
 {
     $error = validateFilled($key);
-    if (is_bool($error)) {
+    if (!$error) {
         $error = validateURL($key);
-        if (is_bool($error)) {
+        if (!$error) {
             $error = validateYouTubeLink($key);
         }
     }
@@ -188,8 +204,8 @@ function validateVideoUrl(string $key)
 function validateCite(string $key)
 {
     $error = validateFilled($key);
-    if (is_bool($error)) {
-        $error = validateQuotelength($key);
+    if (!$error) {
+        $error = validateLessLength($key, 70);
     }
 
     return $error;
@@ -203,7 +219,7 @@ function validateCite(string $key)
 function validateLink(string $key)
 {
     $error = validateFilled($key);
-    if (is_bool($error)) {
+    if (!$error) {
         $error = validateURL($key);
     }
 
@@ -235,7 +251,7 @@ function isEmail(string $key)
  * @param mysqli $mysql Соединение с бд
  * @return bool|string Возвращает текст ошибки либо true если валидация успешна
  */
-function validateDuplicate(mysqli $mysql,string $key)
+function validateDuplicate(mysqli $mysql, string $key)
 {
     $answer = searchDuplicate($mysql, $_POST[$key]);
     if (!empty($answer)) {
@@ -334,9 +350,9 @@ function validateAvatarFromUser()
 function validateEmail(mysqli $mysql, string $key)
 {
     $error = validateFilled($key);
-    if (is_bool($error)) {
+    if (!$error) {
         $error = isEmail($key);
-        if (is_bool($error)) {
+        if (!$error) {
             $error = validateDuplicate($mysql, $key);
         }
     }
@@ -352,7 +368,7 @@ function validateEmail(mysqli $mysql, string $key)
 function validatePassword(string $key)
 {
     $error = validateFilled($key);
-    if (is_bool($error)) {
+    if (!$error) {
         $error = validPass($key);
     }
 
@@ -367,7 +383,7 @@ function validatePassword(string $key)
 function validatePasswordRepeat(string $key)
 {
     $error = validateFilled($key);
-    if (is_bool($error)) {
+    if (!$error) {
         $error = passIsEqual($key);
     }
 
@@ -380,7 +396,7 @@ function validatePasswordRepeat(string $key)
  * @param string $email Почта из $_POST
  * @return false|string строка если такой почты нет либо false если есть
  */
-function singUpEmail( mysqli $mysql, string $email)
+function singUpEmail(mysqli $mysql, string $email)
 {
     $userInfo = searchDuplicate($mysql, $email);
     if (empty($userInfo)) {
@@ -392,11 +408,11 @@ function singUpEmail( mysqli $mysql, string $email)
 
 /**
  * Валидация на вход пароля
-   * @param mysqli $mysql Соединение с бд
+ * @param mysqli $mysql Соединение с бд
  * @param string $password Пароль из $_POST
  * @return false|string строка если пароль не верен либо false если есть
  */
-function singUpPassword(mysqli $mysql,string $password, string $email)
+function singUpPassword(mysqli $mysql, string $password, string $email)
 {
     $userInfo = searchDuplicate($mysql, $email);
     $hashPassword = password_verify($password, $userInfo['password']);
@@ -405,4 +421,14 @@ function singUpPassword(mysqli $mysql,string $password, string $email)
     }
 
     return false;
+}
+
+
+function validateComment(string $key)
+{
+    $error = validateFilled($key);
+    if (!$error){
+        $error = validateMoreLength($key,4);
+    }
+    return $error;
 }

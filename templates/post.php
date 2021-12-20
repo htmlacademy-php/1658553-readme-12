@@ -4,6 +4,11 @@
 /* @var array $authorPostsCount */
 /* @var array $commentList */
 /* @var array $commentAllList */
+/* @var bool $isUserSubscribe */
+/* @var string $userAvatar */
+/* @var array $commentErrors */
+/* @var array $errors */
+
 
 ?>
 
@@ -91,7 +96,8 @@
                 <div class="post__indicators">
                     <div class="post__buttons">
 
-                        <a class="post__indicator post__indicator--likes button" href="like.php?id=<?=$postMainContent['post_num']?>" title="Лайк">
+                        <a class="post__indicator post__indicator--likes button"
+                           href="like.php?id=<?= $postMainContent['post_num'] ?>" title="Лайк">
                             <svg class="post__indicator-icon" width="20" height="17">
                                 <use xlink:href="#icon-heart"></use>
                             </svg>
@@ -133,21 +139,23 @@
                     endforeach; ?>
                 </ul>
                 <div class="comments">
-                    <form class="comments__form form" action="#" method="post">
+                    <form class="comments__form form" action="add-comment.php" method="post">
                         <div class="comments__my-avatar">
-                            <img class="comments__picture" src="img/userpic-medium.jpg" alt="Аватар пользователя">
+                            <img class="comments__picture" src="<?= $userAvatar ?>" alt="Аватар пользователя">
                         </div>
-                        <div class="form__input-section form__input-section--error">
-                            <textarea class="comments__textarea form__textarea form__input"
+                        <div class="form__input-section <?php if ($errors):print 'form__input-section--error'; endif;?>">
+                            <textarea class="comments__textarea form__textarea form__input" id="comment-text"
+                                      name="comment-text"
                                       placeholder="Ваш комментарий"></textarea>
                             <label class="visually-hidden">Ваш комментарий</label>
                             <button class="form__error-button button" type="button">!</button>
                             <div class="form__error-text">
                                 <h3 class="form__error-title">Ошибка валидации</h3>
-                                <p class="form__error-desc">Это поле обязательно к заполнению</p>
+                                <p class="form__error-desc"><?= $errors['comment-text']?></p>
                             </div>
                         </div>
-                        <button class="comments__submit button button--green" type="submit">Отправить</button>
+                        <button class="comments__submit button button--green" name="postId"
+                                value="<?= $postMainContent['post_num'] ?>" type="submit">Отправить</button>
                     </form>
                     <?php
                     if (array_key_exists('comment', $_GET)): ?>
@@ -227,7 +235,7 @@
                             </ul>
 
                             <?php
-                            if (($postMainContent['count_comments'] - 2) > 2): ?>
+                            if (($postMainContent['count_comments'] - 2) > 0): ?>
 
                                 <a class="comments__more-link"
                                    href="?post-id=<?= $postMainContent['post_num'] ?>&comment=all">
@@ -283,13 +291,18 @@
                 </div>
 
 
-                <div class="post-details__user-buttons user__buttons">
-                    <button class="user__button user__button--subscription button button--main" type="button">
-                        Подписаться
-                        button--quartz
+                <form method="get" action="subscribe.php" class="post-details__user-buttons user__buttons">
+                    <button name="authorId" value="<?= $postMainContent['user_id'] ?>"
+                            class="user__button user__button--subscription button button--main <?php
+                            if (!$isUserSubscribe):print 'button--quartz'; endif; ?>" type="submit">
+
+                        <?php
+                        if ($isUserSubscribe):print 'Подписаться';
+                        else:print 'Отписаться'; endif; ?>
+
                     </button>
                     <a class="user__button user__button--writing button button--green" href="#">Сообщение</a>
-                </div>
+                </form>
             </div>
         </div>
     </section>

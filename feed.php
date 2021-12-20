@@ -23,10 +23,17 @@ require_once('src/add-query.php');
 require_once('model/models.php');
 
 /* @var bool $isAuth */
+/* @var mysqli $mysql */
 
 if ($isAuth) {
     header('location: index.php');
 } else {
+    $contentType = retriveGetInt('content_type', null);
+    $sortId = getSortId();
+    $feedPosts = getFeedPosts($mysql,$sortId,$contentType,$_SESSION['user']['id']);
+    $contentTypes = getContentTypes($mysql, 'type_name');
+
+
     $header = includeTemplate(
         'block/header.php',
         [
@@ -34,11 +41,20 @@ if ($isAuth) {
             'userName' => $_SESSION['user']['login'],
         ]
     );
-
-
     $feed = includeTemplate(
+        'block/block-feed.php',
+        [
+            'feedPosts'=>$feedPosts,
+
+        ]
+    );
+
+    $pageContent = includeTemplate(
         'feed.php',
         [
+            'currentType' => $contentType,
+            'pageContent'=>$feed,
+            'contentTypes' => $contentTypes,
 
         ]
     );
@@ -46,7 +62,7 @@ if ($isAuth) {
     $layout_content = includeTemplate(
         'layout.php',
         [
-            'content' => $feed,
+            'content' => $pageContent,
             'header' => $header,
             'title' => 'readme: моя лента',
 
