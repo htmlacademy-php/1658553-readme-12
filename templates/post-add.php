@@ -1,13 +1,9 @@
 <?php
 /* @var array $contentTypes */
+
 /* @var null|int $contentType */
-
-/* @var string $blockPhoto */
-/* @var string $blockVideo */
-/* @var string $blockText */
-/* @var string $blockQuote */
-/* @var string $blockLink */
-
+/* @var string $blockContent */
+/* @var string $className */
 
 
 
@@ -25,7 +21,8 @@
                             <a class="adding-post__tabs-link filters__button filters__button--photo <?php
                             if ($contentType === $contentTypes[TYPE_PHOTO]['id'] or is_null($contentType)) {
                                 print "filters__button--active";
-                            } ?>  tabs__item tabs__item--active button" href="?content-type=<?= $contentTypes[TYPE_PHOTO]['id'] ?>">
+                            } ?>  tabs__item tabs__item--active button"
+                               href="?content-type=<?= $contentTypes[TYPE_PHOTO]['id'] ?>">
                                 <svg class="filters__icon" width="22" height="18">
                                     <use xlink:href="#icon-filter-photo"></use>
                                 </svg>
@@ -79,39 +76,9 @@
                     </ul>
                 </div>
                 <div class="adding-post__tab-content">
-                    <section class="adding-post__photo tabs__content <?php
-                    if ($contentType === $contentTypes[TYPE_PHOTO]['id'] or is_null($contentType)) {
-                        print "tabs__content--active";
-                    } ?>">
-                        <?= $blockPhoto ?>
-                    </section>
 
-                    <section class="adding-post__video tabs__content <?php
-                    if ($contentType === $contentTypes[TYPE_VIDEO]['id']) {
-                        print "tabs__content--active";
-                    } ?>">
-                        <?= $blockVideo ?>
-                    </section>
-
-                    <section class="adding-post__text tabs__content <?php
-                    if ($contentType === $contentTypes[TYPE_TEXT]['id']) {
-                        print "tabs__content--active";
-                    } ?>">
-                        <?= $blockText ?>
-                    </section>
-
-                    <section class="adding-post__quote tabs__content <?php
-                    if ($contentType === $contentTypes[TYPE_QUOTE]['id']) {
-                        print "tabs__content--active";
-                    } ?>">
-                        <?= $blockQuote ?>
-                    </section>
-
-                    <section class="adding-post__link tabs__content <?php
-                    if ($contentType === $contentTypes[TYPE_LINK]['id']) {
-                        print "tabs__content--active";
-                    } ?>">
-                        <?= $blockLink ?>
+                    <section class="<?= $className ?> tabs__content">
+                        <?= $blockContent ?>
                     </section>
                 </div>
             </div>

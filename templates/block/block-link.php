@@ -11,7 +11,7 @@
                 <label class="adding-post__label form__label" for="link-heading">Заголовок <span
                         class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && !is_bool($errors['heading'])): print 'form__input-section--error';
+                if ($isPost && ($errors['heading'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="link-heading" type="text"
                            name="heading" placeholder="Введите заголовок"
@@ -29,7 +29,7 @@
                 <label class="adding-post__label form__label" for="post-link">Ссылка <span
                         class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && !is_bool($errors['link-ref'])): print 'form__input-section--error';
+                if ($isPost && ($errors['link-ref'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="post-link" type="text"
                            name="link-ref" value="<?= getPostVal('link-ref'); ?>">
@@ -45,7 +45,7 @@
             <div class="adding-post__input-wrapper form__input-wrapper">
                 <label class="adding-post__label form__label" for="link-tags">Теги</label>
                 <div class="form__input-section <?php
-                if ($isPost && !is_bool($errors['tags'])): print 'form__input-section--error';
+                if ($isPost && ($errors['tags'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="link-tags" type="text"
                            name="tags" placeholder="Введите теги"
@@ -66,21 +66,21 @@
                 <b class="form__invalid-slogan">Пожалуйста, исправьте следующие ошибки:</b>
                 <ul class="form__invalid-list">
                     <?php
-                    if (!is_bool($errors['heading'])): ?>
+                    if (($errors['heading'])): ?>
                         <li class="form__invalid-item">Заголовок. <?php
                             print ($errors['heading']) ?>
                         </li>
                     <?php
                     endif; ?>
                     <?php
-                    if (!is_bool($errors['link-ref'])): ?>
+                    if (($errors['link-ref'])): ?>
                         <li class="form__invalid-item">Ссылка. <?php
                             print ($errors['link-ref']) ?>
                         </li>
                     <?php
                     endif; ?>
                     <?php
-                    if (!is_bool($errors['tags'])): ?>
+                    if (($errors['tags'])): ?>
                         <li class="form__invalid-item">Теги. <?php
                             print ($errors['tags']) ?>
                         </li>

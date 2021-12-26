@@ -9,7 +9,6 @@ CREATE TABLE user
   email    varchar(128),
   login    varchar(128),
   password varchar(64),
-  name varchar(32),
   avatar   text
 );
 CREATE TABLE content_type
@@ -90,13 +89,15 @@ CREATE TABLE hashtag_post
 );
 
 CREATE UNIQUE INDEX email ON user(email);
-CREATE UNIQUE INDEX login ON user(login);
+CREATE INDEX login ON user(login);
 CREATE INDEX reg_date ON user(reg_date);
 CREATE INDEX type_name ON content_type(type_name);
 CREATE INDEX create_date ON post(create_date);
 CREATE INDEX header ON post(header);
 CREATE INDEX create_date ON massage(create_date);
 CREATE INDEX hashtag_name ON hashtag(hashtag_name);
+CREATE FULLTEXT INDEX post_ft_search ON post(header, text_content);
+CREATE FULLTEXT INDEX post_ft_search ON hashtag(hashtag_name);
 
 
 

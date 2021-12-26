@@ -1,5 +1,6 @@
 <?php
 /* @var bool $isPost */
+
 /* @var array $errors */
 
 ?>
@@ -12,7 +13,7 @@
                 <label class="adding-post__label form__label" for="video-heading">Заголовок
                     <span class="form__input-required">*</span></label>
                 <div class="form__input-section  <?php
-                if ($isPost && !is_bool($errors['heading'])): print 'form__input-section--error';
+                if ($isPost && ($errors['heading'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="video-heading" type="text"
                            name="heading" placeholder="Введите заголовок"
@@ -30,7 +31,7 @@
                 <label class="adding-post__label form__label" for="video-url">Ссылка youtube
                     <span class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && !is_bool($errors['video-url'])): print 'form__input-section--error';
+                if ($isPost && ($errors['video-url'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="video-url" type="text"
                            name="video-url" placeholder="Введите ссылку"
@@ -47,7 +48,7 @@
             <div class="adding-post__input-wrapper form__input-wrapper">
                 <label class="adding-post__label form__label" for="tags">Теги</label>
                 <div class="form__input-section <?php
-                if ($isPost && !is_bool($errors['tags'])): print 'form__input-section--error';
+                if ($isPost && ($errors['tags'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="tags" type="text"
                            name="tags" placeholder="Введите теги"
@@ -68,19 +69,19 @@
                 <b class="form__invalid-slogan">Пожалуйста, исправьте следующие ошибки:</b>
                 <ul class="form__invalid-list">
                     <?php
-                    if (!is_bool($errors['heading'])): ?>
+                    if (($errors['heading'])): ?>
                         <li class="form__invalid-item">Заголовок. <?php
                             print ($errors['heading']) ?></li>
                     <?php
                     endif; ?>
                     <?php
-                    if (!is_bool($errors['video-url'])): ?>
+                    if (($errors['video-url'])): ?>
                         <li class="form__invalid-item">Ссылка на youtube. <?php
                             print ($errors['video-url']) ?></li>
                     <?php
                     endif; ?>
                     <?php
-                    if (!is_bool($errors['tags'])): ?>
+                    if (($errors['tags'])): ?>
                         <li class="form__invalid-item">Теги. <?php
                             print ($errors['tags']) ?>
                         </li>

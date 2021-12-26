@@ -1,9 +1,13 @@
 <?php
 /* @var array $postMainContent */
+
 /* @var array $authorPostsCount */
 /* @var array $commentList */
 /* @var array $commentAllList */
-require_once('src/function.php');
+/* @var bool $isUserSubscribe */
+/* @var string $userAvatar */
+/* @var array $commentErrors */
+/* @var array $errors */
 
 
 ?>
@@ -13,7 +17,7 @@ require_once('src/function.php');
     <h1 class="page__title page__title--publication"><?= $postMainContent['header'] ?></h1>
     <section class="post-details">
         <h2 class="visually-hidden">Публикация</h2>
-        <div class="post-details__wrapper post-photo">
+        <div class="post-details__wrapper <?= $postMainContent['icon_name'] ?>">
             <div class="post-details__main-block post post--details">
 
 
@@ -21,13 +25,13 @@ require_once('src/function.php');
                 if ($postMainContent['icon_name'] === "post-photo"): ?>
 
                     <div class="post-details__image-wrapper post-photo__image-wrapper">
-                        <img src="<?= $postMainContent['media']; ?>" alt="Фото от пользователя" width="760" height="507">
+                        <img src="<?= $postMainContent['media']; ?>" alt="Фото от пользователя" width="760"
+                             height="507">
                     </div>
 
 
                 <?php
                 elseif ($postMainContent['icon_name'] === "post-quote"): ?>
-
 
 
                     <div class="post-details__image-wrapper post-quote">
@@ -66,7 +70,7 @@ require_once('src/function.php');
                                 <div class="post-link__info-wrapper">
                                     <div class="post-link__icon-wrapper">
                                         <img
-                                            src="https://www.google.com/s2/favicons?domain=vitadental.ru"
+                                            src="https://www.google.com/s2/favicons?domain=<?= $postMainContent['media'] ?>"
                                             alt="Иконка">
                                     </div>
                                     <div class="post-link__info">
@@ -92,7 +96,8 @@ require_once('src/function.php');
                 <div class="post__indicators">
                     <div class="post__buttons">
 
-                        <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                        <a class="post__indicator post__indicator--likes button"
+                           href="like.php?id=<?= $postMainContent['post_num'] ?>" title="Лайк">
                             <svg class="post__indicator-icon" width="20" height="17">
                                 <use xlink:href="#icon-heart"></use>
                             </svg>
@@ -127,26 +132,30 @@ require_once('src/function.php');
                 </div>
 
                 <ul class="post__tags">
-
-                    <li><a href="#"><?= $postMainContent['hs-name'] ?></a></li>
-
+                    <?php
+                    foreach ($commentAllList as $key => $hashtags): ?>
+                        <li><a href="#"><?= $hashtags['hs-name'] ?></a></li>
+                    <?php
+                    endforeach; ?>
                 </ul>
                 <div class="comments">
-                    <form class="comments__form form" action="#" method="post">
+                    <form class="comments__form form" action="add-comment.php" method="post">
                         <div class="comments__my-avatar">
-                            <img class="comments__picture" src="img/userpic-medium.jpg" alt="Аватар пользователя">
+                            <img class="comments__picture" src="<?= $userAvatar ?>" alt="Аватар пользователя">
                         </div>
-                        <div class="form__input-section form__input-section--error">
-                            <textarea class="comments__textarea form__textarea form__input"
+                        <div class="form__input-section <?php if ($errors):print 'form__input-section--error'; endif;?>">
+                            <textarea class="comments__textarea form__textarea form__input" id="comment-text"
+                                      name="comment-text"
                                       placeholder="Ваш комментарий"></textarea>
                             <label class="visually-hidden">Ваш комментарий</label>
                             <button class="form__error-button button" type="button">!</button>
                             <div class="form__error-text">
                                 <h3 class="form__error-title">Ошибка валидации</h3>
-                                <p class="form__error-desc">Это поле обязательно к заполнению</p>
+                                <p class="form__error-desc"><?= $errors['comment-text']?></p>
                             </div>
                         </div>
-                        <button class="comments__submit button button--green" type="submit">Отправить</button>
+                        <button class="comments__submit button button--green" name="postId"
+                                value="<?= $postMainContent['post_num'] ?>" type="submit">Отправить</button>
                     </form>
                     <?php
                     if (array_key_exists('comment', $_GET)): ?>
@@ -209,7 +218,8 @@ require_once('src/function.php');
                                             <a class="comments__user-name" href="#">
                                                 <span><?= $firstTwoComments['name'] ?></span>
                                             </a>
-                                            <time class="comments__time" datetime="<?= $firstTwoComments['date'] ?>"><?= smallDate(
+                                            <time class="comments__time"
+                                                  datetime="<?= $firstTwoComments['date'] ?>"><?= smallDate(
                                                     $firstTwoComments['date']
                                                 ) ?></time>
                                         </div>
@@ -224,15 +234,16 @@ require_once('src/function.php');
                                 </li>
                             </ul>
 
-                                <?php
-                                if (($postMainContent['count_comments'] - 2) > 2): ?>
+                            <?php
+                            if (($postMainContent['count_comments'] - 2) > 0): ?>
 
-                                    <a class="comments__more-link" href="?post-id=<?= $postMainContent['post_num'] ?>&comment=all">
-                                        <span>Показать все комментарии</span>
-                                        <sup class="comments__amount"><?= $postMainContent['count_comments'] - 2 ?></sup>
-                                    </a>
-                                <?php
-                                endif ?>
+                                <a class="comments__more-link"
+                                   href="?post-id=<?= $postMainContent['post_num'] ?>&comment=all">
+                                    <span>Показать все комментарии</span>
+                                    <sup class="comments__amount"><?= $postMainContent['count_comments'] - 2 ?></sup>
+                                </a>
+                            <?php
+                            endif ?>
 
                         </div>
                     <?php
@@ -265,10 +276,11 @@ require_once('src/function.php');
                 <div class="post-details__rating user__rating">
                     <p class="post-details__rating-item user__rating-item user__rating-item--subscribers">
                         <span
-                            class="post-details__rating-amount user__rating-amount"> <?= zeroForPostInfo($postMainContent['subscribe_count']) ?> </span>
+                            class="post-details__rating-amount user__rating-amount"> <?= zeroForPostInfo(
+                                $postMainContent['subscribe_count']
+                            ) ?> </span>
                         <span class="post-details__rating-text user__rating-text">подписчиков</span>
                     </p>
-
 
 
                     <p class="post-details__rating-item user__rating-item user__rating-item--publications">
@@ -279,13 +291,18 @@ require_once('src/function.php');
                 </div>
 
 
+                <form method="get" action="subscribe.php" class="post-details__user-buttons user__buttons">
+                    <button name="authorId" value="<?= $postMainContent['user_id'] ?>"
+                            class="user__button user__button--subscription button button--main <?php
+                            if (!$isUserSubscribe):print 'button--quartz'; endif; ?>" type="submit">
 
-                <div class="post-details__user-buttons user__buttons">
-                    <button class="user__button user__button--subscription button button--main" type="button">
-                        Подписаться
+                        <?php
+                        if ($isUserSubscribe):print 'Подписаться';
+                        else:print 'Отписаться'; endif; ?>
+
                     </button>
                     <a class="user__button user__button--writing button button--green" href="#">Сообщение</a>
-                </div>
+                </form>
             </div>
         </div>
     </section>

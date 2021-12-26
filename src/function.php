@@ -9,7 +9,7 @@
  *
  * @return string возвращаем текст с кол-вом символов не больше лимита
  */
-function cutText(string $text, int $limit = 300, string $url = '#'): string
+function cutText(string $text, string $url, int $limit = 300): string
 {
 // превращаем исходный текст в массив слов
     $words = explode(' ', $text);
@@ -34,7 +34,7 @@ function cutText(string $text, int $limit = 300, string $url = '#'): string
         $ellipsis = ('...');
         $result[] = $ellipsis;
 //добавляем ссылку
-        $link = '<a class="post-text__more-link" href="#">Читать далее</a>';
+        $link = '<a class="post-text__more-link"  href="post.php?post-id='.$url.'">Читать далее</a>';
 //если слов меньше лимита
     } else {
         $result = $words;
@@ -145,7 +145,6 @@ function smallUSerDate($date)
 }
 
 
-
 /**
  * Из-за джойнов селектов, теперь там где в бд 0 возвращается null из-за чего летит верстка.
  * Этой функцией мы фиксим подобное поведение
@@ -166,19 +165,21 @@ function zeroForPostInfo(?string $string): int
  * @param array $errors Массив который мы валидируем
  * @return bool Возвращает true если ошибки есть и false если нет
  */
-function findErrors(array $errors):bool
+function findErrors(array $errors): bool
 {
-    foreach ($errors as $key => $val){
-        if (is_bool($val)){
+    foreach ($errors as $key => $val) {
+        if (is_bool($val)) {
             $answer = false;
-
-        } else{
+        } else {
             $answer = true;
             break;
         }
     }
- return $answer;
-};
+
+    return $answer;
+}
+
+;
 /**
  * Поиск дубликата почты в бд
  * @param mysqli $mysql соединение с бд
@@ -187,7 +188,7 @@ function findErrors(array $errors):bool
  */
 function searchDuplicate(mysqli $mysql, string $email)
 {
-    $data[]=$email;
+    $data[] = $email;
     $query = "
 SELECT * FROM user
 WHERE email = ?
@@ -198,19 +199,20 @@ WHERE email = ?
         $data
     );
     $postListPrepareRes = mysqli_stmt_get_result($postListPrepare);
-    return mysqli_fetch_all($postListPrepareRes, MYSQLI_ASSOC);
 
+    return mysqli_fetch_array($postListPrepareRes, MYSQLI_ASSOC);
 }
 
 /**
  * функция  вывода ошибки валидации для пароля (может быть массив/строка)
  * @param $arr Массив из $errors
  */
-function outputArrOrString($arr){
-    if (is_string($arr)){
+function outputArrOrString($arr)
+{
+    if (is_string($arr)) {
         print $arr;
     } else {
-        foreach ($arr as $key){
+        foreach ($arr as $key) {
             print $key;
         }
     }
@@ -225,5 +227,115 @@ function existAddFiles($input): bool
 {
     if (!empty($_FILES[$input]['name']) or $_FILES[$input]['size'] > 0) {
         return true;
-    } return false;
+    }
+
+    return false;
 }
+
+/**
+ * Определяем класс html отображения основного контента (feed or popular) для разметки лейаута
+ * @return string Класс для html разметки
+ */
+function layoutContentDefine()
+{
+    $content = strrchr($_SERVER['PHP_SELF'], '/');
+    if ($content === '/popular.php') {
+        return 'page__main--popular';
+    } elseif ($content === '/feed.php') {
+        return 'page__main--feed';
+    } elseif ($content === '/search.php') {
+        return 'page__main--search-results';
+    } elseif ($content === '/post.php') {
+        return 'page__main--publication';
+    } elseif ($content === '/add.php') {
+        return 'page__main--adding-post';
+    }
+}
+
+
+/**
+ * Перемещает из созданной по скрипту папки файл в папку контент, если валидация успешана и удаляет папку
+ */
+function rebaseImg()
+{
+    $oldfolder = 'valid';
+    $newfolder = 'content';
+
+    $files = glob($oldfolder.'/*');
+    if ($_FILES) {
+        foreach ($files as $file) {
+            $filename = basename($file);
+            copy($file, $newfolder.'/'.$filename);
+            unlink($file);
+        }
+        rmdir($oldfolder);
+    }
+}
+
+/**
+ * Удаляет файл и папку созданные по скрипту если валидация провалилась
+ */
+function deleteImg()
+{
+    $oldfolder = 'valid';
+    $files = glob($oldfolder.'/*');
+    if ($_FILES) {
+        foreach ($files as $file) {
+            unlink($file);
+        }
+        rmdir($oldfolder);
+    }
+}
+
+/**
+ * Определяем название блока для подключения исходя из номера типа контента
+ * @param $type null|int тип контента
+ * @return string Название контента
+ */
+function getBlockName($type)
+{
+    switch ($type) {
+        case 3:
+        case null:
+            return 'block-photo.php';
+
+        case 1:
+            return 'block-text.php';
+        case 2:
+            return 'block-quote.php';
+
+        case 4:
+            return 'block-video.php';
+
+        case 5:
+            return 'block-link.php';
+    }
+}
+
+/**
+ * Определяем название класса для верстки исходя из типа контента
+ * @param $type null|int Тип контента
+ * @return string Имя класса для верстки
+ */
+function getClassNameAddForm($type)
+{
+    switch ($type) {
+        case 3:
+        case null:
+            return 'adding-post__photo tabs__content--active';
+
+        case 1:
+            return 'adding-post__text tabs__content--active';
+        case 2:
+            return 'adding-post__quote tabs__content--active';
+
+        case 4:
+            return 'adding-post__video tabs__content--active';
+
+        case 5:
+            return 'adding-post__link tabs__content--active';
+    }
+}
+
+
+

@@ -1,11 +1,12 @@
 <?php
 /* @var array $postListRows */
 
+
 foreach (
     $postListRows
 
     as $post
-): ?>
+):?>
 
     <article class="popular__post post <?= $post['icon_name'] ?>">
         <header class="post__header">
@@ -22,13 +23,13 @@ foreach (
                     <p>
                         <?= htmlspecialchars($post['text_content']) ?>
                     </p>
-                    <cite>Неизвестный Автор</cite>
+                    <cite><?= $post['author_copy_right'] ?></cite>
                 </blockquote>
             <?php
             elseif ($post['icon_name'] === "post-text"): ?>
 
                 <p>
-                    <?= cutText(htmlspecialchars($post['text_content'])) ?>
+                    <?= cutText(htmlspecialchars($post['text_content']),$post['post_num']) ?>
 
                 </p>
 
@@ -48,19 +49,17 @@ foreach (
                     <a class="post-link__external" href="<?= $post['media'] ?>" title="Перейти по ссылке">
                         <div class="post-link__info-wrapper">
                             <div class="post-link__icon-wrapper">
-                                <img src="https://www.google.com/s2/favicons?domain=vitadental.ru"
+                                <img src="https://www.google.com/s2/favicons?domain=<?= $post['media'] ?>"
                                      alt="Иконка">
                             </div>
                             <div class="post-link__info">
                                 <h3>
                                     <?= htmlspecialchars($post['header']) ?>
-
                                 </h3>
+                                <span><?= parse_url($post['media'])['host'] ?></span>
                             </div>
                         </div>
-                        <span>
 
-                            </span>
                     </a>
                 </div>
 
@@ -70,7 +69,7 @@ foreach (
                     <div class="post-video__preview">
                         <?= embedYoutubeCover($post['media']); ?>
                     </div>
-                    <a href="http://localhost/1658553-readme-12/post.php?post-id=<?= $post['post_num'] ?>"
+                    <a href="post.php?post-id=<?= $post['post_num'] ?>"
                        class="post-video__play-big button">
                         <svg class="post-video__play-big-icon" width="14" height="14">
                             <use xlink:href="#icon-video-play-big"></use>
@@ -86,7 +85,8 @@ foreach (
             <div class="post__author">
                 <a class="post__author-link" href="#" title="Автор">
                     <div class="post__avatar-wrapper">
-                        <img class="post__author-avatar" src="<?= htmlspecialchars($post['avatar']) ?>"
+                        <img class="post__author-avatar" style="width: 40px; height: 40px"
+                             src="<?= htmlspecialchars($post['avatar']) ?>"
                              alt="Аватар пользователя">
                     </div>
                     <div class="post__info">
@@ -103,7 +103,7 @@ foreach (
             </div>
             <div class="post__indicators">
                 <div class="post__buttons">
-                    <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                    <a class="post__indicator post__indicator--likes button" href="like.php?id=<?=$post['post_num']?>" title="Лайк">
                         <svg class="post__indicator-icon" width="20" height="17">
                             <use xlink:href="#icon-heart"></use>
                         </svg>

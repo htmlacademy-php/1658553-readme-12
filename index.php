@@ -1,77 +1,11 @@
 <?php
 
-const SORT_VIEWS = 'views_number';
-const SORT_DATE = 'create_date';
-const SORT_LIKES = 'count_likes';
+require_once('config/config.php');
 
-const TYPE_TEXT = 'text';
-const TYPE_QUOTE = 'quote';
-const TYPE_PHOTO = 'photo';
-const TYPE_VIDEO = 'video';
-const TYPE_LINK = 'link';
+/* @var bool $isAuth */
 
-require_once('src/helpers.php');
-require_once('src/function.php');
-require_once('src/request.php');
-require_once('src/db.php');
-require_once('model/models.php');
-
-
-/* @var mysqli $mysql */
-/**
- * Входящие данные
- */
-$isAuth = rand(0, 1);
-$userName = 'Владик';
-/**
- * Контроллер
- */
-$contentType = retriveGetInt('content_type', null);
-
-$sortId = getSortId();
-$postsContent = getPosts($mysql, $sortId, $contentType);
-$contentTypes = getContentTypes($mysql, 'type_name');
-
-
-/**
- * Отображение данных
- */
-$header = includeTemplate(
-    'block/header.php',
-    [
-        'isAuth' => $isAuth,
-        'userName' => $userName,
-    ]
-);
-$postContent = includeTemplate(
-    'block/block-posts.php',
-    [
-        'postListRows' => $postsContent
-    ]
-);
-
-$pageContent = includeTemplate(
-    'main.php',
-    [
-        'sort' => $sortId,
-        'currentType' => $contentType,
-        'postContent' => $postContent,
-        'contentTypes' => $contentTypes
-    ]
-);
-
-$layoutContent = includeTemplate(
-    'layout.php',
-    [
-        'header' => $header,
-        'content' => $pageContent,
-        'title' => 'readme: популярное',
-    ]
-);
-
-print($layoutContent);
-
-
-
-
-
+if ($isAuth) {
+    header('location: main.php');
+} else {
+    header('location: feed.php');
+}
