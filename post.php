@@ -25,19 +25,26 @@ if ($isAuth) {
 
 
     if ($isPostIdExist) {
+        $isCommentShowALl = $_GET['comment'];
         $postMainContent = getPost($mysql, $postId);
         $authorPostsCount = authorPostsCount($mysql, $postMainContent['user_id']);
-        $commentList = getCommentsForPost($mysql, $postId, 0, 2);
-        $commentAllList = getCommentsForPost($mysql, $postId, 0, 200);
+        $repostCount = repostCount($mysql, $postId);
+        $hashtags = GetHashtag($mysql,$postId);
         addView($mysql,$postId,$postMainContent['views']);
         $isUserSubscribe = isUserSubscribe($mysql, $postMainContent['user_id'], $_SESSION['user']['id'] );
+        if (!$isCommentShowALl){
+            $commentList =  array_slice(getCommentsForPost($mysql, $postId), 0, 2);
+        } else {
+            $commentList = getCommentsForPost($mysql, $postId);
+        }
+
+
         if ($_SESSION['errors']){
             $errors = [];
             $errors = $_SESSION['errors'];
             unset($_SESSION['errors']);
 
         }
-
 
 
 
@@ -51,6 +58,7 @@ if ($isAuth) {
             [
                 'avatar' => $_SESSION['user']['avatar'],
                 'userName' => $_SESSION['user']['login'],
+                'userId' => $_SESSION['user']['id'],
             ]
         );
         $postContents = includeTemplate(
@@ -59,10 +67,12 @@ if ($isAuth) {
                 'postMainContent' => $postMainContent,
                 'authorPostsCount' => $authorPostsCount,
                 'commentList' => $commentList,
-                'commentAllList' => $commentAllList,
+                'isCommentShowAll' => $isCommentShowALl,
                 'isUserSubscribe'=>$isUserSubscribe,
+                'hashtags' =>$hashtags,
                 'userAvatar' =>$_SESSION['user']['avatar'],
                 'errors'=> $errors,
+                'repostCount' => $repostCount['repost_count'],
             ]
         );
         $layoutContent = includeTemplate(

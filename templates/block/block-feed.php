@@ -12,7 +12,7 @@ foreach (
 
     <article class="feed__post post <?= $post['icon_name'] ?>">
         <header class="post__header post__author">
-            <a class="post__author-link" href="#" title="Автор">
+            <a class="post__author-link" href="profile.php?user=<?=$post['author_id']?>" title="Автор">
                 <div class="post__avatar-wrapper">
                     <img class="post__author-avatar" src="<?= $post['avatar'] ?>" alt="Аватар пользователя"
                          width="60" height="60">
@@ -20,7 +20,7 @@ foreach (
                 <div class="post__info">
                     <b class="post__author-name"><?= $post['name'] ?></b>
                     <span class="post__time"><?= smallDate(
-                            $post['create_date']
+                            $post['create_date'],'назад'
                         ) ?></span>
                 </div>
             </a>
@@ -90,9 +90,10 @@ foreach (
                     </svg>
                 </a>
             </div>
+            <?php
+            endif ?>
         </div>
-        <?php
-        endif ?>
+
         <footer class="post__footer post__indicators">
             <div class="post__buttons">
                 <a class="post__indicator post__indicator--likes button" href="like.php?id=<?= $post['post_num'] ?>"
@@ -115,11 +116,13 @@ foreach (
                     <span><?= $post['count_comments'] ?></span>
                     <span class="visually-hidden">количество комментариев</span>
                 </a>
-                <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
+                <a class="post__indicator post__indicator--repost button" href="repost.php?postId=<?=$post['post_num']?>" title="Репост">
                     <svg class="post__indicator-icon" width="19" height="17">
                         <use xlink:href="#icon-repost"></use>
                     </svg>
-                    <span>5</span>
+
+                    <span><?= $post['repost_count'] ?></span>
+
                     <span class="visually-hidden">количество репостов</span>
                 </a>
             </div>

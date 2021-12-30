@@ -30,19 +30,19 @@
                 <label class="adding-post__label form__label" for="post-text">Текст поста <span
                         class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && ($errors['text-content'])): print 'form__input-section--error';
+                if ($isPost && ($errors['textContent'])): print 'form__input-section--error';
                 endif; ?>">
                                             <textarea class="adding-post__textarea form__textarea form__input"
-                                                      id="post-text" name="text-content"
+                                                      id="post-text" name="textContent"
                                                       placeholder="Введите текст публикации"><?= getPostVal(
-                                                    'text-content'
+                                                    'textContent'
                                                 ); ?></textarea>
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['text-content'] ?></p>
+                            print $errors['textContent'] ?></p>
                     </div>
                 </div>
             </div>
@@ -76,9 +76,9 @@
                     <?php
                     endif; ?>
                     <?php
-                    if (($errors['text-content'])): ?>
+                    if (($errors['textContent'])): ?>
                         <li class="form__invalid-item">Текст поста. <?php
-                            print ($errors['text-content']) ?></li>
+                            print ($errors['textContent']) ?></li>
                     <?php
                     endif; ?>
                     <?php

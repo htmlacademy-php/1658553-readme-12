@@ -29,16 +29,16 @@
                 <label class="adding-post__label form__label" for="post-link">Ссылка <span
                         class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && ($errors['link-ref'])): print 'form__input-section--error';
+                if ($isPost && ($errors['linkRef'])): print 'form__input-section--error';
                 endif; ?>">
                     <input class="adding-post__input form__input" id="post-link" type="text"
-                           name="link-ref" value="<?= getPostVal('link-ref'); ?>">
+                           name="linkRef" value="<?= getPostVal('linkRef'); ?>">
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['link-ref'] ?></p>
+                            print $errors['linkRef'] ?></p>
                     </div>
                 </div>
             </div>
@@ -73,9 +73,9 @@
                     <?php
                     endif; ?>
                     <?php
-                    if (($errors['link-ref'])): ?>
+                    if (($errors['linkRef'])): ?>
                         <li class="form__invalid-item">Ссылка. <?php
-                            print ($errors['link-ref']) ?>
+                            print ($errors['linkRef']) ?>
                         </li>
                     <?php
                     endif; ?>

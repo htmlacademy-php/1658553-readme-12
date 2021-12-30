@@ -83,7 +83,7 @@ foreach (
         </div>
         <footer class="post__footer">
             <div class="post__author">
-                <a class="post__author-link" href="#" title="Автор">
+                <a class="post__author-link" href="profile.php?user=<?=$post['author_id']?>" title="Автор">
                     <div class="post__avatar-wrapper">
                         <img class="post__author-avatar" style="width: 40px; height: 40px"
                              src="<?= htmlspecialchars($post['avatar']) ?>"
@@ -96,7 +96,7 @@ foreach (
                         </b>
                         <time title="<?= cutDate($post['create_date']) ?>" class="post__time"
                               datetime="<?= fullDate($post['create_date']) ?>"><?= smallDate(
-                                $post['create_date']
+                                $post['create_date'],'назад'
                             ) ?></time>
                     </div>
                 </a>

@@ -21,7 +21,7 @@ $fields = [
             return validateEmail($mysql, $key);
         },
         'add' => function ($mysql, $lastUserId) {
-            return addUserEmail($mysql, $lastUserId);
+            return addUserEmail($mysql);
         },
     ],
     'login' => [

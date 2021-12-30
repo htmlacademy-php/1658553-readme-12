@@ -27,6 +27,7 @@ SELECT post.id                AS `post_num`,
        post.media             AS `media`,
        user.avatar            AS `avatar`,
        user.login             AS `name`,
+       user.id                AS `author_id`,
        content_type.icon_name AS `icon_name`,
        count_comments,
        count_likes
@@ -129,9 +130,9 @@ WHERE post.id = $postId
 
     if (empty($postId) == true) {
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
 
 
@@ -186,6 +187,8 @@ FROM post
   FROM subscribe
   GROUP BY user_author_id
 ) AS subscribe ON subscribe.user_author_id = post.user_id
+
+
 WHERE post.id = ?
 
     ";
@@ -195,6 +198,29 @@ WHERE post.id = ?
     return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }
 
+/**
+ * получаем хештеги поста
+ * @param mysqli $mysql соединение с бд
+ * @param int $postId ид поста
+ * @return array|false|null
+ */
+function GetHashtag(mysqli $mysql, int $postId)
+{
+    $data[] = $postId;
+    $query = "
+    SELECT hashtag.hashtag_name   AS `hs-name`
+FROM post
+       LEFT JOIN
+     hashtag_post ON hashtag_post.post = post.id
+       LEFT JOIN
+     hashtag ON hashtag.id = hashtag_post.hashtag
+WHERE post.id = ?
+";
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
+    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
+
+    return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
+}
 
 /**
  * Узнаем кол-во постов у автора
@@ -219,6 +245,19 @@ WHERE user_id = ?
     return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }
 
+function repostCount(mysqli $mysql, int $postId)
+{
+    $data[] = $postId;
+    $query = "
+SELECT count(id) AS repost_count
+FROM post
+WHERE originalPostId = ?;
+    ";
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
+    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
+
+    return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
+}
 
 /**
  * запрос на список комментариев
@@ -226,20 +265,18 @@ WHERE user_id = ?
 /**
  * @param mysqli $mysql Соединение с бд
  * @param int $postId Номер поста
- * @param int $offset С какого начинать показывать
- * @param int $limit По какой показывать
  * @return array Массив с данными из бд
  */
-function getCommentsForPost(mysqli $mysql, int $postId, int $offset, int $limit): array
+function getCommentsForPost(mysqli $mysql, int $postId): array
 {
     $data[] = $postId;
     $query = "
-SELECT post.id              AS `post_num`,
+SELECT
        comment.create_date  AS `date`,
        comment.content      AS `comment`,
        user.login           AS `name`,
-       user.avatar          AS `avatar`,
-       hashtag.hashtag_name AS `hs-name`
+       user.avatar          AS `avatar`
+
 FROM post
 
        LEFT JOIN
@@ -247,14 +284,10 @@ FROM post
 
        LEFT JOIN
      user ON user.id = comment.user_id
-       LEFT JOIN
-     hashtag_post ON hashtag_post.post = post.id
-       LEFT JOIN
-     hashtag ON hashtag.id = hashtag_post.hashtag
+
 
 WHERE post.id = ?
 ORDER BY comment.create_date ASC
-LIMIT $offset, $limit
     ";
     $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
     $postPrepareRes = mysqli_stmt_get_result($postPrepare);
@@ -296,7 +329,7 @@ $where";
 /**
  * Функция вывода постов из бд при поиске
  * @param mysqli $mysql соединение с бд
- * @param string $search поисковый запрос
+ * @param string|null $search поисковый запрос
  * @return array посты из бд
  */
 function getSearchContent(mysqli $mysql, ?string $search): array
@@ -385,9 +418,9 @@ WHERE user_id = ?
     $result = mysqli_fetch_array($postListPrepareRes, MYSQLI_ASSOC);
     if ($result) {
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
 
 /**
@@ -411,9 +444,9 @@ WHERE user_subscribe_id = $userId
 
     if ($subscribe) {
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
 
 function getFeedPosts(mysqli $mysql, string $sortId, ?int $typeId, int $userId): array
@@ -425,7 +458,7 @@ function getFeedPosts(mysqli $mysql, string $sortId, ?int $typeId, int $userId):
         $where = "WHERE user_subscribe_id = ? AND  content_type.id = ?";
         $data = [
             0 => $userId,
-            1 => $typeId
+            1 => $typeId,
         ];
     }
     $postsList = "
@@ -476,5 +509,148 @@ ORDER BY $sortId DESC
     $postsListPrepareRes = mysqli_stmt_get_result($postListPrepare);
 
     return mysqli_fetch_all($postsListPrepareRes, MYSQLI_ASSOC);
+}
 
+/**
+ * Получаем информацию о пользователе для профиля
+ * @param mysqli $mysql соединение с бд
+ * @param int $userId id пользователя
+ * @return array информация
+ */
+function getInfoProfileUser(mysqli $mysql, int $userId): array
+{
+    $where = 'WHERE user.id = ?;';
+    $data[] = $userId;
+    $profileInfo = "
+SELECT user.avatar AS `avatar`,
+       user.login  AS `name`,
+       user.id     AS `user_id`,
+       user.reg_date AS `reg_date`,
+       `publication_count`,
+       `subscribe_count`
+
+FROM user
+       LEFT JOIN (
+  SELECT count(post.id) AS publication_count,
+         post.user_id
+  FROM post
+  GROUP BY post.user_id
+) AS post ON post.user_id = user.id
+       LEFT JOIN (
+  SELECT count(user_subscribe_id) AS subscribe_count,
+         user_author_id
+  FROM subscribe
+  GROUP BY user_author_id
+) AS subscribe ON subscribe.user_author_id = user.id
+
+
+$where
+    ";
+    $postListPrepare = dbGetPrepareStmt(
+        $mysql,
+        $profileInfo,
+        $data
+    );
+
+    $postsListPrepareRes = mysqli_stmt_get_result($postListPrepare);
+
+    return mysqli_fetch_array($postsListPrepareRes, MYSQLI_ASSOC);
+}
+
+/**
+ * Вытягиваем всю информацию из таблицы пост для копирования в репост
+ * @param mysqli $mysql соединение с бд
+ * @param int $postId id поста
+ * @return array|false|null
+ */
+function getInfoForRepost(mysqli $mysql, int $postId)
+{
+    $where = 'WHERE post.id = ?;';
+    $data[] = $postId;
+    $postInfo = "
+SELECT * FROM post
+$where
+    ";
+    $postListPrepare = dbGetPrepareStmt(
+        $mysql,
+        $postInfo,
+        $data
+    );
+    $postsListPrepareRes = mysqli_stmt_get_result($postListPrepare);
+
+    return mysqli_fetch_array($postsListPrepareRes, MYSQLI_ASSOC);
+}
+
+function profilePosts(mysqli $mysql, int $userId)
+{
+    $where = 'WHERE user.id = ?;';
+    $data[] = $userId;
+    $profilePosts = "
+SELECT post.id                AS `post_num`,
+       post.user_id,
+       post.text_content      AS `text_content`,
+       post.header            AS `header`,
+       post.author_copy_right AS `author_copy_right`,
+       post.create_date       AS `create_date`,
+       post.media             AS `media`,
+       post.views_number      AS `views`,
+       user.avatar            AS `avatar`,
+       user.login             AS `name`,
+       user.reg_date          AS `reg_date`,
+       content_type.icon_name AS `icon_name`,
+       count_comments,
+       count_likes,
+       `subscribe_count`,
+       post.content_type_id   AS `icon-name`,
+       post.repost,
+       post.originalPostId
+
+
+FROM post
+       LEFT JOIN
+     user ON user.id = post.user_id
+       LEFT JOIN
+     content_type ON content_type.id = post.content_type_id
+       LEFT JOIN (
+  SELECT post_id,
+         count(post_id) AS count_comments
+  FROM comment
+  GROUP BY post_id
+) AS c ON c.post_id = post.id
+       LEFT JOIN (
+  SELECT post_id,
+         count(post_id) AS count_likes
+  FROM like_count
+  GROUP BY post_id
+) AS l ON l.post_id = post.id
+       LEFT JOIN (
+  SELECT user_author_id,
+         count(user_subscribe_id) AS `subscribe_count`
+  FROM subscribe
+  GROUP BY user_author_id
+) AS subscribe ON subscribe.user_author_id = post.user_id
+
+
+$where
+    ";
+    $postPrepare = dbGetPrepareStmt($mysql, $profilePosts, $data);
+    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
+
+    return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
+}
+
+function repostUserInfo(mysqli $mysql, int $postId)
+{
+    $data[] = $postId;
+    $query = "
+SELECT user.login, user.avatar,user.id
+FROM post
+LEFT JOIN
+    user ON user.id = post.user_id
+WHERE post.id = ?
+    ";
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
+    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
+
+    return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }

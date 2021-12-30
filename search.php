@@ -18,19 +18,21 @@ if ($isAuth) {
 } else {
     $search = $_GET['q'] ?? '';
     $searchContent = null;
+
     if ($search) {
         $searchContent = getSearchContent($mysql, $search);
+
     }
 
     if ($searchContent) {
-        $searchBLock = includeTemplate(
+        $searchBlock = includeTemplate(
             'block/search-block.php',
             [
                 'searchContent' => $searchContent,
             ]
         );
     } else {
-        $searchBLock = includeTemplate(
+        $searchBlock = includeTemplate(
             'block/no-results.php',
             [
                 'searchContent' => $searchContent,
@@ -43,6 +45,7 @@ if ($isAuth) {
         [
             'avatar' => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
+            'userId' => $_SESSION['user']['id'],
         ]
     );
 
@@ -51,7 +54,7 @@ if ($isAuth) {
         'search.php',
         [
             'search' => $search,
-            'block' => $searchBLock,
+            'block' => $searchBlock,
         ]
     );
 

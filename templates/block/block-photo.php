@@ -28,20 +28,20 @@
                 </div>
             </div>
             <div class="adding-post__input-wrapper form__input-wrapper">
-                <label class="adding-post__label form__label" for="photo-url">Ссылка из
+                <label class="adding-post__label form__label" for="photoUrl">Ссылка из
                     интернета</label>
                 <div class="form__input-section <?php
-                if ($isPost && ($errors['photo-url'])): print 'form__input-section--error';
+                if ($isPost && ($errors['photoUrl'])): print 'form__input-section--error';
                 endif; ?>">
-                    <input class="adding-post__input form__input" id="photo-url" type="text"
-                           name="photo-url" placeholder="Введите ссылку"
-                           value="<?= getPostVal('photo-url'); ?>">
+                    <input class="adding-post__input form__input" id="photoUrl" type="text"
+                           name="photoUrl" placeholder="Введите ссылку"
+                           value="<?= getPostVal('photoUrl'); ?>">
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['photo-url'] ?></p>
+                            print $errors['photoUrl'] ?></p>
                     </div>
                 </div>
             </div>
@@ -76,9 +76,9 @@
                     <?php
                     endif; ?>
                     <?php
-                    if (($errors['photo-url'])): ?>
+                    if (($errors['photoUrl'])): ?>
                         <li class="form__invalid-item">Ссылка из интернета. <?php
-                            print ($errors['photo-url']) ?> Или прикрепите файл изображения
+                            print ($errors['photoUrl']) ?> Или прикрепите файл изображения
                         </li>
                     <?php
                     endif; ?>

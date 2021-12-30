@@ -27,38 +27,38 @@
                 </div>
             </div>
             <div class="adding-post__input-wrapper form__textarea-wrapper">
-                <label class="adding-post__label form__label" for="cite-text">Текст цитаты <span
+                <label class="adding-post__label form__label" for="citeText">Текст цитаты <span
                         class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && ($errors['cite-text'])): print 'form__input-section--error';
+                if ($isPost && ($errors['citeText'])): print 'form__input-section--error';
                 endif; ?>">
                                             <textarea
                                                 class="adding-post__textarea adding-post__textarea--quote form__textarea form__input"
-                                                id="cite-text" name="cite-text"
-                                                placeholder="Текст цитаты"><?= getPostVal('cite-text'); ?></textarea>
+                                                id="citeText" name="citeText"
+                                                placeholder="Текст цитаты"><?= getPostVal('citeText'); ?></textarea>
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['cite-text'] ?></p>
+                            print $errors['citeText'] ?></p>
                     </div>
                 </div>
             </div>
             <div class="adding-post__textarea-wrapper form__input-wrapper">
-                <label class="adding-post__label form__label" for="quote-author">Автор <span
+                <label class="adding-post__label form__label" for="quoteAuthor">Автор <span
                         class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && ($errors['quote-author'])): print 'form__input-section--error';
+                if ($isPost && ($errors['quoteAuthor'])): print 'form__input-section--error';
                 endif; ?>">
-                    <input class="adding-post__input form__input" id="quote-author" type="text"
-                           name="quote-author" value="<?= getPostVal('quote-author'); ?>">
+                    <input class="adding-post__input form__input" id="quoteAuthor" type="text"
+                           name="quoteAuthor" value="<?= getPostVal('quoteAuthor'); ?>">
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['quote-author'] ?></p>
+                            print $errors['quoteAuthor'] ?></p>
                     </div>
                 </div>
             </div>
@@ -93,15 +93,15 @@
                     <?php
                     endif; ?>
                     <?php
-                    if (($errors['cite-text'])): ?>
+                    if (($errors['citeText'])): ?>
                         <li class="form__invalid-item">Текст цитаты. <?php
-                            print ($errors['cite-text']) ?></li>
+                            print ($errors['citeText']) ?></li>
                     <?php
                     endif; ?>
                     <?php
-                    if (($errors['quote-author'])): ?>
+                    if (($errors['quoteAuthor'])): ?>
                         <li class="form__invalid-item">Автор. <?php
-                            print ($errors['quote-author']) ?>
+                            print ($errors['quoteAuthor']) ?>
                         </li>
                     <?php
                     endif; ?>

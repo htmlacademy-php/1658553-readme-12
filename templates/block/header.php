@@ -2,6 +2,7 @@
 /* @var string $userName */
 
 /* @var string $avatar */
+/* @var string $userId */
 
 ?>
 <div class="header__wrapper container">
@@ -73,7 +74,7 @@
                         <div class="header__profile-tooltip">
                             <ul class="header__profile-nav">
                                 <li class="header__profile-nav-item">
-                                    <a class="header__profile-nav-link" href="#">
+                                    <a class="header__profile-nav-link" href="profile.php?user=<?=$userId?>">
                           <span class="header__profile-nav-text">
                             Мой профиль
                           </span>

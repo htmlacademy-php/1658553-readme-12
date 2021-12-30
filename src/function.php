@@ -83,7 +83,7 @@ function fullDate($date)
  * @throws Exception преобразование строки в дататайм
  *
  */
-function smallDate($date)
+function smallDate($date, $ending)
 {
     $postDate = new DateTimeImmutable($date);
 //вычисляем разницу между серверным временем и датой поста
@@ -92,53 +92,20 @@ function smallDate($date)
 
     if ($difference->m > 0) {
         $resultForPost = getNounPluralForm($difference->m, 'месяц', 'месяца', 'месяцев');
-        $smallDate = "$difference->m $resultForPost назад";
+        $smallDate = "$difference->m $resultForPost $ending";
     } elseif (intdiv($difference->d, 7) > 0) {
         $weeks = intdiv($difference->d, 7);
         $resultForPost = getNounPluralForm($weeks, 'неделя', 'недели', 'недель');
-        $smallDate = "$weeks $resultForPost назад";
+        $smallDate = "$weeks $resultForPost $ending";
     } elseif ($difference->d > 0) {
         $resultForPost = getNounPluralForm($difference->d, 'день', 'дня', 'дней');
-        $smallDate = "$difference->d $resultForPost назад";
+        $smallDate = "$difference->d $resultForPost $ending";
     } elseif ($difference->h > 0) {
         $resultForPost = getNounPluralForm($difference->h, 'час', 'часа', 'часов');
-        $smallDate = "$difference->h $resultForPost назад";
+        $smallDate = "$difference->h $resultForPost $ending";
     } else {
         $resultForPost = getNounPluralForm($difference->i, 'минута', 'минуты', 'минут');
-        $smallDate = "$difference->i $resultForPost назад";
-    }
-
-    return $smallDate;
-}
-
-/**
- * @param string $date дата регистрации пользователя из бд
- * @return string Дата в формате был * назад
- * @throws Exception преобразование строки в дататайм
- */
-function smallUSerDate($date)
-{
-    $postDate = new DateTimeImmutable($date);
-//вычисляем разницу между серверным временем и датой поста
-    $nowDate = new DateTimeImmutable();
-    $difference = $nowDate->diff($postDate);
-
-    if ($difference->m > 0) {
-        $resultForPost = getNounPluralForm($difference->m, 'месяц', 'месяца', 'месяцев');
-        $smallDate = "$difference->m $resultForPost на сайте";
-    } elseif (intdiv($difference->d, 7) > 0) {
-        $weeks = intdiv($difference->d, 7);
-        $resultForPost = getNounPluralForm($weeks, 'неделя', 'недели', 'недель');
-        $smallDate = "$weeks $resultForPost на сайте";
-    } elseif ($difference->d > 0) {
-        $resultForPost = getNounPluralForm($difference->d, 'день', 'дня', 'дней');
-        $smallDate = "$difference->d $resultForPost на сайте";
-    } elseif ($difference->h > 0) {
-        $resultForPost = getNounPluralForm($difference->h, 'час', 'часа', 'часов');
-        $smallDate = "$difference->h $resultForPost на сайте";
-    } else {
-        $resultForPost = getNounPluralForm($difference->i, 'минута', 'минуты', 'минут');
-        $smallDate = "$difference->i $resultForPost на сайте";
+        $smallDate = "$difference->i $resultForPost $ending";
     }
 
     return $smallDate;
@@ -249,6 +216,8 @@ function layoutContentDefine()
         return 'page__main--publication';
     } elseif ($content === '/add.php') {
         return 'page__main--adding-post';
+    } elseif ($content === '/profile.php') {
+        return 'page__main--profile';
     }
 }
 
@@ -289,53 +258,40 @@ function deleteImg()
 
 /**
  * Определяем название блока для подключения исходя из номера типа контента
- * @param $type null|int тип контента
+ * @param int|null $type Тип контента который отображается сейчас
+ * @param array $types Все типы контента
  * @return string Название контента
  */
-function getBlockName($type)
+function getBlockName(?int $type, array $types)
 {
-    switch ($type) {
-        case 3:
-        case null:
-            return 'block-photo.php';
-
-        case 1:
-            return 'block-text.php';
-        case 2:
-            return 'block-quote.php';
-
-        case 4:
-            return 'block-video.php';
-
-        case 5:
-            return 'block-link.php';
+    foreach ($types as $key => $contentTypes) {
+        if ($contentTypes['id'] === $type) {
+            return 'block-'.$contentTypes['type_name'].'.php';
+        }
     }
+
+    return 'block-photo.php';
 }
 
 /**
  * Определяем название класса для верстки исходя из типа контента
- * @param $type null|int Тип контента
+ * @param int|null $type Тип контента который отображается сейчас
+ * @param array $types Все типы контента
  * @return string Имя класса для верстки
  */
-function getClassNameAddForm($type)
+function getClassNameAddForm(?int $type, array $types)
 {
-    switch ($type) {
-        case 3:
-        case null:
-            return 'adding-post__photo tabs__content--active';
-
-        case 1:
-            return 'adding-post__text tabs__content--active';
-        case 2:
-            return 'adding-post__quote tabs__content--active';
-
-        case 4:
-            return 'adding-post__video tabs__content--active';
-
-        case 5:
-            return 'adding-post__link tabs__content--active';
+    foreach ($types as $key => $contentTypes) {
+        if ($contentTypes['id'] === $type) {
+            return 'adding-post__'.$contentTypes['type_name'].' tabs__content--active';
+        }
     }
+
+    return 'adding-post__photo tabs__content--active';
 }
+
+
+
 
 
 

@@ -30,21 +30,26 @@ if ($isAuth) {
 } else {
     $contentType = retriveGetInt('content_type', null);
     $sortId = getSortId();
-    $feedPosts = getFeedPosts($mysql,$sortId,$contentType,$_SESSION['user']['id']);
+    $feedPosts = getFeedPosts($mysql, $sortId, $contentType, $_SESSION['user']['id']);
     $contentTypes = getContentTypes($mysql, 'type_name');
 
+    foreach ($feedPosts as $arr => $val) {
+        $repostCount = repostCount($mysql, $val['post_num']);
+        $feedPosts[$arr]['repost_count'] = $repostCount['repost_count'];
+    }
 
     $header = includeTemplate(
         'block/header.php',
         [
             'avatar' => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
+            'userId' => $_SESSION['user']['id'],
         ]
     );
     $feed = includeTemplate(
         'block/block-feed.php',
         [
-            'feedPosts'=>$feedPosts,
+            'feedPosts' => $feedPosts,
 
         ]
     );
@@ -53,8 +58,9 @@ if ($isAuth) {
         'feed.php',
         [
             'currentType' => $contentType,
-            'pageContent'=>$feed,
+            'pageContent' => $feed,
             'contentTypes' => $contentTypes,
+
 
         ]
     );

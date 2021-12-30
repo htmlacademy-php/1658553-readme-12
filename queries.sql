@@ -20,14 +20,15 @@ VALUES ('2015.05.05', 'firstemail@mail.ru', 'Вася', 'qwerty', 'img/some-man.
 /*
  Все посты
  */
-INSERT INTO `post` (create_date, header, text_content, author_copy_right, media, views_number, user_id, content_type_id)
+INSERT INTO `post` (create_date, header, text_content, author_copy_right, media, views_number, user_id, content_type_id,
+                    repost)
 VALUES ('2020.08.23', 'Цитата', 'Мы в жизни любим только раз, а после ищем лишь похожих', 'Сергей Есенин',
-        'somelink.com', '5', '3', '2'),
+        'somelink.com', '5', '3', '2', false),
        ('2020.07.23', 'Игра престолов', 'Не могу дождаться начала финального сезона своего любимого сериала!', '', '',
-        '10', '4', '1'),
-       ('2020.07.28', 'Наконец, обработал фотки!', '', '', 'img/rock-medium.jpg', '15', '5', '3'),
-       ('2020.08.20', 'Моя мечта', '', '', 'img/coast-medium.jpg', '25', '3', '3'),
-       ('2020.08.23', 'Лучшие курсы', 'Лучшие курсы', '', 'https://htmlacademy.ru', '25', '3', '5');
+        '10', '4', '1', false),
+       ('2020.07.28', 'Наконец, обработал фотки!', '', '', 'img/rock-medium.jpg', '15', '5', '3', false),
+       ('2020.08.20', 'Моя мечта', '', '', 'img/coast-medium.jpg', '25', '3', '3', false),
+       ('2020.08.23', 'Лучшие курсы', 'Лучшие курсы', '', 'https://htmlacademy.ru', '25', '3', '5', false);
 /*
  Пара комментариев
  */
@@ -93,12 +94,6 @@ VALUES ('2', '2'),
        ('3', '3'),
        ('4', '3'),
        ('2', '1');
-
-
-
-
-
-
 
 
 

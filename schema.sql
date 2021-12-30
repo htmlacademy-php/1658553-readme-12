@@ -28,6 +28,8 @@ CREATE TABLE post
   views_number      int,
   user_id           int,
   content_type_id   int,
+  repost            bool,
+  originalPostId    int,
   FOREIGN KEY (`user_id`) REFERENCES user (`id`),
   FOREIGN KEY (`content_type_id`) REFERENCES content_type (`id`)
 
@@ -88,16 +90,16 @@ CREATE TABLE hashtag_post
 
 );
 
-CREATE UNIQUE INDEX email ON user(email);
-CREATE INDEX login ON user(login);
-CREATE INDEX reg_date ON user(reg_date);
-CREATE INDEX type_name ON content_type(type_name);
-CREATE INDEX create_date ON post(create_date);
-CREATE INDEX header ON post(header);
-CREATE INDEX create_date ON massage(create_date);
-CREATE INDEX hashtag_name ON hashtag(hashtag_name);
-CREATE FULLTEXT INDEX post_ft_search ON post(header, text_content);
-CREATE FULLTEXT INDEX post_ft_search ON hashtag(hashtag_name);
+CREATE UNIQUE INDEX email ON user (email);
+CREATE INDEX login ON user (login);
+CREATE INDEX reg_date ON user (reg_date);
+CREATE INDEX type_name ON content_type (type_name);
+CREATE INDEX create_date ON post (create_date);
+CREATE INDEX header ON post (header);
+CREATE INDEX create_date ON massage (create_date);
+CREATE INDEX hashtag_name ON hashtag (hashtag_name);
+CREATE FULLTEXT INDEX post_ft_search ON post (header, text_content);
+CREATE FULLTEXT INDEX post_ft_search ON hashtag (hashtag_name);
 
 
 
