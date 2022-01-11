@@ -16,27 +16,27 @@ $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
 $errors = [];
 
 $fields = [
-    'email' => [
+    'email'           => [
         'validation' => function ($mysql, $key) {
             return validateEmail($mysql, $key);
         },
-        'add' => function ($mysql, $lastUserId) {
+        'add'        => function ($mysql, $lastUserId) {
             return addUserEmail($mysql);
         },
     ],
-    'login' => [
-        'validation' => function ($mysql,$key) {
+    'login'           => [
+        'validation' => function ($mysql, $key) {
             return validateFilled($key);
         },
-        'add' => function ($mysql, $lastUserId) {
+        'add'        => function ($mysql, $lastUserId) {
             return addUserLogin($mysql, $lastUserId);
         },
     ],
-    'password' => [
+    'password'        => [
         'validation' => function ($mysql, $key) {
             return validatePassword($key);
         },
-        'add' => function ($mysql, $lastUserId) {
+        'add'        => function ($mysql, $lastUserId) {
             return addUserPass($mysql, $lastUserId);
         },
     ],
@@ -44,15 +44,15 @@ $fields = [
         'validation' => function ($mysql, $key) {
             return validatePasswordRepeat($key);
         },
-        'add' => function ($mysql, $lastUserId) {
+        'add'        => function ($mysql, $lastUserId) {
             return $lastUserId;
         },
     ],
-    'avatar' => [
+    'avatar'          => [
         'validation' => function () {
             return validateAvatarFromUser();
         },
-        'add' => function ($mysql, $lastUserId) {
+        'add'        => function ($mysql, $lastUserId) {
             return addUserAvatar($mysql, $lastUserId);
         },
     ],
@@ -64,7 +64,7 @@ if ($isPost) {
     $_POST += $avatar;
     foreach ($_POST as $key => $value) {
         $ruleValid = $fields[$key]['validation'];
-        $errors[$key] = $ruleValid($mysql,$key);
+        $errors[$key] = $ruleValid($mysql, $key);
         $ruleAdd = $fields[$key]['add'];
         $lastUserId = $ruleAdd($mysql, $lastUserId);
     }
@@ -77,7 +77,6 @@ if ($isPost) {
         deleteImg();
     }
 }
-
 
 
 $header = includeTemplate(
@@ -104,9 +103,9 @@ $registration = includeTemplate(
 $layout_content = includeTemplate(
     'layout.php',
     [
-        'header' => $header,
+        'header'  => $header,
         'content' => $registration,
-        'title' => 'Регистрация',
+        'title'   => 'Регистрация',
 
     ]
 );

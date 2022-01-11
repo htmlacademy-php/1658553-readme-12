@@ -1,5 +1,8 @@
 <?php
 
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
+
 const TYPE_TEXT = 'text';
 const TYPE_QUOTE = 'quote';
 const TYPE_PHOTO = 'photo';
@@ -7,6 +10,7 @@ const TYPE_VIDEO = 'video';
 const TYPE_LINK = 'link';
 
 require_once('config/config.php');
+require_once('config/mailer.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
 require_once('src/validate.php');
@@ -17,6 +21,7 @@ require_once('model/models.php');
 
 /* @var mysqli $mysql */
 /* @var bool $isAuth */
+/* @var mysqli $transport */
 
 
 if ($isAuth) {
@@ -26,68 +31,140 @@ if ($isAuth) {
     $contentTypes = getContentTypes($mysql, 'type_name');
     $errors = [];
     $fields = [
-        'heading' => [
+        'heading'     => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
                 return addHeading($mysql, $key, $authorId);
             },
         ],
-        'tags' => [
+        'tags'        => [
             'validation' => function ($key) {
                 return validateSharp($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
                 return addSharp($mysql, $key, $lastPostId);
             },
         ],
-        'photoUrl' => [
+        'photoUrl'    => [
             'validation' => function ($key) {
                 return validateImg($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
-                return addPhotoUrl($mysql, $lastPostId, $contentTypes['photo']['id']);
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
+                return addPhotoUrl(
+                    $mysql,
+                    $lastPostId,
+                    $contentTypes['photo']['id']
+                );
             },
         ],
-        'videoUrl' => [
+        'videoUrl'    => [
             'validation' => function ($key) {
                 return validateVideoUrl($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
-                return addVideoUrl($mysql, $key, $lastPostId, $contentTypes['video']['id']);
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
+                return addVideoUrl(
+                    $mysql,
+                    $key,
+                    $lastPostId,
+                    $contentTypes['video']['id']
+                );
             },
         ],
         'textContent' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
-                return addText($mysql, $key, $lastPostId, $contentTypes['text']['id']);
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
+                return addText(
+                    $mysql,
+                    $key,
+                    $lastPostId,
+                    $contentTypes['text']['id']
+                );
             },
         ],
-        'citeText' => [
+        'citeText'    => [
             'validation' => function ($key) {
                 return validateCite($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
-                return addCite($mysql, $key, $lastPostId, $contentTypes['quote']['id']);
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
+                return addCite(
+                    $mysql,
+                    $key,
+                    $lastPostId,
+                    $contentTypes['quote']['id']
+                );
             },
         ],
         'quoteAuthor' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
                 return addQuoteAuthor($mysql, $key, $lastPostId);
             },
         ],
-        'linkRef' => [
+        'linkRef'     => [
             'validation' => function ($key) {
                 return validateLink($key);
             },
-            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
-                return addLink($mysql, $key, $lastPostId, $contentTypes['link']['id']);
+            'add'        => function (
+                $mysql,
+                $key,
+                $lastPostId,
+                $authorId,
+                $contentTypes
+            ) {
+                return addLink(
+                    $mysql,
+                    $key,
+                    $lastPostId,
+                    $contentTypes['link']['id']
+                );
             },
         ],
     ];
@@ -98,11 +175,34 @@ if ($isAuth) {
             $ruleValid = $fields[$key]['validation'];
             $errors[$key] = $ruleValid($key);
             $ruleAdd = $fields[$key]['add'];
-            $lastPostId = $ruleAdd($mysql, $key, $lastPostId, $_SESSION['user']['id'], $contentTypes);
+            $lastPostId = $ruleAdd(
+                $mysql,
+                $key,
+                $lastPostId,
+                $_SESSION['user']['id'],
+                $contentTypes
+            );
         }
         if (!findErrors($errors)) {
             mysqli_commit($mysql);
             rebaseImg();
+            $userSubscribeList = getProfileSubscribe($mysql,
+                $_SESSION['user']['id']);
+            foreach ($userSubscribeList as $user => $info) {
+                $message = new Email();
+                $message->to($info['email']);
+                $message->from("Readme@mail.ru");
+                $message->subject('Новая публикация от пользователя '
+                    .$_SESSION['user']['login'].'');
+
+                $message->text('Здравствуйте, '.$info['login']
+                    .' . Пользователь '.$_SESSION['user']['login'].' только что опубликовал новую запись
+                „'.$_POST['heading']
+                    .'“. Посмотрите её на странице пользователя: http://localhost/1658553-readme-12/profile.php?user='
+                    .$_SESSION['user']['id'].' ');
+                $mailer = new Mailer($transport);
+                $mailer->send($message);
+            }
             header("Location: post.php?post-id=$lastPostId");
         } else {
             mysqli_rollback($mysql);
@@ -127,26 +227,26 @@ if ($isAuth) {
     $header = includeTemplate(
         'block/header.php',
         [
-            'avatar' => $_SESSION['user']['avatar'],
+            'avatar'   => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
-            'userId' => $_SESSION['user']['id'],
+            'userId'   => $_SESSION['user']['id'],
         ]
     );
     $postAdd = includeTemplate(
         'post-add.php',
         [
             'blockContent' => $blockContent,
-            'className' => $className,
+            'className'    => $className,
             'contentTypes' => getContentTypes($mysql, 'type_name'),
-            'contentType' => $contentType,
+            'contentType'  => $contentType,
         ]
     );
     $layout_content = includeTemplate(
         'layout.php',
         [
-            'header' => $header,
+            'header'  => $header,
             'content' => $postAdd,
-            'title' => 'Добавить публикацию',
+            'title'   => 'Добавить публикацию',
 
         ]
     );

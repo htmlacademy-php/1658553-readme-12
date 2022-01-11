@@ -21,7 +21,6 @@ if ($isAuth) {
 
     if ($search) {
         $searchContent = getSearchContent($mysql, $search);
-
     }
 
     if ($searchContent) {
@@ -43,9 +42,9 @@ if ($isAuth) {
     $header = includeTemplate(
         'block/header.php',
         [
-            'avatar' => $_SESSION['user']['avatar'],
+            'avatar'   => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
-            'userId' => $_SESSION['user']['id'],
+            'userId'   => $_SESSION['user']['id'],
         ]
     );
 
@@ -54,7 +53,7 @@ if ($isAuth) {
         'search.php',
         [
             'search' => $search,
-            'block' => $searchBlock,
+            'block'  => $searchBlock,
         ]
     );
 
@@ -62,8 +61,8 @@ if ($isAuth) {
         'layout.php',
         [
             'content' => $searchPage,
-            'header' => $header,
-            'title' => 'readme: моя лента',
+            'header'  => $header,
+            'title'   => 'readme: моя лента',
 
         ]
     );

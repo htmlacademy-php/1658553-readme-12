@@ -1,5 +1,6 @@
 <?php
 /* @var string $title */
+
 /* @var array $errors */
 /* @var bool $isPost */
 
@@ -27,7 +28,8 @@
                 d="M2.8 4.8v10.5c0 1.2 1 2.2 2.3 2.2s2.3-1 2.3-2.2V3.4C7.2 1.5 5.6 0 3.7 0 1.7 0 .1 1.5 0 3.4V15c0 2.7 2.2 5 5 5s5-2.2 5-5V2.9H8.7V15c0 2.1-1.7 3.8-3.7 3.8-2.1 0-3.7-1.7-3.7-3.8V3.6c0-1.3 1.1-2.3 2.4-2.3 1.3 0 2.4 1 2.4 2.3v11.7c0 .6-.5 1-1 1-.6 0-1-.4-1-1V4.8H2.8z"></path>
         </symbol>
         <symbol id="icon-close" viewbox="0 0 18 18">
-            <path d="M18 1.3L16.7 0 9 7.7 1.3 0 0 1.3 7.7 9 0 16.7 1.3 18 9 10.3l7.7 7.7 1.3-1.3L10.3 9z"></path>
+            <path
+                d="M18 1.3L16.7 0 9 7.7 1.3 0 0 1.3 7.7 9 0 16.7 1.3 18 9 10.3l7.7 7.7 1.3-1.3L10.3 9z"></path>
         </symbol>
         <symbol id="icon-comment" viewbox="0 0 19 17">
             <path
@@ -110,7 +112,8 @@
     <div class="header__wrapper page__header-wrapper container">
         <div class="header__logo-wrapper page__logo-wrapper">
             <a class="header__logo-link header__logo-link--active">
-                <img class="header__logo" src="img/logo.svg" alt="Логотип readme" width="172" height="32">
+                <img class="header__logo" src="img/logo.svg"
+                     alt="Логотип readme" width="172" height="32">
             </a>
             <p class="header__topic page__header-topic">
                 micro blogging
@@ -133,7 +136,8 @@
 </header>
 
 <main>
-    <h1 class="visually-hidden">Главная страница сайта по созданию микроблога readme</h1>
+    <h1 class="visually-hidden">Главная страница сайта по созданию микроблога
+        readme</h1>
     <div class="page__main-wrapper page__main-wrapper--intro container">
         <section class="intro">
             <h2 class="visually-hidden">Наши преимущества</h2>
@@ -153,35 +157,55 @@
         </section>
         <section class="authorization">
             <h2 class="visually-hidden">Авторизация</h2>
-            <form class="authorization__form form" action="main.php" method="post">
-                <div class="authorization__input-wrapper form__input-wrapper <?php
-                if ($isPost && ($errors['email'])): print 'form__input-section--error';
-                endif; ?>">
-                    <input class="authorization__input authorization__input--login form__input" type="text" name="email"
-                           placeholder="Email" value="<?= getPostVal('email'); ?>">
+            <form class="authorization__form form" action="main.php"
+                  method="post">
+                <div
+                    class="authorization__input-wrapper form__input-wrapper <?php
+                    if ($isPost
+                        && ($errors['email'])
+                    ): print 'form__input-section--error';
+                    endif; ?>">
+                    <input
+                        class="authorization__input authorization__input--login form__input"
+                        type="text" name="email"
+                        placeholder="Email" value="<?= getPostVal('email'); ?>">
                     <svg class="form__input-icon" width="19" height="18">
                         <use xlink:href="#icon-input-user"></use>
                     </svg>
                     <label class="visually-hidden">Логин</label>
                 </div>
-                <?php if ($isPost && ($errors['email'])): ?>
-                    <span class="form__error-label form__error-label--login"><?= $errors['email'] ?></span>
-                <?php endif; ?>
-                <div class="authorization__input-wrapper form__input-wrapper <?php
-                if ($isPost && ($errors['password'])): print 'form__input-section--error';
-                endif; ?>">
-                    <input class="authorization__input authorization__input--password form__input" type="password"
-                           name="password" placeholder="Пароль">
+                <?php
+                if ($isPost && ($errors['email'])): ?>
+                    <span
+                        class="form__error-label form__error-label--login"><?= $errors['email'] ?></span>
+                <?php
+                endif; ?>
+                <div
+                    class="authorization__input-wrapper form__input-wrapper <?php
+                    if ($isPost
+                        && ($errors['password'])
+                    ): print 'form__input-section--error';
+                    endif; ?>">
+                    <input
+                        class="authorization__input authorization__input--password form__input"
+                        type="password"
+                        name="password" placeholder="Пароль">
                     <svg class="form__input-icon" width="16" height="20">
                         <use xlink:href="#icon-input-password"></use>
                     </svg>
                     <label class="visually-hidden">Пароль</label>
                 </div>
-                <?php if ($isPost && ($errors['password'])): ?>
-                    <span class="form__error-label form__error-label--login"><?= $errors['password'] ?></span>
-                <?php endif; ?>
-                <a class="authorization__recovery" href="#">Восстановить пароль</a>
-                <button class="authorization__submit button button--main" type="submit">Войти</button>
+                <?php
+                if ($isPost && ($errors['password'])): ?>
+                    <span
+                        class="form__error-label form__error-label--login"><?= $errors['password'] ?></span>
+                <?php
+                endif; ?>
+                <a class="authorization__recovery" href="#">Восстановить
+                    пароль</a>
+                <button class="authorization__submit button button--main"
+                        type="submit">Войти
+                </button>
             </form>
         </section>
     </div>
@@ -200,41 +224,51 @@
                             <a class="footer__page-link" href="#">Реклама</a>
                         </li>
                         <li class="footer__info-page">
-                            <a class="footer__page-link" href="#">О разработчиках</a>
+                            <a class="footer__page-link" href="#">О
+                                разработчиках</a>
                         </li>
                         <li class="footer__info-page">
-                            <a class="footer__page-link" href="#">Работа в Readme</a>
+                            <a class="footer__page-link" href="#">Работа в
+                                Readme</a>
                         </li>
                         <li class="footer__info-page">
-                            <a class="footer__page-link" href="#">Соглашение пользователя</a>
+                            <a class="footer__page-link" href="#">Соглашение
+                                пользователя</a>
                         </li>
                         <li class="footer__info-page">
-                            <a class="footer__page-link" href="#">Политика конфиденциальности</a>
+                            <a class="footer__page-link" href="#">Политика
+                                конфиденциальности</a>
                         </li>
                     </ul>
                 </div>
                 <p class="footer__license">
-                    При использовании любых материалов с сайта обязательно указание Readme в качестве источника. Все
-                    авторские и исключительные права в рамках проекта защищены в соответствии с положениями 4 части
+                    При использовании любых материалов с сайта обязательно
+                    указание Readme в качестве источника. Все
+                    авторские и исключительные права в рамках проекта защищены в
+                    соответствии с положениями 4 части
                     Гражданского Кодекса Российской Федерации.
                 </p>
             </div>
             <div class="footer__my-info">
                 <ul class="footer__my-pages">
                     <li class="footer__my-page footer__my-page--feed">
-                        <a class="footer__page-link" href="feed.html">Моя лента</a>
+                        <a class="footer__page-link" href="feed.html">Моя
+                            лента</a>
                     </li>
                     <li class="footer__my-page footer__my-page--popular">
-                        <a class="footer__page-link" href="popular.html">Популярный контент</a>
+                        <a class="footer__page-link" href="popular.html">Популярный
+                            контент</a>
                     </li>
                     <li class="footer__my-page footer__my-page--messages">
-                        <a class="footer__page-link" href="messages.html">Личные сообщения</a>
+                        <a class="footer__page-link" href="messages.html">Личные
+                            сообщения</a>
                     </li>
                 </ul>
                 <div class="footer__copyright">
                     <a class="footer__copyright-link" href="#">
                         <span>Разработано HTML Academy</span>
-                        <svg class="footer__copyright-logo" width="27" height="34">
+                        <svg class="footer__copyright-logo" width="27"
+                             height="34">
                             <use xlink:href="#icon-htmlacademy"></use>
                         </svg>
                     </a>

@@ -8,9 +8,9 @@ require_once('src/request.php');
 require_once('model/models.php');
 require_once('src/add-query.php');
 
-
-/* @var mysqli $mysql */
 /* @var bool $isAuth */
+/* @var mysqli $mysql */
+
 
 if ($isAuth) {
     header('location: index.php');
@@ -19,33 +19,40 @@ if ($isAuth) {
      * Входящие данные
      */
     $postId = retriveGetInt('post-id', 0);
-
     $isPostIdExist = isPostExist($mysql, $postId);
-
+    $errors = [];
 
 
     if ($isPostIdExist) {
         $isCommentShowALl = $_GET['comment'];
         $postMainContent = getPost($mysql, $postId);
-        $authorPostsCount = authorPostsCount($mysql, $postMainContent['user_id']);
+        $authorPostsCount = authorPostsCount(
+            $mysql,
+            $postMainContent['user_id']
+        );
         $repostCount = repostCount($mysql, $postId);
-        $hashtags = GetHashtag($mysql,$postId);
-        addView($mysql,$postId,$postMainContent['views']);
-        $isUserSubscribe = isUserSubscribe($mysql, $postMainContent['user_id'], $_SESSION['user']['id'] );
-        if (!$isCommentShowALl){
-            $commentList =  array_slice(getCommentsForPost($mysql, $postId), 0, 2);
+        $hashtags = GetHashtag($mysql, $postId);
+        addView($mysql, $postId, $postMainContent['views']);
+        $isUserSubscribe = isUserSubscribe(
+            $mysql,
+            $postMainContent['user_id'],
+            $_SESSION['user']['id']
+        );
+        if (!$isCommentShowALl) {
+            $commentList = array_slice(
+                getCommentsForPost($mysql, $postId),
+                0,
+                2
+            );
         } else {
             $commentList = getCommentsForPost($mysql, $postId);
         }
 
 
-        if ($_SESSION['errors']){
-            $errors = [];
+        if ($_SESSION['errors']) {
             $errors = $_SESSION['errors'];
             unset($_SESSION['errors']);
-
         }
-
 
 
         /**
@@ -56,40 +63,39 @@ if ($isAuth) {
         $header = includeTemplate(
             'block/header.php',
             [
-                'avatar' => $_SESSION['user']['avatar'],
+                'avatar'   => $_SESSION['user']['avatar'],
                 'userName' => $_SESSION['user']['login'],
-                'userId' => $_SESSION['user']['id'],
+                'userId'   => $_SESSION['user']['id'],
             ]
         );
         $postContents = includeTemplate(
             'post.php',
             [
-                'postMainContent' => $postMainContent,
+                'postMainContent'  => $postMainContent,
                 'authorPostsCount' => $authorPostsCount,
-                'commentList' => $commentList,
+                'commentList'      => $commentList,
                 'isCommentShowAll' => $isCommentShowALl,
-                'isUserSubscribe'=>$isUserSubscribe,
-                'hashtags' =>$hashtags,
-                'userAvatar' =>$_SESSION['user']['avatar'],
-                'errors'=> $errors,
-                'repostCount' => $repostCount['repost_count'],
+                'isUserSubscribe'  => $isUserSubscribe,
+                'hashtags'         => $hashtags,
+                'userAvatar'       => $_SESSION['user']['avatar'],
+                'errors'           => $errors,
+                'repostCount'      => $repostCount['repost_count'],
             ]
         );
         $layoutContent = includeTemplate(
             'layout.php',
             [
-                'header' => $header,
+                'header'  => $header,
                 'content' => $postContents,
-                'title' => 'readme: публикация',
+                'title'   => 'readme: публикация',
 
             ]
         );
 
 
         print ($layoutContent);
-    } else {
-        header("Location: error.php");
     }
+    header("Location: error.php");
 }
 
 
