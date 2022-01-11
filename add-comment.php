@@ -24,7 +24,7 @@ if ($isAuth) {
             'validation' => function ($key) {
                 return validateComment($key);
             },
-            'add' => function ($mysql, $key, $postId, $userId) {
+            'add'        => function ($mysql, $key, $postId, $userId) {
                 return addComment($mysql, $key, $postId, $userId);
             },
         ],

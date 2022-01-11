@@ -14,6 +14,7 @@ const TYPE_LINK = 'link';
 const PAGE_FEED = '/feed.php';
 
 
+
 require_once('config/config.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
@@ -30,7 +31,12 @@ if ($isAuth) {
 } else {
     $contentType = retriveGetInt('content_type', null);
     $sortId = getSortId();
-    $feedPosts = getFeedPosts($mysql, $sortId, $contentType, $_SESSION['user']['id']);
+    $feedPosts = getFeedPosts(
+        $mysql,
+        $sortId,
+        $contentType,
+        $_SESSION['user']['id']
+    );
     $contentTypes = getContentTypes($mysql, 'type_name');
 
     foreach ($feedPosts as $arr => $val) {
@@ -41,9 +47,9 @@ if ($isAuth) {
     $header = includeTemplate(
         'block/header.php',
         [
-            'avatar' => $_SESSION['user']['avatar'],
+            'avatar'   => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
-            'userId' => $_SESSION['user']['id'],
+            'userId'   => $_SESSION['user']['id'],
         ]
     );
     $feed = includeTemplate(
@@ -57,8 +63,8 @@ if ($isAuth) {
     $pageContent = includeTemplate(
         'feed.php',
         [
-            'currentType' => $contentType,
-            'pageContent' => $feed,
+            'currentType'  => $contentType,
+            'pageContent'  => $feed,
             'contentTypes' => $contentTypes,
 
 
@@ -69,8 +75,8 @@ if ($isAuth) {
         'layout.php',
         [
             'content' => $pageContent,
-            'header' => $header,
-            'title' => 'readme: моя лента',
+            'header'  => $header,
+            'title'   => 'readme: моя лента',
 
         ]
     );

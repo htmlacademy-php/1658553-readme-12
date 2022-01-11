@@ -10,7 +10,8 @@
 
 <div class="page__main-section">
     <div class="container">
-        <h1 class="page__title page__title--adding-post">Добавить публикацию</h1>
+        <h1 class="page__title page__title--adding-post">Добавить
+            публикацию</h1>
     </div>
     <div class="adding-post container">
         <div class="adding-post__tabs-wrapper tabs">
@@ -18,7 +19,9 @@
                 <ul class="adding-post__tabs-list filters__list tabs__list">
                     <li class="adding-post__tabs-item filters__item">
                         <a class="adding-post__tabs-link filters__button filters__button--photo <?php
-                        if ($contentType === $contentTypes[TYPE_PHOTO]['id'] or is_null($contentType)) {
+                        if ($contentType === $contentTypes[TYPE_PHOTO]['id']
+                            or is_null($contentType)
+                        ) {
                             print "filters__button--active";
                         } ?>  tabs__item tabs__item--active button"
                            href="?content-type=<?= $contentTypes[TYPE_PHOTO]['id'] ?>">
@@ -32,7 +35,8 @@
                         <a class="adding-post__tabs-link filters__button filters__button--video tabs__item button <?php
                         if ($contentType === $contentTypes[TYPE_VIDEO]['id']) {
                             print "filters__button--active";
-                        } ?>" href="?content-type=<?= $contentTypes[TYPE_VIDEO]['id'] ?>">
+                        } ?>"
+                           href="?content-type=<?= $contentTypes[TYPE_VIDEO]['id'] ?>">
                             <svg class="filters__icon" width="24" height="16">
                                 <use xlink:href="#icon-filter-video"></use>
                             </svg>
@@ -43,7 +47,8 @@
                         <a class="adding-post__tabs-link filters__button filters__button--text tabs__item button <?php
                         if ($contentType === $contentTypes[TYPE_TEXT]['id']) {
                             print "filters__button--active";
-                        } ?>" href="?content-type=<?= $contentTypes[TYPE_TEXT]['id'] ?>">
+                        } ?>"
+                           href="?content-type=<?= $contentTypes[TYPE_TEXT]['id'] ?>">
                             <svg class="filters__icon" width="20" height="21">
                                 <use xlink:href="#icon-filter-text"></use>
                             </svg>
@@ -54,7 +59,8 @@
                         <a class="adding-post__tabs-link filters__button filters__button--quote tabs__item button <?php
                         if ($contentType === $contentTypes[TYPE_QUOTE]['id']) {
                             print "filters__button--active";
-                        } ?>" href="?content-type=<?= $contentTypes[TYPE_QUOTE]['id'] ?>">
+                        } ?>"
+                           href="?content-type=<?= $contentTypes[TYPE_QUOTE]['id'] ?>">
                             <svg class="filters__icon" width="21" height="20">
                                 <use xlink:href="#icon-filter-quote"></use>
                             </svg>
@@ -65,7 +71,8 @@
                         <a class="adding-post__tabs-link filters__button filters__button--link tabs__item button <?php
                         if ($contentType === $contentTypes[TYPE_LINK]['id']) {
                             print "filters__button--active";
-                        } ?>" href="?content-type=<?= $contentTypes[TYPE_LINK]['id'] ?>">
+                        } ?>"
+                           href="?content-type=<?= $contentTypes[TYPE_LINK]['id'] ?>">
                             <svg class="filters__icon" width="21" height="18">
                                 <use xlink:href="#icon-filter-link"></use>
                             </svg>

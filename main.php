@@ -16,7 +16,7 @@ $errors = [];
 
 
 $fields = [
-    'email' => [
+    'email'    => [
         'validation' => function ($mysql, $key) {
             return singUpEmail($mysql, $key);
         },
@@ -46,7 +46,7 @@ $layoutContent = includeTemplate(
     [
         'isPost' => $isPost,
         'errors' => $errors,
-        'title' => 'readme: блог, каким он должен быть',
+        'title'  => 'readme: блог, каким он должен быть',
     ]
 );
 print($layoutContent);

@@ -1,5 +1,6 @@
 <?php
 /* @var string $blockRegistration */
+
 ?>
 <main class="page__main page__main--registration">
     <div class="container">

@@ -1,32 +1,12 @@
 <?php
 
-/**
- * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
- *
- * Примеры использования:
- * is_date_valid('2019-01-01'); // true
- * is_date_valid('2016-02-29'); // true
- * is_date_valid('2019-04-31'); // false
- * is_date_valid('10.10.2010'); // false
- * is_date_valid('10/10/2010'); // false
- *
- * @param string $date Дата в виде строки
- *
- * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
- */
-function isDateValid(string $date): bool
-{
-    $format_to_check = 'Y-m-d';
-    $dateTimeObj = date_create_from_format($format_to_check, $date);
 
-    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
-}
 
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
  *
- * @param $link mysqli Ресурс соединения
- * @param $sql string SQL запрос с плейсхолдерами вместо значений
+ * @param       $link mysqli Ресурс соединения
+ * @param       $sql  string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
  *
  * @return mysqli_stmt Подготовленное выражение
@@ -36,7 +16,8 @@ function dbGetPrepareStmt($link, $sql, $data = [])
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
-        $errorMsg = 'Не удалось инициализировать подготовленное выражение: '.mysqli_error($link);
+        $errorMsg = 'Не удалось инициализировать подготовленное выражение: '
+            .mysqli_error($link);
         die($errorMsg);
     }
 
@@ -71,12 +52,14 @@ function dbGetPrepareStmt($link, $sql, $data = [])
         $func(...$values);
 
         if (mysqli_errno($link) > 0) {
-            $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: '.mysqli_error($link);
+            $errorMsg
+                = 'Не удалось связать подготовленное выражение с параметрами: '
+                .mysqli_error($link);
             die($errorMsg);
         }
-
     }
     mysqli_stmt_execute($stmt);
+
     return $stmt;
 }
 
@@ -95,15 +78,19 @@ function dbGetPrepareStmt($link, $sql, $data = [])
  *     );
  * Результат: "Я поставил таймер на 5 минут"
  *
- * @param int $number Число, по которому вычисляем форму множественного числа
- * @param string $one Форма единственного числа: яблоко, час, минута
- * @param string $two Форма множественного числа для 2, 3, 4: яблока, часа, минуты
- * @param string $many Форма множественного числа для остальных чисел
+ * @param int    $number Число, по которому вычисляем форму множественного числа
+ * @param string $one    Форма единственного числа: яблоко, час, минута
+ * @param string $two    Форма множественного числа для 2, 3, 4: яблока, часа, минуты
+ * @param string $many   Форма множественного числа для остальных чисел
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function getNounPluralForm(int $number, string $one, string $two, string $many): string
-{
+function getNounPluralForm(
+    int $number,
+    string $one,
+    string $two,
+    string $many
+): string {
     $number = (int)$number;
     $mod10 = $number % 10;
     $mod100 = $number % 100;
@@ -128,8 +115,10 @@ function getNounPluralForm(int $number, string $one, string $two, string $many):
 
 /**
  * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
+ *
  * @param string $name Путь к файлу шаблона относительно папки templates
- * @param array $data Ассоциативный массив с данными для шаблона
+ * @param array  $data Ассоциативный массив с данными для шаблона
+ *
  * @return string Итоговый HTML
  */
 function includeTemplate($name, array $data = [])
@@ -152,6 +141,7 @@ function includeTemplate($name, array $data = [])
 
 /**
  * Функция проверяет доступно ли видео по ссылке на youtube
+ *
  * @param string $url ссылка на видео
  *
  * @return string Ошибку если валидация не прошла
@@ -162,7 +152,10 @@ function checkYoutubeUrl($url)
 
     set_error_handler(function () {
     }, E_WARNING);
-    $headers = get_headers('https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v='.$id);
+    $headers = get_headers(
+        'https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v='
+        .$id
+    );
     restore_error_handler();
 
     if (!is_array($headers)) {
@@ -180,7 +173,9 @@ function checkYoutubeUrl($url)
 
 /**
  * Возвращает код iframe для вставки youtube видео на страницу
+ *
  * @param string $youtube_url Ссылка на youtube видео
+ *
  * @return string
  */
 function embedYoutubeVideo($youtube_url)
@@ -190,7 +185,8 @@ function embedYoutubeVideo($youtube_url)
 
     if ($id) {
         $src = "https://www.youtube.com/embed/".$id;
-        $res = '<iframe width="760" height="400" src="'.$src.'" frameborder="0"></iframe>';
+        $res = '<iframe width="760" height="400" src="'.$src
+            .'" frameborder="0"></iframe>';
     }
 
     return $res;
@@ -198,7 +194,9 @@ function embedYoutubeVideo($youtube_url)
 
 /**
  * Возвращает img-тег с обложкой видео для вставки на страницу
+ *
  * @param string $youtube_url Ссылка на youtube видео
+ *
  * @return string
  */
 function embedYoutubeCover($youtube_url)
@@ -208,7 +206,8 @@ function embedYoutubeCover($youtube_url)
 
     if ($id) {
         $src = sprintf("https://img.youtube.com/vi/%s/mqdefault.jpg", $id);
-        $res = '<img alt="youtube cover" width="320" height="120" src="'.$src.'" />';
+        $res = '<img alt="youtube cover" width="320" height="120" src="'.$src
+            .'" />';
     }
 
     return $res;
@@ -216,7 +215,9 @@ function embedYoutubeCover($youtube_url)
 
 /**
  * Извлекает из ссылки на youtube видео его уникальный ID
+ *
  * @param string $youtube_url Ссылка на youtube видео
+ *
  * @return array
  */
 function extractYoutubeId($youtube_url)
@@ -237,31 +238,4 @@ function extractYoutubeId($youtube_url)
     }
 
     return $id;
-}
-
-/**
- * @param $index
- * @return false|string
- */
-function generateRandomDate($index)
-{
-    $deltas = [['minutes' => 59], ['hours' => 23], ['days' => 6], ['weeks' => 4], ['months' => 11]];
-    $dcnt = count($deltas);
-
-    if ($index < 0) {
-        $index = 0;
-    }
-
-    if ($index >= $dcnt) {
-        $index = $dcnt - 1;
-    }
-
-    $delta = $deltas[$index];
-    $timeval = rand(1, current($delta));
-    $timename = key($delta);
-
-    $ts = strtotime("$timeval $timename ago");
-    $dt = date('Y-m-d H:i:s', $ts);
-
-    return $dt;
 }

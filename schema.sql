@@ -46,9 +46,10 @@ CREATE TABLE comment
 );
 CREATE TABLE like_count
 (
-  id      int AUTO_INCREMENT PRIMARY KEY,
-  user_id int,
-  post_id int,
+  id        int AUTO_INCREMENT PRIMARY KEY,
+  user_id   int,
+  post_id   int,
+  like_date datetime,
   FOREIGN KEY (`user_id`) REFERENCES user (`id`),
   FOREIGN KEY (`post_id`) REFERENCES post (`id`)
 );
@@ -63,15 +64,24 @@ CREATE TABLE subscribe
 
 );
 
-CREATE TABLE massage
+CREATE TABLE message
 (
   id               int AUTO_INCREMENT PRIMARY KEY,
   create_date      datetime,
   content          text,
   user_sender_id   int,
   user_receiver_id int,
+  viewed           bool,
   FOREIGN KEY (`user_sender_id`) REFERENCES user (`id`),
   FOREIGN KEY (`user_receiver_id`) REFERENCES user (`id`)
+);
+CREATE TABLE conversation
+(
+  id               int AUTO_INCREMENT PRIMARY KEY,
+  first   int,
+  second int,
+  FOREIGN KEY (`first`) REFERENCES user (`id`),
+  FOREIGN KEY (`first`) REFERENCES user (`id`)
 );
 
 CREATE TABLE hashtag
@@ -96,7 +106,7 @@ CREATE INDEX reg_date ON user (reg_date);
 CREATE INDEX type_name ON content_type (type_name);
 CREATE INDEX create_date ON post (create_date);
 CREATE INDEX header ON post (header);
-CREATE INDEX create_date ON massage (create_date);
+CREATE INDEX create_date ON message (create_date);
 CREATE INDEX hashtag_name ON hashtag (hashtag_name);
 CREATE FULLTEXT INDEX post_ft_search ON post (header, text_content);
 CREATE FULLTEXT INDEX post_ft_search ON hashtag (hashtag_name);

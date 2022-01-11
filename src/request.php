@@ -3,8 +3,10 @@
 
 /**
  * Валидация формы ГЕТ для строки
- * @param string $param ключ параметра запроса
+ *
+ * @param string      $param   ключ параметра запроса
  * @param string|null $default Значение по умолчанию
+ *
  * @return string|null Возвращает параметр запроса в формате строки
  */
 function retriveGetString(string $param, ?string $default): ?string
@@ -21,8 +23,10 @@ function retriveGetString(string $param, ?string $default): ?string
 
 /**
  * Обеспечиваем безопасность от sql инъекций для чисел
- * @param string $param Ключ массива $_GET
+ *
+ * @param string   $param   Ключ массива $_GET
  * @param int|null $default Значение по умолчанию
+ *
  * @return int Cтрого возвращает число
  */
 function retriveGetInt(string $param, ?int $default): ?int

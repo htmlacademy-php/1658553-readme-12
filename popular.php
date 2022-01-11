@@ -13,12 +13,15 @@ const TYPE_LINK = 'link';
 const PAGE_POPULAR = '/popular.php';
 
 require_once('config/config.php');
+require_once('config/mailer.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
 require_once('src/request.php');
 require_once('model/models.php');
 
+
 /* @var bool $isAuth */
+/* @var object $transport */
 /* @var mysqli $mysql */
 
 if ($isAuth) {
@@ -36,16 +39,17 @@ if ($isAuth) {
         $offset = ($curPage - 1) * $pageItems;
         $pages = range(1, $pagesCount);
         $sortId = getSortId();
-        $postsContent = getPosts($mysql, $sortId, $contentType, $offset, $pageItems);
+        $postsContent = getPosts($mysql, $sortId, $contentType, $offset,
+            $pageItems);
         $contentTypes = getContentTypes($mysql, 'type_name');
 
 
         $header = includeTemplate(
             'block/header.php',
             [
-                'avatar' => $_SESSION['user']['avatar'],
+                'avatar'   => $_SESSION['user']['avatar'],
                 'userName' => $_SESSION['user']['login'],
-                'userId' => $_SESSION['user']['id'],
+                'userId'   => $_SESSION['user']['id'],
             ]
         );
 
@@ -58,18 +62,18 @@ if ($isAuth) {
         $pagination = includeTemplate(
             'block/pagination.php',
             [
-                'pages' => $pages,
+                'pages'      => $pages,
                 'pagesCount' => $pagesCount,
-                'curPage' => $curPage,
+                'curPage'    => $curPage,
             ]
         );
         $pageContent = includeTemplate(
             'popular.php',
             [
-                'pagination' => $pagination,
-                'sort' => $sortId,
-                'currentType' => $contentType,
-                'postContent' => $postContent,
+                'pagination'   => $pagination,
+                'sort'         => $sortId,
+                'currentType'  => $contentType,
+                'postContent'  => $postContent,
                 'contentTypes' => $contentTypes,
             ]
         );
@@ -77,12 +81,13 @@ if ($isAuth) {
         $layoutContent = includeTemplate(
             'layout.php',
             [
-                'header' => $header,
+                'header'  => $header,
                 'content' => $pageContent,
-                'title' => 'readme: популярное',
+                'title'   => 'readme: популярное',
             ]
         );
 
         print($layoutContent);
     }
+
 }

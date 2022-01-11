@@ -21,7 +21,8 @@
                     <a class="sorting__link  <?php
                     if ($sort === SORT_VIEWS) {
                         print "sorting__link--active";
-                    } ?>" href="?sort=<?= SORT_VIEWS ?>&content_type=<?= $currentType ?>">
+                    } ?>"
+                       href="?sort=<?= SORT_VIEWS ?>&content_type=<?= $currentType ?>">
                         <span>Популярность</span>
                         <svg class="sorting__icon" width="10" height="12">
                             <use xlink:href="#icon-sort"></use>
@@ -32,7 +33,8 @@
                     <a class="sorting__link <?php
                     if ($sort === SORT_LIKES) {
                         print "sorting__link--active";
-                    } ?>" href="?sort=<?= SORT_LIKES ?>&content_type=<?= $currentType ?>">
+                    } ?>"
+                       href="?sort=<?= SORT_LIKES ?>&content_type=<?= $currentType ?>">
                         <span>Лайки</span>
                         <svg class="sorting__icon" width="10" height="12">
                             <use xlink:href="#icon-sort"></use>
@@ -40,7 +42,8 @@
                     </a>
                 </li>
                 <li class="sorting__item">
-                    <a class="sorting__link <?= $sort === SORT_DATE ? "sorting__link--active" : '' ?>"
+                    <a class="sorting__link <?= $sort === SORT_DATE
+                        ? "sorting__link--active" : '' ?>"
                        href="?sort=<?= SORT_DATE ?>&content_type=<?= $currentType ?>">
                         <span>Дата</span>
                         <svg class="sorting__icon" width="10" height="12">
@@ -51,7 +54,8 @@
             </ul>
         </div>
         <div class="popular__filters filters">
-            <b class="popular__filters-caption filters__caption">Тип контента:</b>
+            <b class="popular__filters-caption filters__caption">Тип
+                контента:</b>
             <ul class="popular__filters-list filters__list">
 
 
@@ -69,7 +73,8 @@
                     <a class="filters__button filters__button--photo button <?php
                     if ($currentType === $contentTypes[TYPE_PHOTO]['id']) {
                         print "filters__button--active";
-                    } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_PHOTO]['id'] ?>">
+                    } ?>"
+                       href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_PHOTO]['id'] ?>">
                         <span class="visually-hidden">Фото</span>
                         <svg class="filters__icon" width="22" height="18">
                             <use xlink:href="#icon-filter-photo"></use>
@@ -80,7 +85,8 @@
                     <a class="filters__button filters__button--video button <?php
                     if ($currentType === $contentTypes[TYPE_VIDEO]['id']) {
                         print "filters__button--active";
-                    } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_VIDEO]['id'] ?>">
+                    } ?>"
+                       href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_VIDEO]['id'] ?>">
                         <span class="visually-hidden">Видео</span>
                         <svg class="filters__icon" width="24" height="16">
                             <use xlink:href="#icon-filter-video"></use>
@@ -91,7 +97,8 @@
                     <a class="filters__button filters__button--text button <?php
                     if ($currentType === $contentTypes[TYPE_TEXT]['id']) {
                         print "filters__button--active";
-                    } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_TEXT]['id'] ?>">
+                    } ?>"
+                       href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_TEXT]['id'] ?>">
                         <span class="visually-hidden">Текст</span>
                         <svg class="filters__icon" width="20" height="21">
                             <use xlink:href="#icon-filter-text"></use>
@@ -102,7 +109,8 @@
                     <a class="filters__button filters__button--quote button <?php
                     if ($currentType === $contentTypes[TYPE_QUOTE]['id']) {
                         print "filters__button--active";
-                    } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_QUOTE]['id'] ?>">
+                    } ?>"
+                       href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_QUOTE]['id'] ?>">
                         <span class="visually-hidden">Цитата</span>
                         <svg class="filters__icon" width="21" height="20">
                             <use xlink:href="#icon-filter-quote"></use>
@@ -113,7 +121,8 @@
                     <a class="filters__button filters__button--link button <?php
                     if ($currentType === $contentTypes[TYPE_LINK]['id']) {
                         print "filters__button--active";
-                    } ?>" href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_LINK]['id'] ?>">
+                    } ?>"
+                       href="?sort=<?= $sort ?>&content_type=<?= $contentTypes[TYPE_LINK]['id'] ?>">
                         <span class="visually-hidden">Ссылка</span>
                         <svg class="filters__icon" width="21" height="18">
                             <use xlink:href="#icon-filter-link"></use>

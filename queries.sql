@@ -58,8 +58,8 @@ WHERE post_id = 2;
 /*
  добавить лайк к посту;
  */
-INSERT INTO `like_count` (user_id, post_id)
-VALUES ('1', '2');
+INSERT INTO `like_count` (user_id, post_id, like_date)
+VALUES ('1', '2', '2020.08.25');
 /*
  подписаться на пользователя
  */
@@ -89,11 +89,12 @@ VALUES ('2020.08.24', 'второй!', '5', '2'),
        ('2020.08.25', 'пятый!!', '4', '2');
 INSERT INTO `comment` (create_date, content, user_id, post_id)
 VALUES ('2020.08.24', 'еще один!', '5', '2');
-INSERT INTO `like_count` (user_id, post_id)
-VALUES ('2', '2'),
-       ('3', '3'),
-       ('4', '3'),
-       ('2', '1');
+INSERT INTO `like_count` (user_id, post_id, like_date)
+VALUES ('2', '2', '2020.08.25'),
+       ('3', '3', '2020.08.25'),
+       ('4', '3', '2020.08.25'),
+       ('2', '1', '2020.08.25');
+
 
 
 
