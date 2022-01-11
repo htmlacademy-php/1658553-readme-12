@@ -8,6 +8,9 @@
 /* @var string $userAvatar */
 /* @var array $commentErrors */
 /* @var array $errors */
+/* @var array $hashtags */
+/* @var int $repostCount */
+/* @var bool $isCommentShowAll */
 
 
 ?>
@@ -119,12 +122,13 @@
                             <span><?= $postMainContent['count_comments'] ?></span>
                             <span class="visually-hidden">количество комментариев</span>
                         </a>
-
-                        <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
+                        <a class="post__indicator post__indicator--repost button"
+                           href="repost.php?postId=<?= $postMainContent['post_num'] ?>" title="Репост">
                             <svg class="post__indicator-icon" width="19" height="17">
                                 <use xlink:href="#icon-repost"></use>
                             </svg>
-                            <span>5</span>
+
+                            <span><?= $repostCount ?></span>
                             <span class="visually-hidden">количество репостов</span>
                         </a>
                     </div>
@@ -132,9 +136,10 @@
                 </div>
 
                 <ul class="post__tags">
+
                     <?php
-                    foreach ($commentAllList as $key => $hashtags): ?>
-                        <li><a href="#"><?= $hashtags['hs-name'] ?></a></li>
+                    foreach ($hashtags as $key => $hashtag): ?>
+                        <li><a href="search.php?q=<?= urlencode($hashtag) ?>"><?= $hashtag ?></a></li>
                     <?php
                     endforeach; ?>
                 </ul>
@@ -143,111 +148,67 @@
                         <div class="comments__my-avatar">
                             <img class="comments__picture" src="<?= $userAvatar ?>" alt="Аватар пользователя">
                         </div>
-                        <div class="form__input-section <?php if ($errors):print 'form__input-section--error'; endif;?>">
-                            <textarea class="comments__textarea form__textarea form__input" id="comment-text"
-                                      name="comment-text"
+                        <div class="form__input-section <?php
+                        if ($errors):print 'form__input-section--error'; endif; ?>">
+                            <textarea class="comments__textarea form__textarea form__input" id="commentText"
+                                      name="commentText"
                                       placeholder="Ваш комментарий"></textarea>
                             <label class="visually-hidden">Ваш комментарий</label>
                             <button class="form__error-button button" type="button">!</button>
                             <div class="form__error-text">
                                 <h3 class="form__error-title">Ошибка валидации</h3>
-                                <p class="form__error-desc"><?= $errors['comment-text']?></p>
+                                <p class="form__error-desc"><?= $errors['commentText'] ?></p>
                             </div>
                         </div>
                         <button class="comments__submit button button--green" name="postId"
-                                value="<?= $postMainContent['post_num'] ?>" type="submit">Отправить</button>
+                                value="<?= $postMainContent['post_num'] ?>" type="submit">Отправить
+                        </button>
                     </form>
-                    <?php
-                    if (array_key_exists('comment', $_GET)): ?>
-                        <div class="comments__list-wrapper">
-                            <ul class="comments__list">
-                                <?php
-                                foreach ($commentAllList
 
-                                as  $comment): ?>
-                                <?php
-                                if (!is_null($comment['comment'])): ?>
-
-                                <li class="comments__item user">
-                                    <div class="comments__avatar">
-                                        <a class="user__avatar-link" href="#">
-                                            <img class="comments__picture" src="<?= $comment['avatar'] ?>"
-                                                 alt="Аватар пользователя">
-                                        </a>
-                                    </div>
-                                    <div class="comments__info">
-                                        <div class="comments__name-wrapper">
-                                            <a class="comments__user-name" href="#">
-                                                <span><?= $comment['name'] ?></span>
-                                            </a>
-                                            <time class="comments__time"
-                                                  datetime="<?= $comment['date'] ?>"><?= smallDate(
-                                                    $comment['date']
-                                                ) ?></time>
-                                        </div>
-                                        <p class="comments__text">
-                                            <?= $comment['comment'] ?>
-                                        </p>
-                                    </div>
-                                    <?php
-                                    endif; ?>
-                                    <?php
-                                    endforeach; ?>
-                                </li>
-                            </ul>
-                        </div>
-                    <?php
-                    else: ?>
-                        <div class="comments__list-wrapper">
-                            <ul class="comments__list">
-                                <?php
-                                foreach ($commentList
-
-                                as  $firstTwoComments): ?>
-                                <?php
-                                if (!is_null($firstTwoComments['comment'])): ?>
-                                <li class="comments__item user">
-                                    <div class="comments__avatar">
-                                        <a class="user__avatar-link" href="#">
-                                            <img class="comments__picture" src="<?= $firstTwoComments['avatar'] ?>"
-                                                 alt="Аватар пользователя">
-                                        </a>
-                                    </div>
-                                    <div class="comments__info">
-                                        <div class="comments__name-wrapper">
-                                            <a class="comments__user-name" href="#">
-                                                <span><?= $firstTwoComments['name'] ?></span>
-                                            </a>
-                                            <time class="comments__time"
-                                                  datetime="<?= $firstTwoComments['date'] ?>"><?= smallDate(
-                                                    $firstTwoComments['date']
-                                                ) ?></time>
-                                        </div>
-                                        <p class="comments__text">
-                                            <?= $firstTwoComments['comment'] ?>
-                                        </p>
-                                    </div>
-                                    <?php
-                                    endif; ?>
-                                    <?php
-                                    endforeach; ?>
-                                </li>
-                            </ul>
-
+                    <div class="comments__list-wrapper">
+                        <ul class="comments__list">
                             <?php
-                            if (($postMainContent['count_comments'] - 2) > 0): ?>
+                            foreach ($commentList
 
-                                <a class="comments__more-link"
-                                   href="?post-id=<?= $postMainContent['post_num'] ?>&comment=all">
-                                    <span>Показать все комментарии</span>
-                                    <sup class="comments__amount"><?= $postMainContent['count_comments'] - 2 ?></sup>
-                                </a>
-                            <?php
-                            endif ?>
+                            as  $comments): ?>
+                            <li class="comments__item user">
+                                <div class="comments__avatar">
+                                    <a class="user__avatar-link" href="#">
+                                        <img class="comments__picture" src="<?= $comments['avatar'] ?>"
+                                             alt="Аватар пользователя">
+                                    </a>
+                                </div>
+                                <div class="comments__info">
+                                    <div class="comments__name-wrapper">
+                                        <a class="comments__user-name" href="#">
+                                            <span><?= $comments['name'] ?></span>
+                                        </a>
+                                        <time class="comments__time"
+                                              datetime="<?= $comments['date'] ?>"><?= smallDate(
+                                                $comments['date'],
+                                                'назад'
+                                            ) ?></time>
+                                    </div>
+                                    <p class="comments__text">
+                                        <?= $comments['comment'] ?>
+                                    </p>
+                                </div>
+                                <?php
+                                endforeach; ?>
+                            </li>
+                        </ul>
+                        <?php
+                        if (($postMainContent['count_comments'] - 2) > 0 && !$isCommentShowAll): ?>
+                            <a class="comments__more-link"
+                               href="?post-id=<?= $postMainContent['post_num'] ?>&comment=all">
+                                <span>Показать все комментарии</span>
+                                <sup class="comments__amount"><?= $postMainContent['count_comments'] - 2 ?></sup>
+                            </a>
+                        <?php
+                        endif ?>
 
-                        </div>
-                    <?php
-                    endif; ?>
+                    </div>
+
                 </div>
             </div>
 
@@ -266,8 +227,9 @@
                         <a class="post-details__name user__name" href="#">
                             <span><?= $postMainContent['name'] ?></span>
                         </a>
-                        <time class="post-details__time user__time" datetime="2014-03-20"><?= smallUSerDate(
-                                $postMainContent['reg_date']
+                        <time class="post-details__time user__time" datetime="2014-03-20"><?= smallDate(
+                                $postMainContent['reg_date'],
+                                'назад'
                             ) ?></time>
                     </div>
                 </div>

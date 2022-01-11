@@ -23,70 +23,71 @@ if ($isAuth) {
     header('location: index.php');
 } else {
     $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
+    $contentTypes = getContentTypes($mysql, 'type_name');
     $errors = [];
     $fields = [
         'heading' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql,$key, $lastPostId, $authorId) {
-                return addHeading($mysql,$key, $lastPostId, $authorId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addHeading($mysql, $key, $authorId);
             },
         ],
         'tags' => [
             'validation' => function ($key) {
                 return validateSharp($key);
             },
-            'add' => function ($mysql,$key, $lastPostId) {
-                return addSharp($mysql,$key, $lastPostId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addSharp($mysql, $key, $lastPostId);
             },
         ],
-        'photo-url' => [
+        'photoUrl' => [
             'validation' => function ($key) {
                 return validateImg($key);
             },
-            'add' => function ($mysql,$key, $lastPostId) {
-                return addPhotoUrl($mysql,$key, $lastPostId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addPhotoUrl($mysql, $lastPostId, $contentTypes['photo']['id']);
             },
         ],
-        'video-url' => [
+        'videoUrl' => [
             'validation' => function ($key) {
                 return validateVideoUrl($key);
             },
-            'add' => function ($mysql,$key, $lastPostId) {
-                return addVideoUrl($mysql,$key, $lastPostId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addVideoUrl($mysql, $key, $lastPostId, $contentTypes['video']['id']);
             },
         ],
-        'text-content' => [
+        'textContent' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql,$key, $lastPostId) {
-                return addText($mysql,$key, $lastPostId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addText($mysql, $key, $lastPostId, $contentTypes['text']['id']);
             },
         ],
-        'cite-text' => [
+        'citeText' => [
             'validation' => function ($key) {
                 return validateCite($key);
             },
-            'add' => function ($mysql,$key, $lastPostId) {
-                return addCite($mysql,$key, $lastPostId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addCite($mysql, $key, $lastPostId, $contentTypes['quote']['id']);
             },
         ],
-        'quote-author' => [
+        'quoteAuthor' => [
             'validation' => function ($key) {
                 return validateFilled($key);
             },
-            'add' => function ($mysql,$key, $lastPostId) {
-                return addQuoteAuthor($mysql,$key, $lastPostId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addQuoteAuthor($mysql, $key, $lastPostId);
             },
         ],
-        'link-ref' => [
+        'linkRef' => [
             'validation' => function ($key) {
                 return validateLink($key);
             },
-            'add' => function ($mysql,$key, $lastPostId) {
-                return addLink($mysql,$key, $lastPostId);
+            'add' => function ($mysql, $key, $lastPostId, $authorId, $contentTypes) {
+                return addLink($mysql, $key, $lastPostId, $contentTypes['link']['id']);
             },
         ],
     ];
@@ -97,7 +98,7 @@ if ($isAuth) {
             $ruleValid = $fields[$key]['validation'];
             $errors[$key] = $ruleValid($key);
             $ruleAdd = $fields[$key]['add'];
-            $lastPostId = $ruleAdd($mysql,$key, $lastPostId, $_SESSION['user']['id']);
+            $lastPostId = $ruleAdd($mysql, $key, $lastPostId, $_SESSION['user']['id'], $contentTypes);
         }
         if (!findErrors($errors)) {
             mysqli_commit($mysql);
@@ -111,8 +112,9 @@ if ($isAuth) {
 
 
     $contentType = retriveGetInt('content-type', null);
-    $blockName = getBlockName($contentType);
-    $className = getClassNameAddForm($contentType);
+    $blockName = getBlockName($contentType, $contentTypes);
+    $className = getClassNameAddForm($contentType, $contentTypes);
+
 
     $blockContent = includeTemplate(
         "block/$blockName",
@@ -127,6 +129,7 @@ if ($isAuth) {
         [
             'avatar' => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
+            'userId' => $_SESSION['user']['id'],
         ]
     );
     $postAdd = includeTemplate(

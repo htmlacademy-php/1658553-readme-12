@@ -83,11 +83,9 @@ function validateSharp(string $key)
             if ($hashtag != '#') {
                 return 'Хештег должен начинаться с символа # !';
             }
-
             return false;
         }
     }
-
     return false;
 }
 

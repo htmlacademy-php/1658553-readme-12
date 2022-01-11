@@ -45,6 +45,7 @@ if ($isAuth) {
             [
                 'avatar' => $_SESSION['user']['avatar'],
                 'userName' => $_SESSION['user']['login'],
+                'userId' => $_SESSION['user']['id'],
             ]
         );
 

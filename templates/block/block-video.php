@@ -28,20 +28,20 @@
                 </div>
             </div>
             <div class="adding-post__input-wrapper form__input-wrapper">
-                <label class="adding-post__label form__label" for="video-url">Ссылка youtube
+                <label class="adding-post__label form__label" for="videoUrl">Ссылка youtube
                     <span class="form__input-required">*</span></label>
                 <div class="form__input-section <?php
-                if ($isPost && ($errors['video-url'])): print 'form__input-section--error';
+                if ($isPost && ($errors['videoUrl'])): print 'form__input-section--error';
                 endif; ?>">
-                    <input class="adding-post__input form__input" id="video-url" type="text"
-                           name="video-url" placeholder="Введите ссылку"
-                           value="<?= getPostVal('video-url'); ?>">
+                    <input class="adding-post__input form__input" id="videoUrl" type="text"
+                           name="videoUrl" placeholder="Введите ссылку"
+                           value="<?= getPostVal('videoUrl'); ?>">
                     <button class="form__error-button button" type="button">!<span
                             class="visually-hidden">Информация об ошибке</span></button>
                     <div class="form__error-text">
                         <h3 class="form__error-title">Заголовок сообщения</h3>
                         <p class="form__error-desc"><?php
-                            print $errors['video-url'] ?></p>
+                            print $errors['videoUrl'] ?></p>
                     </div>
                 </div>
             </div>
@@ -75,9 +75,9 @@
                     <?php
                     endif; ?>
                     <?php
-                    if (($errors['video-url'])): ?>
+                    if (($errors['videoUrl'])): ?>
                         <li class="form__invalid-item">Ссылка на youtube. <?php
-                            print ($errors['video-url']) ?></li>
+                            print ($errors['videoUrl']) ?></li>
                     <?php
                     endif; ?>
                     <?php

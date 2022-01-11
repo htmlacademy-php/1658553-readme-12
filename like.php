@@ -9,15 +9,15 @@ require_once('src/add-query.php');
 require_once('model/models.php');
 
 
-/* @var mysqli $mysql */
 /* @var bool $isAuth */
+/* @var mysqli $mysql */
+
 
 if ($isAuth) {
     header('location: index.php');
 } else {
     $userId = $_SESSION['user']['id'];
     $postId = $_GET['id'];
-
     $isPostIdExist = isPostExist($mysql, $postId);
 
     if ($isPostIdExist) {

@@ -18,7 +18,7 @@ foreach (
                 <div class="post__info">
                     <b class="post__author-name"><?= $post['name'] ?></b>
                     <span class="post__time"><?= smallDate(
-                            $post['create_date']
+                            $post['create_date'],'назад'
                         ) ?></span>
                 </div>
             </a>
