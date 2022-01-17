@@ -29,6 +29,9 @@ require_once('model/models.php');
 if ($isAuth) {
     header('location: index.php');
 } else {
+    $mainUser = $_SESSION['user']['id'];
+    $countMassage = getCountedUnreadMessages($mysql,$mainUser);
+
     $contentType = retriveGetInt('content_type', null);
     $sortId = getSortId();
     $feedPosts = getFeedPosts(
@@ -50,6 +53,7 @@ if ($isAuth) {
             'avatar'   => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
             'userId'   => $_SESSION['user']['id'],
+            'countMassages' => $countMassage,
         ]
     );
     $feed = includeTemplate(

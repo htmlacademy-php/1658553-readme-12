@@ -3,6 +3,8 @@
 
 /* @var string $avatar */
 /* @var string $userId */
+/* @var array $countMassages */
+
 
 ?>
 <div class="header__wrapper container">
@@ -95,7 +97,9 @@
                                        href="messages.php">
                           <span class="header__profile-nav-text">
                             Сообщения
-                            <i class="header__profile-indicator">2</i>
+                              <?php if ($countMassages['nonViewed']): ?>
+                            <i class="header__profile-indicator"><?=$countMassages['nonViewed']?></i>
+                              <?php endif; ?>
                           </span>
                                     </a>
                                 </li>

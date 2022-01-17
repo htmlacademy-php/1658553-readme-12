@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL);
+
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 
@@ -27,8 +29,11 @@ require_once('model/models.php');
 if ($isAuth) {
     header('location: index.php');
 } else {
+    $mainUser = $_SESSION['user']['id'];
+    $countMassage = getCountedUnreadMessages($mysql,$mainUser);
     $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
     $contentTypes = getContentTypes($mysql, 'type_name');
+    var_dump($contentTypes['photo']['id']);
     $errors = [];
     $fields = [
         'heading'     => [
@@ -171,6 +176,7 @@ if ($isAuth) {
 
     if ($isPost) {
         mysqli_begin_transaction($mysql);
+        $lastPostId = 1;
         foreach ($_POST as $key => $value) {
             $ruleValid = $fields[$key]['validation'];
             $errors[$key] = $ruleValid($key);
@@ -230,6 +236,7 @@ if ($isAuth) {
             'avatar'   => $_SESSION['user']['avatar'],
             'userName' => $_SESSION['user']['login'],
             'userId'   => $_SESSION['user']['id'],
+            'countMassages' => $countMassage,
         ]
     );
     $postAdd = includeTemplate(

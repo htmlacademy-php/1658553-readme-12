@@ -1,5 +1,6 @@
 <?php
 
+
 require_once('config/config.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
@@ -20,7 +21,7 @@ $fields = [
         'validation' => function ($mysql, $key) {
             return validateEmail($mysql, $key);
         },
-        'add'        => function ($mysql, $lastUserId) {
+        'add'        => function ($mysql) {
             return addUserEmail($mysql);
         },
     ],
@@ -62,6 +63,7 @@ if ($isPost) {
     mysqli_begin_transaction($mysql);
     $avatar['avatar'] = '';
     $_POST += $avatar;
+    $lastUserId = 1;
     foreach ($_POST as $key => $value) {
         $ruleValid = $fields[$key]['validation'];
         $errors[$key] = $ruleValid($mysql, $key);

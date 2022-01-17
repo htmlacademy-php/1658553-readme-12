@@ -27,6 +27,8 @@ require_once('model/models.php');
 if ($isAuth) {
     header('location: index.php');
 } else {
+    $mainUser = $_SESSION['user']['id'];
+    $countMassage = getCountedUnreadMessages($mysql,$mainUser);
     $curPage = $_GET['page'] ?? 1;
     $pageItems = 9;
 
@@ -50,6 +52,7 @@ if ($isAuth) {
                 'avatar'   => $_SESSION['user']['avatar'],
                 'userName' => $_SESSION['user']['login'],
                 'userId'   => $_SESSION['user']['id'],
+                'countMassages' => $countMassage,
             ]
         );
 

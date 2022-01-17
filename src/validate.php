@@ -459,12 +459,16 @@ function validatePasswordRepeat(string $key)
  */
 function singUpEmail(mysqli $mysql, string $email)
 {
-    $userInfo = searchDuplicate($mysql, $email);
-    if (empty($userInfo)) {
-        return 'Неверный email';
+    if (!empty($email)) {
+        $userInfo = searchDuplicate($mysql, $email);
+        if (empty($userInfo)) {
+            return 'Неверный email';
+        }
+
+        return false;
     }
 
-    return false;
+    return 'Это поле должно быть заполнено.';
 }
 
 /**
@@ -477,13 +481,21 @@ function singUpEmail(mysqli $mysql, string $email)
  */
 function singUpPassword(mysqli $mysql, string $password, string $email)
 {
-    $userInfo = searchDuplicate($mysql, $email);
-    $hashPassword = password_verify($password, $userInfo['password']);
-    if (!$hashPassword) {
+    if (!empty($password)) {
+        $userInfo = searchDuplicate($mysql, $email);
+        if (!empty($userInfo)) {
+            $hashPassword = password_verify($password, $userInfo['password']);
+            if (!$hashPassword) {
+                return 'Не верный пароль';
+            }
+
+            return false;
+        }
+
         return 'Не верный пароль';
     }
 
-    return false;
+    return 'Это поле должно быть заполнено.';
 }
 
 

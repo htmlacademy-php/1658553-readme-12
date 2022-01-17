@@ -190,6 +190,7 @@ function findErrors(array $errors): bool
  */
 function searchDuplicate(mysqli $mysql, string $email)
 {
+
     $data[] = $email;
     $query = "
 SELECT * FROM user
@@ -208,9 +209,9 @@ WHERE email = ?
 /**
  * функция  вывода ошибки валидации для пароля (может быть массив/строка)
  *
- * @param array $arr Массив из $errors
+ * @param  $arr Массив/строка из $errors
  */
-function outputArrOrString(array $arr)
+function outputArrOrString($arr)
 {
     if (is_string($arr)) {
         print $arr;
