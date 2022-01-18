@@ -1,16 +1,13 @@
 <?php
 
 
-
 require_once('config/config.php');
-require_once('config/mailer.php');
 require_once('src/helpers.php');
 require_once('src/add-query.php');
 require_once('src/function.php');
 require_once('src/request.php');
 require_once('model/models.php');
 
-const PAGE_MESSAGES = '/messages.php';
 
 /* @var bool $isAuth */
 /* @var object $transport */
@@ -19,11 +16,13 @@ const PAGE_MESSAGES = '/messages.php';
 if ($isAuth) {
     header('location: index.php');
 }
-$messagesList =[];
+$messagesList = [];
 $errors = [];
 $mainUser = $_SESSION['user']['id'];
-$userTabsActive = $_GET['dialog'];
-$countMassage = getCountedUnreadMessages($mysql,$mainUser);
+$userTabsActive = $_GET['dialog'] ?? null;
+
+
+$countMassage = getCountedUnreadMessages($mysql, $mainUser);
 $mainUserInfo = getInfoProfileUser($mysql, $mainUser);
 $conversation = getConversations($mysql, $mainUser);
 $isUserExist = isUserExist($mysql, (int)$userTabsActive);
@@ -53,16 +52,16 @@ foreach ($conversation as $user => $info) {
 foreach ($conversation as $user => $info) {
     if ((int)$userTabsActive === $info['id']) {
         $messagesList = getMessages($mysql, $mainUser, $info['id']);
-        $unreadMessages = getUnreadMessagesFromUser($mysql,$mainUser,$info['id']);
-        if ($unreadMessages['nonViewed']){
-            getViewed($mysql,$mainUser, $info['id']);
+        $unreadMessages = getUnreadMessagesFromUser($mysql, $mainUser, $info['id']);
+        if ($unreadMessages['nonViewed']) {
+            getViewed($mysql, $mainUser, $info['id']);
             header("Refresh: 0");
         }
     }
 }
 
 
-if ($_SESSION['errors']) {
+if (!empty($_SESSION['errors'])) {
     $errors = $_SESSION['errors'];
     unset($_SESSION['errors']);
 }
@@ -70,9 +69,9 @@ if ($_SESSION['errors']) {
 $header = includeTemplate(
     'block/header.php',
     [
-        'avatar'   => $_SESSION['user']['avatar'],
-        'userName' => $_SESSION['user']['login'],
-        'userId'   => $_SESSION['user']['id'],
+        'avatar'        => $_SESSION['user']['avatar'],
+        'userName'      => $_SESSION['user']['login'],
+        'userId'        => $_SESSION['user']['id'],
         'countMassages' => $countMassage,
     ]
 );
@@ -82,8 +81,8 @@ $pageContent = includeTemplate(
         'conversation'   => $conversation,
         'userTabsActive' => $userTabsActive,
         'messagesList'   => $messagesList,
-        'errors' => $errors,
-        'mainUserInfo' => $mainUserInfo,
+        'errors'         => $errors,
+        'mainUserInfo'   => $mainUserInfo,
     ]
 );
 

@@ -1,9 +1,7 @@
 <?php
 
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mime\Email;
+
 require_once('config/config.php');
-require_once('config/mailer.php');
 require_once('src/helpers.php');
 require_once('src/add-query.php');
 require_once('src/function.php');
@@ -49,14 +47,9 @@ if ($isPost) {
     if (!findErrors($errors)) {
         mysqli_commit($mysql);
         $userEmail = getUserEmail($mysql, $interlocutor);
-        $message = new Email();
-        $message->to($userEmail['email']);
-        $message->from("Readme@mail.ru");
-        $message->subject("У вас новый подписчик");
-        $message->text('Здравствуйте, '.$userEmail['login'].' . Вам отправил сообщение пользователь '.$_SESSION['user']['login'].'.
+        sendMessage($userEmail['email'], 'Readme@mail.ru', 'У вас новое сообщение',
+            'Здравствуйте, '.$userEmail['login'].' . Вам отправил сообщение пользователь '.$_SESSION['user']['login'].'.
          Прочитать его можно здесь: http://localhost/1658553-readme-12/messages.php');
-        $mailer = new Mailer($transport);
-        $mailer->send($message);
     } else {
         mysqli_rollback($mysql);
         $_SESSION['errors'] = $errors;

@@ -21,7 +21,7 @@ foreach (
                          width="60" height="60">
                 </div>
                 <div class="post__info">
-                    <b class="post__author-name"><?= $post['name'] ?></b>
+                    <b class="post__author-name"><?= htmlspecialchars($post['name']) ?></b>
                     <span class="post__time"><?= smallDate(
                             $post['create_date'],
                             'назад'
@@ -35,10 +35,10 @@ foreach (
             <?php
             if ($post['icon_name'] === "post-photo"): ?>
                 <h2>
-                    <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= $post['header'] ?></a>
+                    <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= htmlspecialchars($post['header']) ?></a>
                 </h2>
                 <div class="post-photo__image-wrapper">
-                    <img src="<?= $post['media'] ?>" alt="Фото от пользователя"
+                    <img src="<?= htmlspecialchars($post['media']) ?>" alt="Фото от пользователя"
                          width="760" height="396">
                 </div>
 
@@ -47,10 +47,10 @@ foreach (
 
 
                 <h2>
-                    <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= $post['header'] ?></a>
+                    <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= htmlspecialchars($post['header']) ?></a>
                 </h2>
                 <p>
-                    <?= cutText(($post['text_content']), $post['post_num']) ?>
+                    <?= htmlspecialchars(cutText(($post['text_content']), $post['post_num'])) ?>
                 </p>
 
 
@@ -78,9 +78,9 @@ foreach (
 
                 <blockquote>
                     <p>
-                        <?= $post['text_content'] ?>
+                        <?= htmlspecialchars($post['text_content']) ?>
                     </p>
-                    <cite><?= $post['author_copy_right'] ?></cite>
+                    <cite><?= htmlspecialchars($post['author_copy_right']) ?></cite>
                 </blockquote>
 
 
@@ -88,7 +88,7 @@ foreach (
             elseif ($post['icon_name'] === "post-link"): ?>
 
                 <div class="post-link__wrapper">
-                    <a class="post-link__external" href="<?= $post['media'] ?>"
+                    <a class="post-link__external" href="<?= htmlspecialchars($post['media']) ?>"
                        title="Перейти по ссылке">
                         <div class="post-link__icon-wrapper">
                             <img
@@ -96,7 +96,7 @@ foreach (
                                 alt="Иконка">
                         </div>
                         <div class="post-link__info">
-                            <h3><?= $post['header'] ?></h3>
+                            <h3><?= htmlspecialchars($post['header']) ?></h3>
                             <span><?= parse_url(
                                     $post['media']
                                 )['host'] ?></span>

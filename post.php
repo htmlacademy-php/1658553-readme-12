@@ -24,7 +24,7 @@ if ($isAuth) {
 
 
     if ($isPostIdExist) {
-        $isCommentShowALl = $_GET['comment'];
+        $isCommentShowALl = $_GET['comment'] ?? null;
         $postMainContent = getPost($mysql, $postId);
         $authorPostsCount = authorPostsCount(
             $mysql,
@@ -49,7 +49,7 @@ if ($isAuth) {
         }
 
 
-        if ($_SESSION['errors']) {
+        if (!empty($_SESSION['errors'])) {
             $errors = $_SESSION['errors'];
             unset($_SESSION['errors']);
         }

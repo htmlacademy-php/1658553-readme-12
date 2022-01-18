@@ -1,19 +1,8 @@
 <?php
 
-const SORT_VIEWS = 'views_number';
-const SORT_DATE = 'create_date';
-const SORT_LIKES = 'count_likes';
 
-const TYPE_TEXT = 'text';
-const TYPE_QUOTE = 'quote';
-const TYPE_PHOTO = 'photo';
-const TYPE_VIDEO = 'video';
-const TYPE_LINK = 'link';
-
-const PAGE_POPULAR = '/popular.php';
 
 require_once('config/config.php');
-require_once('config/mailer.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
 require_once('src/request.php');

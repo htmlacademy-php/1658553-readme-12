@@ -19,7 +19,7 @@
                 </div>
                 <div class="profile__name-wrapper user__name-wrapper">
                     <span
-                        class="profile__name user__name"><?= $profileInfo['name'] ?></span>
+                        class="profile__name user__name"><?= htmlspecialchars($profileInfo['name']) ?></span>
                     <time class="profile__user-time user__time"
                           datetime="2014-03-20"><?= smallDate(
                             $profileInfo['reg_date'],

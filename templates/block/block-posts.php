@@ -1,7 +1,6 @@
 <?php
 /* @var array $postListRows */
 
-
 foreach (
     $postListRows
 

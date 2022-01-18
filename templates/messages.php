@@ -30,20 +30,24 @@
                         </div>
                         <div class="messages__info">
                   <span class="messages__contact-name">
-                    <?= $info['login'] ?>
+                    <?= htmlspecialchars($info['login']) ?>
                   </span>
                             <div class="messages__preview">
 
                                 <p class="messages__preview-text">
-                                    <?= $info['preview']['content'] ?>
+                                    <?php
+                                    if (!empty($info['preview']['content'])) {
+                                        print $info['preview']['content'];
+                                    } ?>
                                 </p>
+
                                 <time class="messages__preview-time"
                                       datetime="<?php
-                                      if (!is_null($info['preview']['create_date'])) {
+                                      if (!empty($info['preview']['create_date'])) {
                                           print $info['preview']['create_date'];
                                       } ?>">
                                     <?php
-                                    if (!is_null($info['preview']['create_date'])) {
+                                    if (!empty($info['preview']['create_date'])) {
                                         print date('H:i',
                                             strtotime($info['preview']['create_date']));
                                     } ?>
@@ -79,7 +83,7 @@
                             </div>
                             <div class="messages__item-info">
                                 <a class="messages__author" href="#">
-                                    <?= $info['login'] ?>
+                                    <?= htmlspecialchars($info['login']) ?>
                                 </a>
                                 <time class="messages__time"
                                       datetime="<?= $info['create_date'] ?>">
