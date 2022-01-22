@@ -1,14 +1,17 @@
-{
-  "name": "abdry/1658553-readme-12",
-  "description": "readme my first project",
-  "authors": [
-    {
-      "name": "Dzoter",
-      "email": "Andry94@list.ru"
+
+    "name": "abdry/1658553-readme-12",
+    "description": "readme my first project",
+    "authors": [
+        {
+            "name": "Dzoter",
+            "email": "Andry94@list.ru"
+        }
+    ],
+    "require": {
+        "symfony/mailer": "^5.4",
+        "symfony/google-mailer": "^5.4",
+      "ext-mysqli": "*"
+
     }
-  ],
-  "require": {
-    "symfony/mailer": "^5.4",
-    "ext-mysqli": "*"
-  }
-}
+
+
