@@ -1,6 +1,7 @@
 <?php
 
 
+
 require_once('config/config.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
@@ -14,7 +15,7 @@ require_once('model/models.php');
 $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
 $errors = [];
 
-
+$userInfo = searchDuplicate($mysql, 'Andry94@list.ru');
 $fields = [
     'email'    => [
         'validation' => function ($mysql, $key) {

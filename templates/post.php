@@ -16,7 +16,7 @@
 
 
 <div class="container">
-    <h1 class="page__title page__title--publication"><?= $postMainContent['header'] ?></h1>
+    <h1 class="page__title page__title--publication"><?= htmlspecialchars($postMainContent['header']) ?></h1>
     <section class="post-details">
         <h2 class="visually-hidden">Публикация</h2>
         <div class="post-details__wrapper <?= $postMainContent['icon_name'] ?>">
@@ -28,7 +28,7 @@
 
                     <div
                         class="post-details__image-wrapper post-photo__image-wrapper">
-                        <img src="<?= $postMainContent['media']; ?>"
+                        <img src="<?= htmlspecialchars($postMainContent['media']); ?>"
                              alt="Фото от пользователя" width="760"
                              height="507">
                     </div>
@@ -42,9 +42,9 @@
                         <div class="post__main">
                             <blockquote>
                                 <p>
-                                    <?= $postMainContent['text']; ?>
+                                    <?= htmlspecialchars($postMainContent['text']); ?>
                                 </p>
-                                <cite><?= $postMainContent['author_copy_right']; ?></cite>
+                                <cite><?= htmlspecialchars($postMainContent['author_copy_right']); ?></cite>
                             </blockquote>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                     <div class="post-details__image-wrapper post-text">
                         <div class="post__main">
                             <p>
-                                <?= $postMainContent['text']; ?>
+                                <?= htmlspecialchars($postMainContent['text']); ?>
                             </p>
                         </div>
                     </div>
@@ -70,16 +70,16 @@
                     <div class="post__main">
                         <div class="post-link__wrapper">
                             <a class="post-link__external"
-                               href="<?= $postMainContent['media'] ?>"
+                               href="<?= htmlspecialchars($postMainContent['media']) ?>"
                                title="Перейти по ссылке">
                                 <div class="post-link__info-wrapper">
                                     <div class="post-link__icon-wrapper">
                                         <img
-                                            src="https://www.google.com/s2/favicons?domain=<?= $postMainContent['media'] ?>"
+                                            src="https://www.google.com/s2/favicons?domain=<?= htmlspecialchars($postMainContent['media']) ?>"
                                             alt="Иконка">
                                     </div>
                                     <div class="post-link__info">
-                                        <h3><?= $postMainContent['header'] ?></h3>
+                                        <h3><?= htmlspecialchars($postMainContent['header']) ?></h3>
                                     </div>
                                 </div>
                             </a>
@@ -155,7 +155,10 @@
                     foreach ($hashtags as $key => $hashtag): ?>
                         <li><a href="search.php?q=<?= urlencode(
                                 $hashtag
-                            ) ?>"><?= $hashtag ?></a></li>
+                            ) ?>"><?php
+                                if (!empty($hashtag)) {
+                                    print htmlspecialchars($hashtag);
+                                } ?></a></li>
                     <?php
                     endforeach; ?>
                 </ul>
@@ -214,7 +217,7 @@
                                             <div class="comments__name-wrapper">
                                                 <a class="comments__user-name"
                                                    href="profile.php?user=<?= $comments['user_comment_id'] ?>">
-                                                    <span><?= $comments['name'] ?></span>
+                                                    <span><?= htmlspecialchars($comments['name']) ?></span>
                                                 </a>
                                                 <time class="comments__time"
                                                       datetime="<?= $comments['date'] ?>"><?= smallDate(
@@ -223,7 +226,7 @@
                                                     ) ?></time>
                                             </div>
                                             <p class="comments__text">
-                                                <?= $comments['comment'] ?>
+                                                <?= htmlspecialchars($comments['comment']) ?>
                                             </p>
                                         </div>
                                     </li>
@@ -260,7 +263,7 @@
                     </div>
                     <div class="post-details__name-wrapper user__name-wrapper">
                         <a class="post-details__name user__name" href="#">
-                            <span><?= $postMainContent['name'] ?></span>
+                            <span><?= htmlspecialchars($postMainContent['name']) ?></span>
                         </a>
                         <time class="post-details__time user__time"
                               datetime="2014-03-20"><?= smallDate(
@@ -299,7 +302,7 @@
 
                     </button>
                     <a class="user__button user__button--writing button button--green"
-                       href="messages.php?dialog=<?=$postMainContent['user_id']?>">Сообщение</a>
+                       href="messages.php?dialog=<?= $postMainContent['user_id'] ?>">Сообщение</a>
                 </form>
             </div>
         </div>

@@ -1,7 +1,6 @@
 <?php
 /* @var array $postListRows */
 
-
 foreach (
     $postListRows
 
@@ -138,7 +137,7 @@ foreach (
                         <span class="visually-hidden">количество лайков</span>
                     </a>
                     <a class="post__indicator post__indicator--comments button"
-                       href="#"
+                       href="post.php?post-id=<?= $post['post_num'] ?>"
                        title="Комментарии">
                         <svg class="post__indicator-icon" width="19"
                              height="17">

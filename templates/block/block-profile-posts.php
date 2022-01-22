@@ -18,6 +18,7 @@ foreach (
 
     <section class="profile__posts tabs__content tabs__content--active">
         <h2 class="visually-hidden">Публикации</h2>
+
         <article class="profile__post post <?= $post['icon_name'] ?>">
             <?php
             if ($post['repost']): ?>
@@ -33,7 +34,7 @@ foreach (
                                      alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name">Репост: <?= $post['original']['login'] ?></b>
+                                <b class="post__author-name">Репост: <?= htmlspecialchars($post['original']['login']) ?></b>
                                 <time class="post__time"
                                       datetime="<?= $post['create_date'] ?>"> <?= smallDate(
                                         $post['create_date'],
@@ -47,7 +48,7 @@ foreach (
             else: ?>
                 <header class="post__header">
                     <h2>
-                        <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= $post['login'] ?></a>
+                        <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= htmlspecialchars($post['name']) ?></a>
                     </h2>
                 </header>
             <?php
@@ -56,23 +57,23 @@ foreach (
                 <?php
                 if ($post['icon_name'] === "post-photo"): ?>
                     <h2>
-                        <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= $post['header'] ?></a>
+                        <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= htmlspecialchars($post['header']) ?></a>
                     </h2>
                     <div class="post-photo__image-wrapper">
-                        <img src="<?= $post['media'] ?>"
+                        <img src="<?= htmlspecialchars($post['media']) ?>"
                              alt="Фото от пользователя" width="760"
                              height="396">
                     </div>
                 <?php
                 elseif ($post['icon_name'] === "post-text"): ?>
                     <h2>
-                        <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= $post['header'] ?></a>
+                        <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= htmlspecialchars($post['header']) ?></a>
                     </h2>
                     <p>
-                        <?= cutText(
+                        <?= htmlspecialchars(cutText(
                             ($post['text_content']),
                             $post['post_num']
-                        ) ?>
+                        )) ?>
                     </p>
                 <?php
                 elseif ($post['icon_name'] === "post-video"): ?>
@@ -93,9 +94,9 @@ foreach (
                 elseif ($post['icon_name'] === "post-quote"): ?>
                     <blockquote>
                         <p>
-                            <?= $post['text_content'] ?>
+                            <?= htmlspecialchars($post['text_content']) ?>
                         </p>
-                        <cite><?= $post['author_copy_right'] ?></cite>
+                        <cite><?= htmlspecialchars($post['author_copy_right']) ?></cite>
                     </blockquote>
                 <?php
                 elseif ($post['icon_name'] === "post-link"): ?>
@@ -109,7 +110,7 @@ foreach (
                                     alt="Иконка">
                             </div>
                             <div class="post-link__info">
-                                <h3><?= $post['header'] ?></h3>
+                                <h3><?= htmlspecialchars($post['header']) ?></h3>
                                 <span><?= parse_url($post['media'])['host'] ?></span>
 
 
@@ -167,7 +168,9 @@ foreach (
                     foreach ($post['hashtags'] as $key => $hashtag): ?>
                         <li><a href="search.php?q=<?= urlencode(
                                 $hashtag
-                            ) ?>"><?= $hashtag ?></a></li>
+                            ) ?>"><?php if (!empty($hashtag)){
+                                print htmlspecialchars($hashtag);
+                                }  ?></a></li>
                     <?php
                     endforeach; ?>
                 </ul>
@@ -200,7 +203,7 @@ foreach (
                                     <div class="comments__name-wrapper">
                                         <a class="comments__user-name"
                                            href="profile.php?user=<?= $comment['user_comment_id'] ?>">
-                                            <span><?= $comment['name'] ?></span>
+                                            <span><?= htmlspecialchars($comment['name']) ?></span>
                                         </a>
                                         <time class="comments__time"
                                               datetime="<?= $comment['date'] ?>"><?= smallDate(
@@ -209,7 +212,7 @@ foreach (
                                             ) ?></time>
                                     </div>
                                     <p class="comments__text">
-                                        <?= $comment['comment'] ?>
+                                        <?= htmlspecialchars($comment['comment']) ?>
                                     </p>
                                 </div>
                             </li>

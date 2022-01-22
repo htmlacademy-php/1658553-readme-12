@@ -833,6 +833,14 @@ WHERE first = ?;
     return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
 }
 
+/**
+ * Получаем список сообщений между пользователями в диалоговом окне сообщений
+ * @param mysqli $mysql соединение с бд
+ * @param int    $userId id хозяина профиля
+ * @param int    $interlocutor id собеседника
+ *
+ * @return array массив с сообщениями
+ */
 function getMessages(mysqli $mysql, int $userId, int $interlocutor)
 {
     $data = [$userId, $interlocutor, $interlocutor, $userId];
@@ -847,4 +855,45 @@ WHERE user_sender_id = ? AND user_receiver_id = ?
     $postPrepareRes = mysqli_stmt_get_result($postPrepare);
 
     return mysqli_fetch_all($postPrepareRes, MYSQLI_ASSOC);
+}
+
+/**
+ * узнаем число непрочитаных сообщений хозяина профиля
+ * @param mysqli $mysql соединение с бд
+ * @param int    $profileUser id хозяина профиля
+ *
+ * @return array|false|null число не прочитаных сообщений или null
+ */
+function getCountedUnreadMessages(mysqli $mysql, int $profileUser)
+{
+    $data[] = $profileUser;
+    $query = "
+SELECT count(viewed) AS `nonViewed`
+FROM message
+WHERE user_receiver_id = ? AND viewed = FALSE
+    ";
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
+    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
+
+    return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
+}
+/**
+ * узнаем число непрочитаных сообщений хозяина профиля
+ * @param mysqli $mysql соединение с бд
+ * @param int    $profileUser id хозяина профиля
+ * @param int $interlocutor id собеседника
+ * @return array|false|null число не прочитаных сообщений или null
+ */
+function getUnreadMessagesFromUser(mysqli $mysql, int $profileUser,int $interlocutor)
+{
+    $data = [$profileUser, $interlocutor];
+    $query = "
+SELECT count(viewed) AS `nonViewed`
+FROM message
+WHERE user_receiver_id = ?  AND user_sender_id = ? AND viewed = FALSE
+    ";
+    $postPrepare = dbGetPrepareStmt($mysql, $query, $data);
+    $postPrepareRes = mysqli_stmt_get_result($postPrepare);
+
+    return mysqli_fetch_array($postPrepareRes, MYSQLI_ASSOC);
 }

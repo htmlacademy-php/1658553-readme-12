@@ -66,7 +66,6 @@ function addSharp(mysqli $mysql, string $sharp, int $lastPostId): int
 function addPhotoUrl(mysqli $mysql, int $lastPostId, $contentType): int
 {
     $date = date('YmdHis');
-    $contentType = $contentType['photo']['id'];
     mkdir('valid');
     if (existAddFiles('userpic-file-photo')) {
         $uploads_dir = 'valid';
@@ -80,6 +79,7 @@ function addPhotoUrl(mysqli $mysql, int $lastPostId, $contentType): int
     } else {
         $media = validateInput($_POST['photoUrl']);
     }
+
     $queryPost = sprintf(
         "UPDATE post SET media = '%s', content_type_id = '$contentType' WHERE id = '$lastPostId'",
         mysqli_real_escape_string($mysql, $media)
@@ -225,9 +225,8 @@ function addUserEmail(mysqli $mysql): int
     $email = validateInput($_POST['email']);
     $query = "INSERT INTO user (reg_date, email) VALUES ('$regDate','$email')";
     mysqli_query($mysql, $query);
-    $lastUserID = mysqli_insert_id($mysql);
 
-    return $lastUserID;
+    return mysqli_insert_id($mysql);
 }
 
 /**
@@ -435,6 +434,10 @@ function addConversation(mysqli $mysql, int $profileUser, int $interlocutor)
     $query
         = "INSERT INTO conversation  (first, second) VALUES ('$profileUser', '$interlocutor')";
 
+    mysqli_query($mysql, $query);
+    $query
+        = "INSERT INTO conversation  (first, second) VALUES ('$interlocutor','$profileUser')";
+
     return mysqli_query($mysql, $query);
 }
 
@@ -461,4 +464,11 @@ function addMessage(
         mysqli_real_escape_string($mysql, $message));
 
     return mysqli_query($mysql, $query);
+}
+
+function getViewed (mysqli $mysql, int $userId, int $interlocutor)
+{
+    $queryRepost
+        = "UPDATE message SET viewed = true WHERE user_sender_id = '$interlocutor' AND user_receiver_id = '$userId'";
+    mysqli_query($mysql, $queryRepost);
 }

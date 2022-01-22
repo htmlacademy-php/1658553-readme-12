@@ -1,14 +1,5 @@
 <?php
 
-const SHOW_POSTS = 'posts';
-const SHOW_LIKES = 'likes';
-const SHOW_SUBSCRIBE = 'subscribe';
-const TYPE_TEXT = 'text';
-const TYPE_QUOTE = 'quote';
-const TYPE_PHOTO = 'photo';
-const TYPE_VIDEO = 'video';
-const TYPE_LINK = 'link';
-
 
 require_once('config/config.php');
 require_once('src/helpers.php');
@@ -26,10 +17,13 @@ require_once('model/models.php');
 if ($isAuth) {
     header('location: index.php');
 } else {
-    $blockName = $_GET['show'];
-    $profileUser = $_GET['user'];
-    $isComment = $_GET['comment'];
-    $isCommentShowALl = $_GET['view'];
+    $errors = [];
+    $blockName = $_GET['show'] ?? null;
+    $profileUser = $_GET['user'] ?? null;
+    $isComment = $_GET['comment'] ?? null;
+    $isCommentShowALl = $_GET['view'] ?? null;
+
+
     if ($profileUser) {
         $profileInfo = getInfoProfileUser($mysql, $profileUser);
         $isUserSubscribe = isUserSubscribe(
@@ -52,7 +46,6 @@ if ($isAuth) {
                         $val['originalPostId']
                     );
                     $profilePosts[$arr]['original'] = $repostUserInfo;
-
                 }
                 $commentList = getCommentsForPost($mysql, $val['post_num']);
                 if (!$isCommentShowALl) {
@@ -66,7 +59,7 @@ if ($isAuth) {
                 }
             }
 
-            if ($_SESSION['errors']) {
+            if (!empty($_SESSION['errors'])) {
                 $errors = [];
                 $errors = $_SESSION['errors'];
                 unset($_SESSION['errors']);

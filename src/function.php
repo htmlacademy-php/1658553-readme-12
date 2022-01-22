@@ -208,9 +208,9 @@ WHERE email = ?
 /**
  * функция  вывода ошибки валидации для пароля (может быть массив/строка)
  *
- * @param array $arr Массив из $errors
+ * @param  $arr Массив/строка из $errors
  */
-function outputArrOrString(array $arr)
+function outputArrOrString($arr)
 {
     if (is_string($arr)) {
         print $arr;
@@ -336,8 +336,37 @@ function getClassNameAddForm(?int $type, array $types)
     return 'adding-post__photo tabs__content--active';
 }
 
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
 
 
+require_once('vendor/autoload.php');
+/**
+ * отправка сообщений
+ *
+ * @param string $to Кому
+ * @param string $from От кого
+ * @param string $subject Тема
+ * @param string $text Текст письма
+ *
+ * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+ */
+function sendMessage(string $to, string $from, string $subject, string $text)
+{
+    $dsn
+        = 'smtp://481428c63a84ee:5cefaca8023c32@smtp.mailtrap.io:2525?encryption=tls&auth_mode=login';
+
+    $transport = Transport::fromDsn($dsn);
+    $message = new Email();
+    $message->to($to);
+    $message->from($from);
+    $message->subject($subject);
+
+    $message->text($text);
+    $mailer = new Mailer($transport);
+    $mailer->send($message);
+}
 
 
 

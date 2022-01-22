@@ -23,8 +23,10 @@ if ($isAuth) {
     $errors = [];
 
 
-    if ($isPostIdExist) {
-        $isCommentShowALl = $_GET['comment'];
+    if (!$isPostIdExist) {
+        header("Location: error.php");
+    } else {
+        $isCommentShowALl = $_GET['comment'] ?? null;
         $postMainContent = getPost($mysql, $postId);
         $authorPostsCount = authorPostsCount(
             $mysql,
@@ -49,7 +51,7 @@ if ($isAuth) {
         }
 
 
-        if ($_SESSION['errors']) {
+        if (!empty($_SESSION['errors'])) {
             $errors = $_SESSION['errors'];
             unset($_SESSION['errors']);
         }
@@ -95,7 +97,6 @@ if ($isAuth) {
 
         print ($layoutContent);
     }
-    header("Location: error.php");
 }
 
 

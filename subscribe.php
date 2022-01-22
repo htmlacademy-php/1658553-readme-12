@@ -1,10 +1,6 @@
 <?php
 
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mime\Email;
-
 require_once('config/config.php');
-require_once('config/mailer.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
 require_once('src/validate.php');
@@ -27,14 +23,9 @@ if ($isAuth) {
     if ($isUserSubscribe) {
         addSubscribe($mysql, $authorId, $userId);
         $userEmail = getUserEmail($mysql, $authorId);
-        $message = new Email();
-        $message->to($userEmail['email']);
-        $message->from("Readme@mail.ru");
-        $message->subject("У вас новый подписчик");
-        $message->text('Здравствуйте, '.$userEmail['login'].' . На вас подписался новый пользователь '.$_SESSION['user']['login'].'.
+        sendMessage($userEmail['email'], 'Readme@mail.ru', 'У вас новый подписчик',
+            'Здравствуйте, '.$userEmail['login'].' . На вас подписался новый пользователь '.$_SESSION['user']['login'].'.
          Вот ссылка на его профиль: http://localhost/1658553-readme-12/profile.php?user='.$_SESSION['user']['id'].'');
-        $mailer = new Mailer($transport);
-        $mailer->send($message);
     } else {
         removeSubscribe($mysql, $authorId, $userId);
     }

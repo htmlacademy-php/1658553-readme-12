@@ -1,16 +1,7 @@
 <?php
 
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mime\Email;
-
-const TYPE_TEXT = 'text';
-const TYPE_QUOTE = 'quote';
-const TYPE_PHOTO = 'photo';
-const TYPE_VIDEO = 'video';
-const TYPE_LINK = 'link';
 
 require_once('config/config.php');
-require_once('config/mailer.php');
 require_once('src/helpers.php');
 require_once('src/function.php');
 require_once('src/validate.php');
@@ -27,6 +18,8 @@ require_once('model/models.php');
 if ($isAuth) {
     header('location: index.php');
 } else {
+    $mainUser = $_SESSION['user']['id'];
+    $countMassage = getCountedUnreadMessages($mysql, $mainUser);
     $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
     $contentTypes = getContentTypes($mysql, 'type_name');
     $errors = [];
@@ -38,9 +31,7 @@ if ($isAuth) {
             'add'        => function (
                 $mysql,
                 $key,
-                $lastPostId,
-                $authorId,
-                $contentTypes
+                $authorId
             ) {
                 return addHeading($mysql, $key, $authorId);
             },
@@ -53,8 +44,6 @@ if ($isAuth) {
                 $mysql,
                 $key,
                 $lastPostId,
-                $authorId,
-                $contentTypes
             ) {
                 return addSharp($mysql, $key, $lastPostId);
             },
@@ -142,8 +131,6 @@ if ($isAuth) {
                 $mysql,
                 $key,
                 $lastPostId,
-                $authorId,
-                $contentTypes
             ) {
                 return addQuoteAuthor($mysql, $key, $lastPostId);
             },
@@ -171,6 +158,16 @@ if ($isAuth) {
 
     if ($isPost) {
         mysqli_begin_transaction($mysql);
+        $validHeader = $fields['heading']['validation'];
+        $errors['heading'] = $validHeader('heading');
+        $addHeader = $fields['heading']['add'];
+        $lastPostId = $addHeader(
+            $mysql,
+            'heading',
+            $_SESSION['user']['id']
+        );
+        $postHeader = $_POST['heading'];
+        array_shift($_POST);
         foreach ($_POST as $key => $value) {
             $ruleValid = $fields[$key]['validation'];
             $errors[$key] = $ruleValid($key);
@@ -189,19 +186,12 @@ if ($isAuth) {
             $userSubscribeList = getProfileSubscribe($mysql,
                 $_SESSION['user']['id']);
             foreach ($userSubscribeList as $user => $info) {
-                $message = new Email();
-                $message->to($info['email']);
-                $message->from("Readme@mail.ru");
-                $message->subject('Новая публикация от пользователя '
-                    .$_SESSION['user']['login'].'');
-
-                $message->text('Здравствуйте, '.$info['login']
+                sendMessage($info['email'], 'Readme@mail.ru', 'Новая публикация от пользователя '
+                    .$_SESSION['user']['login'].'', 'Здравствуйте, '.$info['login']
                     .' . Пользователь '.$_SESSION['user']['login'].' только что опубликовал новую запись
-                „'.$_POST['heading']
+                „'.$postHeader
                     .'“. Посмотрите её на странице пользователя: http://localhost/1658553-readme-12/profile.php?user='
                     .$_SESSION['user']['id'].' ');
-                $mailer = new Mailer($transport);
-                $mailer->send($message);
             }
             header("Location: post.php?post-id=$lastPostId");
         } else {
@@ -227,9 +217,10 @@ if ($isAuth) {
     $header = includeTemplate(
         'block/header.php',
         [
-            'avatar'   => $_SESSION['user']['avatar'],
-            'userName' => $_SESSION['user']['login'],
-            'userId'   => $_SESSION['user']['id'],
+            'avatar'        => $_SESSION['user']['avatar'],
+            'userName'      => $_SESSION['user']['login'],
+            'userId'        => $_SESSION['user']['id'],
+            'countMassages' => $countMassage,
         ]
     );
     $postAdd = includeTemplate(

@@ -18,7 +18,7 @@ foreach (
                          height="60">
                 </div>
                 <div class="post__info">
-                    <b class="post__author-name"><?= $post['name'] ?></b>
+                    <b class="post__author-name"><?= htmlspecialchars($post['name']) ?></b>
                     <span class="post__time"><?= smallDate(
                             $post['create_date'],
                             'назад'
@@ -45,7 +45,7 @@ foreach (
 
 
                 <h2>
-                    <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= $post['header'] ?></a>
+                    <a href="post.php?post-id=<?= $post['post_num'] ?>"><?= htmlspecialchars($post['header']) ?></a>
                 </h2>
                 <p>
                     <?= cutText(
@@ -81,7 +81,7 @@ foreach (
 
                 <blockquote>
                     <p>
-                        <?= $post['text_content'] ?>
+                        <?= htmlspecialchars($post['text_content']) ?>
                     </p>
                     <cite>Xью Оден</cite>
                 </blockquote>
@@ -99,7 +99,7 @@ foreach (
                                 alt="Иконка">
                         </div>
                         <div class="post-link__info">
-                            <h3><?= $post['header'] ?></h3>
+                            <h3><?= htmlspecialchars($post['header']) ?></h3>
                             <span><?= parse_url(
                                     $post['media']
                                 )['host'] ?></span>
