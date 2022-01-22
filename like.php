@@ -15,6 +15,7 @@ require_once('model/models.php');
 
 if ($isAuth) {
     header('location: index.php');
+
 } else {
     $userId = $_SESSION['user']['id'];
     $postId = $_GET['id'];
