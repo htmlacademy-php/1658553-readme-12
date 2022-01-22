@@ -24,7 +24,9 @@ if ($isAuth) {
     $isCommentShowALl = $_GET['view'] ?? null;
 
 
-    if ($profileUser) {
+    if (!$profileUser) {
+        header("Location: error.php");
+    } else {
         $profileInfo = getInfoProfileUser($mysql, $profileUser);
         $isUserSubscribe = isUserSubscribe(
             $mysql,
@@ -89,6 +91,7 @@ if ($isAuth) {
             );
         } elseif ($blockName === SHOW_SUBSCRIBE) {
             $profileSubscribeId = getProfileSubscribe($mysql, $profileUser);
+            $profileSubscribe = [];
             if (!empty($profileSubscribeId)) {
                 foreach ($profileSubscribeId as $user => $id) {
                     $profileSubscribeList = getInfoProfileUser(
@@ -96,23 +99,22 @@ if ($isAuth) {
                         $id['user_subscribe_id']
                     );
                     $profileSubscribe[$user]['info'] = $profileSubscribeList;
-                    $isUserSubscribe = isUserSubscribe(
+                    $isUserSubscribed = isUserSubscribe(
                         $mysql,
                         $id['user_subscribe_id'],
                         $_SESSION['user']['id']
                     );
-                    $profileSubscribe[$user]['isSubscribe'] = $isUserSubscribe;
+                    $profileSubscribe[$user]['isSubscribe'] = $isUserSubscribed;
                 }
-                $showContent = includeTemplate(
-                    'block/block-profile-subscribe.php',
-                    [
-                        'profileSubscribe' => $profileSubscribe,
-
-                    ]
-                );
             }
-        }
+            $showContent = includeTemplate(
+                'block/block-profile-subscribe.php',
+                [
+                    'profileSubscribe' => $profileSubscribe,
 
+                ]
+            );
+        }
 
         $header = includeTemplate(
             'block/header.php',
@@ -146,7 +148,6 @@ if ($isAuth) {
         );
         print $layout_content;
     }
-    header("Location: error.php");
 }
 
 
