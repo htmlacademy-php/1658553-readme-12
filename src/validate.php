@@ -50,7 +50,7 @@ function validateFilled(string $key)
  *
  * @param string $val Адрес который мы получили из $_POST
  *
- * @return bool|string Возвращает true если валидация успешна либо текст ошибки.
+ * @return bool|string Возвращает false если валидация успешна либо текст ошибки.
  */
 function validateURL(string $val)
 {
@@ -71,8 +71,8 @@ function validateURL(string $val)
  */
 function validateUpload(string $key)
 {
-    if (!file_get_contents($_POST[$key]) or file_get_contents($_POST[$key])
-        == ''
+    if (!file_get_contents($_POST[$key]) or empty(file_get_contents($_POST[$key]))
+
     ) {
         return 'Не удалось загрузить изображение';
     }
