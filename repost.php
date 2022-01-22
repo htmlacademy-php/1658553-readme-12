@@ -31,7 +31,6 @@ if ($isAuth) {
         $repostInfo['originalPostId'] = $postInfo['id'];
         mysqli_begin_transaction($mysql);
         $isSuccess = addRepost($mysql, $repostInfo);
-        var_dump($repostInfo);
         if ($isSuccess) {
             mysqli_commit($mysql);
             header('location: profile.php?user='.$userId.'');

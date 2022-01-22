@@ -23,7 +23,9 @@ if ($isAuth) {
     $errors = [];
 
 
-    if ($isPostIdExist) {
+    if (!$isPostIdExist) {
+        header("Location: error.php");
+    } else {
         $isCommentShowALl = $_GET['comment'] ?? null;
         $postMainContent = getPost($mysql, $postId);
         $authorPostsCount = authorPostsCount(
@@ -95,7 +97,6 @@ if ($isAuth) {
 
         print ($layoutContent);
     }
-    header("Location: error.php");
 }
 
 
