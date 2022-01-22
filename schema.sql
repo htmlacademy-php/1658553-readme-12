@@ -100,7 +100,7 @@ CREATE TABLE hashtag_post
 
 );
 
-CREATE UNIQUE INDEX email ON user (email);
+
 CREATE INDEX login ON user (login);
 CREATE INDEX reg_date ON user (reg_date);
 CREATE INDEX type_name ON content_type (type_name);

@@ -63,12 +63,18 @@ if ($isPost) {
     mysqli_begin_transaction($mysql);
     $avatar['avatar'] = '';
     $_POST += $avatar;
-    $lastUserId = 1;
+    $validEmail = $fields['email']['validation'];
+    $errors['email'] = $validEmail($mysql, 'email');
+    $addEmail = $fields['email']['add'];
+    $lastUserId = $addEmail(
+        $mysql
+    );
+    array_shift($_POST);
     foreach ($_POST as $key => $value) {
         $ruleValid = $fields[$key]['validation'];
         $errors[$key] = $ruleValid($mysql, $key);
         $ruleAdd = $fields[$key]['add'];
-        $lastUserId = $ruleAdd($mysql, $lastUserId);
+        $ruleAdd($mysql, $lastUserId);
     }
     if (!findErrors($errors)) {
         mysqli_commit($mysql);

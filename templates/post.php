@@ -155,7 +155,10 @@
                     foreach ($hashtags as $key => $hashtag): ?>
                         <li><a href="search.php?q=<?= urlencode(
                                 $hashtag
-                            ) ?>"><?= htmlspecialchars($hashtag) ?></a></li>
+                            ) ?>"><?php
+                                if (!empty($hashtag)) {
+                                    print htmlspecialchars($hashtag);
+                                } ?></a></li>
                     <?php
                     endforeach; ?>
                 </ul>
@@ -299,7 +302,7 @@
 
                     </button>
                     <a class="user__button user__button--writing button button--green"
-                       href="messages.php?dialog=<?=$postMainContent['user_id']?>">Сообщение</a>
+                       href="messages.php?dialog=<?= $postMainContent['user_id'] ?>">Сообщение</a>
                 </form>
             </div>
         </div>

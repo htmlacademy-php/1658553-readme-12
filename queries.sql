@@ -97,6 +97,4 @@ VALUES ('2', '2', '2020.08.25'),
 
 
 
-SELECT *
-FROM message
-WHERE user_receiver_id = 6
+

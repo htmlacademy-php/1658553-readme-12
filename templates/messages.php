@@ -37,7 +37,7 @@
                                 <p class="messages__preview-text">
                                     <?php
                                     if (!empty($info['preview']['content'])) {
-                                        print $info['preview']['content'];
+                                        print htmlspecialchars($info['preview']['content']);
                                     } ?>
                                 </p>
 
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <p class="messages__text">
-                            <?= $info['content'] ?>
+                            <?= htmlspecialchars($info['content']) ?>
                         </p>
                     </li>
                 <?php

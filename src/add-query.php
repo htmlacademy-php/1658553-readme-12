@@ -225,9 +225,8 @@ function addUserEmail(mysqli $mysql): int
     $email = validateInput($_POST['email']);
     $query = "INSERT INTO user (reg_date, email) VALUES ('$regDate','$email')";
     mysqli_query($mysql, $query);
-    $lastUserID = mysqli_insert_id($mysql);
 
-    return $lastUserID;
+    return mysqli_insert_id($mysql);
 }
 
 /**

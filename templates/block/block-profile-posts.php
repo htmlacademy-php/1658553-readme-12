@@ -168,7 +168,9 @@ foreach (
                     foreach ($post['hashtags'] as $key => $hashtag): ?>
                         <li><a href="search.php?q=<?= urlencode(
                                 $hashtag
-                            ) ?>"><?= htmlspecialchars($hashtag) ?></a></li>
+                            ) ?>"><?php if (!empty($hashtag)){
+                                print htmlspecialchars($hashtag);
+                                }  ?></a></li>
                     <?php
                     endforeach; ?>
                 </ul>

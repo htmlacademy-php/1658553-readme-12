@@ -16,6 +16,7 @@
         <div class="container">
             <div class="search__content">
                 <?= $block ?>
+
             </div>
         </div>
     </div>
