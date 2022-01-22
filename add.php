@@ -241,6 +241,7 @@ if ($isAuth) {
 
         ]
     );
+
     print $layout_content;
 }
 
