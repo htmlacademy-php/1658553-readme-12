@@ -69,6 +69,7 @@ if ($isPost) {
     $lastUserId = $addEmail(
         $mysql
     );
+    $postEmail = $_POST['email'];
     array_shift($_POST);
     foreach ($_POST as $key => $value) {
         $ruleValid = $fields[$key]['validation'];
@@ -76,6 +77,7 @@ if ($isPost) {
         $ruleAdd = $fields[$key]['add'];
         $ruleAdd($mysql, $lastUserId);
     }
+    $_POST['email'] = $postEmail;
     if (!findErrors($errors)) {
         mysqli_commit($mysql);
         rebaseImg();
