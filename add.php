@@ -180,6 +180,7 @@ if ($isAuth) {
                 $contentTypes
             );
         }
+         $_POST['heading'] = $postHeader;
         if (!findErrors($errors)) {
             mysqli_commit($mysql);
             rebaseImg();
@@ -189,7 +190,7 @@ if ($isAuth) {
                 sendMessage($info['email'], 'Readme@mail.ru', 'Новая публикация от пользователя '
                     .$_SESSION['user']['login'].'', 'Здравствуйте, '.$info['login']
                     .' . Пользователь '.$_SESSION['user']['login'].' только что опубликовал новую запись
-                „'.$postHeader
+                „'.$_POST['heading']
                     .'“. Посмотрите её на странице пользователя: http://localhost/1658553-readme-12/profile.php?user='
                     .$_SESSION['user']['id'].' ');
             }
