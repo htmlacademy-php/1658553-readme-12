@@ -202,6 +202,7 @@ function validateImg(string $key)
         }
     }
 
+
     return $error;
 }
 
